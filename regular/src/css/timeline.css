@@ -1,0 +1,166 @@
+:root {
+  --foreground: #222;
+  --background: #fff;
+  --line: rgba(223, 223, 223, 0.647);
+  --line-bg: rgb(241, 241, 241);
+  --shadow1: rgba(101, 101, 101, 0.1);
+  --shadow2: rgba(15, 15, 15, 0.1);
+  --timeline: rgb(247, 247, 247);
+  --dates: rgba(137, 137, 137, 0.893);
+
+  --date-bg: #f5f5f5;
+  --date-border: #ccc;
+  --dot: #7a7a7a;
+  --current-line: #f00f0f91;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground: #eee;
+    --background: #181818;
+    --line: rgba(45, 45, 45, 0.628);
+    --line-bg: rgba(64, 64, 64, 0.64);
+    --shadow1: rgba(57, 57, 57, 0.346);
+    --shadow2: rgba(15, 15, 15, 0.053);
+    --timeline: rgb(21, 21, 21);
+    --dates: rgba(132, 131, 131, 0.893);
+
+    --date-bg: #262626;
+    --date-border: #444;
+    --dot: #7a7a7a;
+    --current-line: #ec202075;
+  }
+}
+
+.current {
+  display: block;
+  position: absolute;
+  width: 0.26mm;
+  height: 100%;
+  background-color: var(--current-line);
+}
+
+.current::before {
+  display: block;
+  position: absolute;
+  content: "";
+  width: 8px;
+  height: 8px;
+  align-self: center;
+  border-radius: 50%;
+  left: -3.6px;
+  background-color: #ea4343;
+}
+.grid-container {
+  display: block;
+  position: absolute;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  width: 52.2vw;
+  min-height: 70vh;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.timeline-container {
+  position: relative;
+}
+
+.list-container {
+  display: block;
+}
+
+.grid-tasks-container {
+  position: absolute;
+  margin-top: 4em;
+}
+
+.grid-tasks {
+  position: absolute;
+}
+
+.grid-tasks > div {
+  height: 24px;
+  margin-top: 1em;
+  border-radius: 0.24em;
+  box-shadow: var(--shadow1) 0px 0px 0px 1px inset, var(--shadow2) 0px 1px 1px;
+  position: absolute;
+  background-color: var(--date-bg);
+  border: 0.4px solid var(--shadow1);
+  padding: 1mm 0;
+  cursor: move;
+}
+
+.grid-tasks-text {
+  display: block;
+  font-weight: 500;
+  width: 10vw;
+}
+
+.handlers {
+  display: block;
+  margin: 4mm 0;
+  padding: 0.8mm 2.6mm;
+  width: fit-content;
+  border-radius: 0.24em;
+  cursor: pointer;
+  box-shadow: var(--shadow1) 0px 0px 0px 1px inset, var(--shadow2) 0px 1px 1px;
+}
+
+.sticky {
+  position: fixed;
+  padding: 2.6mm 0 0 16px;
+  background-color: var(--timeline);
+  font-weight: 550;
+}
+
+.timeline-grid-year {
+  display: flex;
+  position: absolute;
+}
+
+.timeline-grid-year > div {
+  background-color: var(--timeline);
+  border-right: 1px solid var(--line);
+  text-align: center;
+  min-height: 78vh;
+  padding-top: 2.6mm;
+}
+
+.timeline-grid-year > div span {
+  font-weight: 550;
+}
+
+.timeline-grid-year > div:last-child {
+  border-right: none;
+}
+
+.timeline-grid-year-dates {
+  display: flex;
+  margin-top: 4mm;
+  text-align: left;
+}
+
+.timeline-grid-year-date {
+  display: block;
+  font-size: 2.4mm;
+  color: var(--dates);
+}
+
+.timeline-grid-day {
+  display: grid;
+  position: absolute;
+  grid-template-columns: repeat(24, 1fr);
+}
+
+.timeline-grid-day > div {
+  background-color: var(--line-bg);
+  border-right: 1px solid var(--line);
+  text-align: center;
+  min-width: 59px;
+  min-height: 80.5vh;
+  padding-top: 16px;
+}
