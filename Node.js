@@ -14,6 +14,12 @@ export default class Node {
   isRoot;
   firstChild;
   nextSibling;
+
+  // dates
+  pad;
+  date1;
+  date2;
+
   childrenMap;
 
   // for root node
@@ -26,7 +32,10 @@ export default class Node {
     skimmedText,
     type,
     start,
-    end
+    end,
+    pad,
+    date1,
+    date2
   ) {
     this.id = crypto.randomUUID();
     this.isRoot = isRoot;
@@ -38,6 +47,9 @@ export default class Node {
     this.type = type;
     this.charStart = start;
     this.charEnd = end;
+    this.pad = pad;
+    this.date1 = date1;
+    this.date2 = date2;
 
     // children
     this.firstChild = null;

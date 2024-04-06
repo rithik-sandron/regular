@@ -1,4 +1,3 @@
-import Component from "@/components/Component";
 import { regex } from "@/hooks/regex";
 
 // export function handleClick(event) {

@@ -57,7 +57,7 @@ export default forwardRef(function Year(props, ref) {
 
   function grid() {
     let arr = [];
-    let start = new Date("2024-1-1");
+    let start = new Date("2024-01-01");
     let end = new Date(`${new Date().getFullYear()}-12-31`);
     // year
     let startYear = start.getFullYear();
@@ -91,16 +91,29 @@ export default forwardRef(function Year(props, ref) {
                 if (y === 1 || (y < 26 && y % 5 === 0)) {
                   return (
                     <div
-                      key={y}
+                      key={x.year + "" + x.month + "" + y}
                       style={{
                         width: MONTHS[x.month].n * 4 + "px",
                       }}
                       className="timeline-grid-year-date"
                     >
                       {y}
-                      {currentDate === y &&
-                        currentMonth === x.month &&
-                        currentYear === x.year && <span className="current" />}
+                    </div>
+                  );
+                } else if (
+                  currentMonth === x.month &&
+                  currentYear === x.year &&
+                  currentDate === y
+                ) {
+                  return (
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: y * 9 + "px",
+                      }}
+                    >
+                      <span className="current" />
+                      <span className="currrent-text">{y}</span>
                     </div>
                   );
                 }

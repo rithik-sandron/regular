@@ -23,19 +23,27 @@ function getTime(d) {
   return s;
 }
 
-function diffDate(date1, date2) {
-  if (date2 > date1) return date2 - date1;
-  else "Invalid Date";
+function calculatePad(date1, date2) {
+  if (date2 === null) {
+    return 1;
+  }
+
+  date1 = new Date(date1);
+  date2 = new Date(date2);
+
+  if (date2 > date1)
+    return ((date2 - date1) / (1000 * 3600 * 24) / 1.992).toFixed(2);
+  else return 1;
 }
 
 export function render(text = "") {
-  let isFound = false;
   let skimmedText = "";
+  let dates = [];
+  let isFound = false;
 
   text = text.replace(dateRange, (m, n, o, p, u, index) => {
-    let dates = [];
+    isFound = true;
     text = text.replace(only_date, (match) => {
-      isFound = true;
       dates[0] = match;
       return "";
     });
@@ -50,10 +58,25 @@ export function render(text = "") {
   });
 
   text = text.replace(date, (m, n, o, index) => {
+    isFound = true;
+    //TODO:pdate to allow dates in middle
+    dates[0] = text.substring(index + 2, text.length - 1);
+    dates[1] = null;
+
     skimmedText = text.substring(0, index);
     return `<mark className='due-date'>🗓 ${getTime(
       m.substring(2, m.length - 1)
     )}</mark>`;
   });
-  return [text, skimmedText];
+
+  if (!isFound) {
+    return [text, "", 1, null, null];
+  }
+  return [
+    text,
+    skimmedText,
+    calculatePad(dates[0], dates[1]),
+    dates[0],
+    dates[1],
+  ];
 }

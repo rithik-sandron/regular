@@ -1,9 +1,8 @@
 import { useState, useRef, useEffect } from "react";
-import data from "@/lib/sample.json";
 import TimelineEvent from "@/components/TimelineEvent";
 import Year from "./Year";
 
-export default function Timeline() {
+export default function Timeline({ data }) {
   const [view, setView] = useState(24);
   const ref = useRef(null);
 
@@ -12,6 +11,8 @@ export default function Timeline() {
   }, []);
 
   function handleClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
     ref.current?.scrollIntoView({
       behavior: "smooth",
       inline: "center",
@@ -25,8 +26,12 @@ export default function Timeline() {
       </span>
       <div className="grid-container">
         <Year ref={ref} />
-        <div className="grid-tasks-container">
-          <TimelineEvent data={data.firstChild} />
+        <div
+          style={{
+            marginTop: "4em",
+          }}
+        >
+          <TimelineEvent data={data} />
         </div>
       </div>
     </div>

@@ -5,5 +5,5 @@ const FILE = "test.md";
 // parser & render
 parse(FILE).then(async (res) => {
   let root = res;
-    await Deno.writeTextFile("./sample.json", JSON.stringify(root));
+  await Deno.writeTextFile("./sample.json", JSON.stringify(root));
 });

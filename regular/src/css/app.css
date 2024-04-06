@@ -25,7 +25,7 @@ body {
   position: relative;
   display: grid;
   grid-template-columns: calc(45% - 2em) 55%;
-  margin-top: 8mm;
+  margin-top: 10mm;
   gap: 2em;
 }
 
@@ -39,7 +39,7 @@ body {
   outline: none;
   border-radius: 0.4em;
   line-height: 1.6;
-  margin-top: 16mm;
+  margin-top: 8mm;
 }
 
 .blocks h1,
@@ -51,14 +51,14 @@ body {
 .blocks p {
   display: list-item;
   list-style: disc;
-  font-weight: 400;
+  font-weight: 500;
   margin-bottom: 0.44em;
   font-size: 16px;
 }
 
 .blocks p::marker {
   color: var(--dot);
-  font-size: 20px;
+  font-size: 6mm;
 }
 
 .blocks > h1 {
@@ -66,7 +66,7 @@ body {
   font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 7px;
-  margin-bottom: 8mm;
+  margin-bottom: 4mm;
 }
 
 .blocks > h2 {
@@ -81,12 +81,12 @@ body {
 
 mark {
   color: inherit;
-  padding: 2px 1mm 3px 1mm;
+  padding: 4px 1mm 3.6px 1mm;
+  font-weight: 500;
   font-size: 15px;
   border-radius: 1mm;
   cursor: pointer;
   text-wrap: nowrap;
   background-color: var(--date-bg);
-  border: 1px solid var(--date-border);
-  text-overflow: ellipsis;
+  box-shadow: var(--shadow1) 0px 0px 1px 1.2px inset, var(--shadow2) 0px 1px 2px;
 }

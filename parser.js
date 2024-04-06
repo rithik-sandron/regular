@@ -5,6 +5,7 @@ const CHARS = 10_000;
 const NEW_LINE = "\n";
 const TAB = "\t";
 const TYPE = "p";
+const EMPTY_TYPE = "br";
 
 // parser
 export async function parse(FILE) {
@@ -30,18 +31,21 @@ export async function parse(FILE) {
     while (end < start + bytesRead) {
       if (NEW_LINE === String.fromCharCode(buffer[end - start])) {
         // is root
-        const md_text = render(s);
+        const [md_text, skimmedText, pad, date1, date2] = render(s);
         if (prev === null) {
           root = new Node(
             true,
             0,
             0,
             s,
-            md_text[0],
-            md_text[1],
+            md_text,
+            skimmedText,
             "h1",
             global_start,
-            end
+            end,
+            pad,
+            date1,
+            date2
           );
           parents.push(root);
           prev = root;
@@ -51,11 +55,14 @@ export async function parse(FILE) {
             level,
             level * 2,
             s,
-            md_text[0],
-            md_text[1],
-            TYPE,
+            md_text,
+            skimmedText,
+            s === "" ? EMPTY_TYPE : TYPE,
             global_start,
-            end
+            end,
+            pad,
+            date1,
+            date2
           );
           if (prev.isRoot) {
             // parents.push(prev);
@@ -74,11 +81,14 @@ export async function parse(FILE) {
             level,
             level * 2,
             s,
-            md_text[0],
-            md_text[1],
-            TYPE,
+            md_text,
+            skimmedText,
+            s === "" ? EMPTY_TYPE : TYPE,
             global_start,
-            end
+            end,
+            pad,
+            date1,
+            date2
           );
           prev.sibling(n);
           prev = n;
@@ -88,11 +98,14 @@ export async function parse(FILE) {
             level,
             level * 2,
             s,
-            md_text[0],
-            md_text[1],
-            TYPE,
+            md_text,
+            skimmedText,
+            s === "" ? EMPTY_TYPE : TYPE,
             global_start,
-            end
+            end,
+            pad,
+            date1,
+            date2
           );
           parents.push(prev);
           prev.child(n);

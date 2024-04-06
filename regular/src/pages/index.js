@@ -5,7 +5,6 @@ import {
   handleKeyup,
   setCursor,
 } from "@/lib/userHandles";
-import Component from "@/components/Component";
 import data from "@/lib/sample.json";
 import Tree from "@/components/Tree";
 import Timeline from "@/components/Timeline";
@@ -19,19 +18,15 @@ export default function Home() {
           contentEditable
           spellCheck="true"
           suppressContentEditableWarning="true"
+          style={{
+            marginLeft: "4mm",
+          }}
         >
-          {data.isRoot && <h1>{data.text}</h1>}
-          <div
-            style={{
-              marginLeft: "4mm",
-            }}
-          >
-            <Tree data={data.firstChild} />
-          </div>
+          <Tree data={data} />
         </div>
       </section>
       <section className="timeline-container">
-        <Timeline />
+        <Timeline data={data} />
       </section>
     </div>
   );
