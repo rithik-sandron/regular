@@ -1,34 +1,63 @@
+import { useEffect, useRef, useState } from "react";
 
-import { useEffect, useState } from "react";
+export default function Tree({ data, root }) {
+  const ref = useRef(null);
 
-export default function Tree({ data }) {
+  const [node, setNode] = useState(data);
+  // node search
+  // function getNode(id, node, edited) {
+  //   if (node.id === id) {
+  //     node.text = edited;
+  //     return node;
+  //   }
+  //   if (node.firstChild !== null) getNode(id, node.firstChild);
+  //   if (node.nextSibling !== null) getNode(id, node.nextSibling);
+  // }
+  // function getNodeById(root, id, edited) {
+  //   if (root.id === id) {
+  //     root.text = edited;
+  //     return root;
+  //   }
+  //   if (root.firstChild !== null) return getNode(id, root.firstChild);
+  //   return root;
+  // }
+
   useEffect(() => {
-    if (data.md_text) {
-      let r = document.getElementById(data.id);
-      r.innerHTML = data.md_text;
+    if (node.md_text) {
+      let r = document.getElementById(node.id);
+      r.innerHTML = node.md_text;
     }
   }, []);
 
-  // const mutationObserver = new MutationObserver(async () => {
-  //   console.log('mutationObserver operation');
-  // });
-
-  // useEffect(() => {
-  //   mutationObserver.observe(document.getElementById(node.id), {
-  //     childList: true,
-  //     subtree: true,
-  //   });
-
-  //   return () => {
-  //     mutationObserver.disconnect();
-  //   };
-  // }, []);
-
-  const [node, setNode] = useState(data);
-
-  function handleChange(e) {
-    console.log("hello");
+  function callAPI() {
+    fetch("http://localhost:3001/")
+      .then((res) => res.text())
+      .then((res) => this.setState({ apiResponse: res }));
   }
+
+  const mutationObserver = new MutationObserver(async () => {
+    if (ref.current) {
+      let copy = node;
+      copy.text = ref.current.innerText;
+      setNode(copy);
+      console.log(root);
+    }
+  });
+
+  useEffect(() => {
+    if (ref.current) {
+      mutationObserver.observe(ref.current, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+        attributeOldValue: true,
+      });
+
+      return () => {
+        mutationObserver.disconnect();
+      };
+    }
+  }, []);
 
   return (
     <div>
@@ -38,7 +67,7 @@ export default function Tree({ data }) {
         <node.type
           id={node.id}
           key={node.id}
-          onInput={(e) => handleChange(e)}
+          ref={ref}
           style={{
             marginLeft: node.indent + "em",
           }}
@@ -46,8 +75,8 @@ export default function Tree({ data }) {
           {node.text}
         </node.type>
       )}
-      {node.firstChild && <Tree data={node.firstChild} />}
-      {node.nextSibling && <Tree data={node.nextSibling} />}
+      {node.firstChild && <Tree data={node.firstChild} root={root} />}
+      {node.nextSibling && <Tree data={node.nextSibling} root={root} />}
     </div>
   );
 }

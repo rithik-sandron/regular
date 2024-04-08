@@ -3,8 +3,11 @@ import Year from "./Year";
 import Month from "./Month";
 import TimelineEvent from "./TimelineEvent";
 import Tree from "./Tree";
+import data from "../lib/sample.json";
 
-export default function Timeline({ data }) {
+export default function Timeline() {
+  const [node, setNode] = useState(data);
+
   const [view, setView] = useState("Year");
   const ref = useRef(null);
 
@@ -35,7 +38,7 @@ export default function Timeline({ data }) {
           spellCheck="true"
           suppressContentEditableWarning="true"
         >
-          <Tree data={data} />
+          <Tree data={node} root={node} />
         </div>
       </section>
       <section className="timeline-container">
@@ -54,10 +57,10 @@ export default function Timeline({ data }) {
           <div
             className="grid-container"
             style={{
-              height: data.order * 5 + "em",
+              height: node.order * 5 + "em",
             }}
           >
-            {view === "Year" && <Year ref={ref} height={data.order} />}
+            {view === "Year" && <Year ref={ref} height={node.order} />}
             {view === "Month" && <Month ref={ref} />}
             {/* {view === 'Day' && <Day ref={ref} />} */}
             <div
@@ -65,7 +68,7 @@ export default function Timeline({ data }) {
                 marginTop: "4em",
               }}
             >
-              <TimelineEvent data={data} />
+              <TimelineEvent data={node} />
             </div>
           </div>
         </div>
