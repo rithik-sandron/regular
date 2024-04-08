@@ -70,7 +70,7 @@ a {
 
 .app-container {
   position: relative;
-  /* display: grid;  */
+  display: grid; 
   grid-template-columns: 45% calc(55% - 8mm);
   margin-top: 10mm;
   gap: 8mm;
@@ -80,7 +80,7 @@ a {
 .timeline-container {
   display: block;
   position: relative;
-  margin-top: 20vh;
+  /* margin-top: 20vh; */
 }
 
 .list-container {

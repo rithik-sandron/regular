@@ -140,3 +140,26 @@ export async function parse(FILE) {
   root.order = order;
   return root;
 }
+
+// node search
+function getNode(node) {
+  if (node.isUpdated) {
+    const [md_text, skimmedText, pad, date1, date2] = render(node.text);
+    node.md_text = md_text;
+    node.skimmedText = skimmedText;
+    node.pad = pad;
+    node.date1 = date1;
+    node.date2 = date2;
+    node.isUpdated = false;
+    return true;
+  }
+  if (node.firstChild !== null) return getNode(node.firstChild);
+  if (node.nextSibling !== null) return getNode(node.nextSibling);
+}
+
+export async function parse_Root(root) {
+  if (getNode(root)) {
+    return root;
+  }
+  return root;
+}

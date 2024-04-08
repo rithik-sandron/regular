@@ -20,6 +20,7 @@ export default class Node {
   pad;
   date1;
   date2;
+  isUpdated;
 
   constructor(
     isRoot,
@@ -50,7 +51,7 @@ export default class Node {
     this.date1 = date1;
     this.date2 = date2;
     this.order = order;
-
+    this.isUpdated = false;
     // children
     this.firstChild = null;
     this.nextSibling = null;
