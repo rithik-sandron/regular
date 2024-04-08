@@ -16,7 +16,7 @@ export async function parse(FILE) {
   let prev = null;
   let parents = [];
   let root = null;
-
+  let order = 1;
   const file = await Deno.open(FILE);
   let s = "";
   let global_start = 0;
@@ -45,7 +45,8 @@ export async function parse(FILE) {
             end,
             pad,
             date1,
-            date2
+            date2,
+            date1 !== null ? 3 * order++ : 0
           );
           parents.push(root);
           prev = root;
@@ -62,7 +63,8 @@ export async function parse(FILE) {
             end,
             pad,
             date1,
-            date2
+            date2,
+            date1 !== null ? 3 * order++ : 0
           );
           if (prev.isRoot) {
             // parents.push(prev);
@@ -70,6 +72,7 @@ export async function parse(FILE) {
           } else {
             prev.sibling(n);
           }
+
           prev = n;
         } else if (level < prev.level) {
           let i = parents.length - 1;
@@ -88,7 +91,8 @@ export async function parse(FILE) {
             end,
             pad,
             date1,
-            date2
+            date2,
+            date1 !== null ? 3 * order++ : 0
           );
           prev.sibling(n);
           prev = n;
@@ -105,7 +109,8 @@ export async function parse(FILE) {
             end,
             pad,
             date1,
-            date2
+            date2,
+            date1 !== null ? 3 * order++ : 0
           );
           parents.push(prev);
           prev.child(n);
@@ -132,5 +137,6 @@ export async function parse(FILE) {
   // }
   file.close();
   parents = null;
+  root.order = order;
   return root;
 }

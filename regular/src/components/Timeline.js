@@ -1,39 +1,75 @@
-import { useState, useRef, useEffect } from "react";
-import TimelineEvent from "@/components/TimelineEvent";
+import { useState, useRef } from "react";
 import Year from "./Year";
+import Month from "./Month";
+import TimelineEvent from "./TimelineEvent";
+import Tree from "./Tree";
 
 export default function Timeline({ data }) {
-  const [view, setView] = useState(24);
+  const [view, setView] = useState("Year");
   const ref = useRef(null);
-
-  useEffect(() => {
-    ref.current?.scrollIntoView();
-  }, []);
 
   function handleClick(e) {
     e.preventDefault();
     e.stopPropagation();
     ref.current?.scrollIntoView({
       behavior: "smooth",
-      inline: "center",
+      inline: "start",
     });
   }
 
+  function handleClickView(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (e.target.localName === "p") {
+      setView(e.target.innerText);
+    }
+  }
+
   return (
-    <div>
-      <span className="handlers" onClick={handleClick}>
-        Today
-      </span>
-      <div className="grid-container">
-        <Year ref={ref} />
+    <>
+      <section className="list-container">
         <div
-          style={{
-            marginTop: "4em",
-          }}
+          id="m-list"
+          className="blocks"
+          contentEditable
+          spellCheck="true"
+          suppressContentEditableWarning="true"
         >
-          <TimelineEvent data={data} />
+          <Tree data={data} />
         </div>
-      </div>
-    </div>
+      </section>
+      <section className="timeline-container">
+        <div className="timeline-container-view">
+          <div className="handlers">
+            <div onClick={handleClick}>Today</div>
+            <div className="dropdown" onClick={handleClickView}>
+              <span>{view}</span>
+              <div className="dropdown-content">
+                <p>Year</p>
+                <p>Month</p>
+                <p>Day</p>
+              </div>
+            </div>
+          </div>
+          <div
+            className="grid-container"
+            style={{
+              height: data.order * 5 + "em",
+            }}
+          >
+            {view === "Year" && <Year ref={ref} height={data.order} />}
+            {view === "Month" && <Month ref={ref} />}
+            {/* {view === 'Day' && <Day ref={ref} />} */}
+            <div
+              style={{
+                marginTop: "4em",
+              }}
+            >
+              <TimelineEvent data={data} />
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

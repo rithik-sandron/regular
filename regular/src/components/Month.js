@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 
-export default function Day({ ref }) {
+export default function Month({ ref }) {
   let current = new Date();
   let currentMonth = current.getMonth();
   let currentYear = current.getFullYear();

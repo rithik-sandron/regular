@@ -72,7 +72,12 @@ export default forwardRef(function Year(props, ref) {
   }
 
   return (
-    <div className="timeline-grid-year">
+    <div
+      className="timeline-grid-year"
+      style={{
+        height: props.height * 6 + "em",
+      }}
+    >
       <span className="sticky">{currentYear}</span>
       {grid().map((x) => {
         return (
@@ -93,7 +98,7 @@ export default forwardRef(function Year(props, ref) {
                     <div
                       key={x.year + "" + x.month + "" + y}
                       style={{
-                        width: MONTHS[x.month].n * 4 + "px",
+                        width: 5 * 8 + "px",
                       }}
                       className="timeline-grid-year-date"
                     >
@@ -107,12 +112,18 @@ export default forwardRef(function Year(props, ref) {
                 ) {
                   return (
                     <div
+                      key={x.year + "" + x.month + "" + y}
                       style={{
                         position: "absolute",
-                        left: y * 9 + "px",
+                        left: y * 8 + "px",
                       }}
                     >
-                      <span className="current" />
+                      <span
+                        className="current"
+                        style={{
+                          height: props.height * 6 + "em",
+                        }}
+                      />
                       <span className="currrent-text">{y}</span>
                     </div>
                   );

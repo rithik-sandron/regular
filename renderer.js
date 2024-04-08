@@ -17,23 +17,22 @@ function getTime(d) {
   let s =
     months[date.getMonth()] + " " + date.getDate() + ", " + date.getFullYear();
 
-  s += date.getHours() !== 0 ? " " + date.getHours() : "";
-  s += date.getMinutes() !== 0 ? " : " + date.getMinutes() : "";
-  s += date.getSeconds() !== 0 ? " : " + date.getSeconds() : "";
+  s += date.getUTCHours() !== 0 ? " " + date.getUTCHours() : "";
+  s += date.getUTCMinutes() !== 0 ? " : " + date.getUTCMinutes() : "";
   return s;
 }
 
 function calculatePad(date1, date2) {
   if (date2 === null) {
-    return 1;
+    return 8.03;
   }
 
   date1 = new Date(date1);
   date2 = new Date(date2);
 
   if (date2 > date1)
-    return ((date2 - date1) / (1000 * 3600 * 24) / 1.992).toFixed(2);
-  else return 1;
+    return ((((date2 - date1) / (1000 * 3600 * 24)) + 1) * 8.03).toFixed(2);
+  else return 8.03;
 }
 
 export function render(text = "") {
@@ -52,19 +51,19 @@ export function render(text = "") {
       return "";
     });
     skimmedText = text.substring(0, index);
-    return `<mark className='due-date'>🗓 ${
+    return `<mark className='due-date'>${
       getTime(dates[0]) + " - " + getTime(dates[1])
     }</mark>`;
   });
 
   text = text.replace(date, (m, n, o, index) => {
     isFound = true;
-    //TODO:pdate to allow dates in middle
-    dates[0] = text.substring(index + 2, text.length - 1);
+    //TODO:pdate to allow dates in middle of text
+    dates[0] = text.substring(index + 2, text.length - 2);
     dates[1] = null;
 
     skimmedText = text.substring(0, index);
-    return `<mark className='due-date'>🗓 ${getTime(
+    return `<mark className='due-date'>${getTime(
       m.substring(2, m.length - 1)
     )}</mark>`;
   });

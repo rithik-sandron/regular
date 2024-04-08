@@ -11,6 +11,7 @@ export default class Node {
   // N-ary tree (type: Node)
   level;
   indent;
+  order;
   isRoot;
   firstChild;
   nextSibling;
@@ -20,9 +21,6 @@ export default class Node {
   date1;
   date2;
 
-  childrenMap;
-
-  // for root node
   constructor(
     isRoot,
     level,
@@ -35,7 +33,8 @@ export default class Node {
     end,
     pad,
     date1,
-    date2
+    date2,
+    order
   ) {
     this.id = crypto.randomUUID();
     this.isRoot = isRoot;
@@ -50,11 +49,11 @@ export default class Node {
     this.pad = pad;
     this.date1 = date1;
     this.date2 = date2;
+    this.order = order;
 
     // children
     this.firstChild = null;
     this.nextSibling = null;
-    this.childrenMap = new Map();
   }
 
   sibling(n) {

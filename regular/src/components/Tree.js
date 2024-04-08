@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import TimelineEvent from "./TimelineEvent";
 
 export default function Tree({ data }) {
   useEffect(() => {
