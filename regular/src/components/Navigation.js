@@ -1,13 +1,11 @@
-import Link from "next/link";
 import DateTime from "./DateTime";
 
 export default function Navigation({ title }) {
   return (
     <nav className="layout">
-      <Link href="/">{title}</Link>
-      <Link href="/availabile">Available</Link>
+      <a href="/">{title}</a>
+      <a href="/availabile">Available</a>
       <DateTime />
-      {/* <Link href="/create">create</Link> */}
     </nav>
   );
 }

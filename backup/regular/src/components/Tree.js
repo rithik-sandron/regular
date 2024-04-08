@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMutationObserver } from "react";
 
 export default function Tree({ data }) {
   useEffect(() => {
@@ -26,9 +26,9 @@ export default function Tree({ data }) {
 
   const [node, setNode] = useState(data);
 
-  function handleChange(e) {
-    console.log("hello");
-  }
+  // function handleChange(e) {
+  //   console.log("hello");
+  // }
 
   return (
     <div>

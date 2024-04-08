@@ -1,10 +1,4 @@
-import { useEffect, useState, useRef } from "react";
-import {
-  handleChange,
-  handleKeydown,
-  handleKeyup,
-  setCursor,
-} from "@/lib/userHandles";
+import { useState } from "react";
 import data from "@/lib/sample.json";
 import Timeline from "@/components/Timeline";
 export default function Home() {
