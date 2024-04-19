@@ -1,0 +1,223 @@
+:root {
+  --foreground: #333;
+  --background: #fefefe;
+  --line: rgba(223, 223, 223, 0.647);
+  --line-bg: rgb(241, 241, 241);
+  --shadow1: rgba(15, 15, 15, 0.175);
+  --shadow2: rgba(15, 15, 15, 0.175);
+  --timeline: #fdfdfd;
+  --dates: rgba(137, 137, 137, 0.893);
+
+  --date-bg: #f5f5f5;
+  --date-border: #ccc;
+  --dot: #7a7a7a;
+  --current-line: #f00f0f91;
+  --current-text: rgb(211, 79, 67);
+  --button: #fff;
+  --event: #cce4f6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground: #fefefe;
+    --background: #181818;
+    --line: rgba(45, 45, 45, 0.628);
+    --line-bg: rgba(64, 64, 64, 0.64);
+    --shadow1: rgba(57, 57, 57, 0.346);
+    --shadow2: rgba(15, 15, 15, 0.053);
+    --timeline: #181818;
+    --dates: rgba(132, 131, 131, 0.893);
+
+    --date-bg: rgb(37, 37, 37);
+    --date-border: #3d3d3d;
+    --dot: #7a7a7a;
+    --current-line: #ec202075;
+    --current-text: rgb(180, 65, 60);
+    --button: rgb(37, 37, 37);
+    --event: #23394a;
+  }
+}
+
+.current {
+  display: block;
+  position: absolute;
+  width: 2px;
+  background-color: var(--current-text);
+}
+
+.currrent-text {
+  position: absolute;
+  margin-left: -7px;
+  top: -4mm;
+  background-color: var(--current-text);
+  color: #fff;
+  padding: 0.3mm 1.2mm;
+  border-radius: 50%;
+  font-size: 9pt;
+}
+
+.grid-container {
+  display: block;
+  position: relative;
+  overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.app-container {
+  position: relative;
+  display: grid; 
+  grid-template-columns: 45% calc(55% - 8mm);
+  margin-top: 10mm;
+  gap: 8mm;
+  overflow: hidden;
+}
+
+.timeline-container {
+  display: block;
+  position: relative;
+  /* margin-top: 20vh; */
+}
+
+.list-container {
+  display: block;
+  margin-top: 16mm;
+}
+
+.timeline-container-view {
+  display: block;
+  position: relative;
+}
+
+.grid-tasks-container {
+  position: absolute;
+}
+
+.next-sibling {
+  display: block;
+  position: absolute;
+}
+
+.grid-tasks > div {
+  border-radius: 0.2em;
+  box-shadow: var(--shadow1) 0px 0px 1px 1px inset, var(--shadow2) 0px 1px 3px;
+  position: absolute;
+  background-color: var(--button);
+  /* background-color: var(--event); */
+  padding: 1.4mm 0;
+  cursor: move;
+}
+
+.grid-tasks-text {
+  display: block;
+  width: fit-content;
+  font-weight: 600;
+  font-size: 13.5px;
+  padding-left: 1.6mm;
+}
+
+.handlers {
+  display: flex;
+  gap: 4mm;
+  margin: 4mm 0;
+  width: fit-content;
+  cursor: pointer;
+}
+
+.handlers > div {
+  display: block;
+  border: 1px solid var(--date-border);
+  padding: 0.4mm 1.6mm;
+  border-radius: 0.24em;
+  font-size: 12pt;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  min-width: 100px;
+  font-size: 14px;
+  background-color: var(--date-bg);
+  padding: 2mm 0;
+  border-radius: 0.24em;
+  z-index: 1;
+  top: 28px;
+  left: 0;
+  box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px,
+    rgba(15, 15, 15, 0.1) 0px 3px 6px, rgba(15, 15, 15, 0.2) 0px 9px 24px;
+}
+
+.dropdown-content > p {
+  padding: 1mm 4mm;
+}
+
+.dropdown-content > p:hover {
+  background-color: var(--line);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.sticky {
+  position: fixed;
+  padding: 2.6mm 0 0 16px;
+  background-color: var(--timeline);
+  font-weight: 550;
+}
+
+.timeline-grid-year {
+  display: flex;
+  position: absolute;
+}
+
+.timeline-grid-year > div {
+  background-color: var(--timeline);
+  border-right: 1px solid var(--line);
+  text-align: center;
+  padding-top: 2.6mm;
+}
+
+.timeline-grid-year > div span {
+  font-weight: 550;
+}
+
+.timeline-grid-year > div:last-child {
+  border-right: none;
+}
+
+.timeline-grid-year-dates {
+  display: flex;
+  position: relative;
+  margin-top: 4mm;
+  text-align: left;
+}
+
+.timeline-grid-year-date {
+  display: block;
+  font-size: 2.4mm;
+  opacity: 0.9;
+}
+
+.timeline-grid-day {
+  display: grid;
+  position: absolute;
+  grid-template-columns: repeat(24, 1fr);
+}
+
+.timeline-grid-day > div {
+  background-color: var(--line-bg);
+  border-right: 1px solid var(--line);
+  text-align: center;
+  min-width: 59px;
+  padding-top: 16px;
+}
