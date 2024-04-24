@@ -1,13 +1,8 @@
+use serde::{Deserialize, Serialize};
+
 static mut UUID: u128 = 0;
 
-#[derive(Default, Debug, Clone)]
-pub enum Address {
-    Adrs(Box<Node>),
-    #[default]
-    Nil,
-}
-
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct Node {
     // data (type string, char)
     pub _id: u128,
@@ -19,17 +14,22 @@ pub struct Node {
     pub _charEnd: u32,
 
     // N-ary tree (type: Node)
-    pub _level: u32,
+    pub _level: f32,
     pub _indent: f32,
     pub _order: u32,
     pub _isRoot: bool,
-    pub _firstChild: Address,
-    pub _nextSibling: Address,
+    pub _firstChild: Option<Box<Node>>,
+    pub _nextSibling: Option<Box<Node>>,
     // dates
-    pub _pad: u32,
+    pub _pad: f64,
     pub _date1: String,
     pub _date2: String,
     pub _isUpdated: bool,
+
+    //timline
+    pub _color: String,
+    pub _min_date: u32,
+    pub _max_date: u32,
 }
 
 impl Node {
@@ -43,7 +43,7 @@ impl Node {
     pub fn new(
         &mut self,
         isRoot: bool,
-        level: u32,
+        level: f32,
         indent: f32,
         text: String,
         md_text: String,
@@ -51,10 +51,13 @@ impl Node {
         node_type: String,
         start: u32,
         end: u32,
-        pad: u32,
+        pad: f64,
         date1: String,
         date2: String,
         order: u32,
+        color: String,
+        min_date: u32,
+        max_date: u32
     ) -> Node {
         Node {
             _id: Self::count(),
@@ -73,8 +76,11 @@ impl Node {
             _order: order,
             _isUpdated: false,
             // children
-            _firstChild: Address::Nil,
-            _nextSibling: Address::Nil,
+            _firstChild: None,
+            _nextSibling: None,
+            _color: color,
+            _min_date: min_date,
+            _max_date: max_date
         }
     }
 
@@ -102,39 +108,13 @@ impl Node {
     //     }
     // }
 
-    pub fn child(&mut self, elem: &Node) {
-        match self._firstChild {
-            Address::Adrs(ref mut ns) => {
-                ns.child(elem);
-            }
-            Address::Nil => {
-                let node = elem;
-                self._firstChild = Address::Adrs(Box::new(node.clone()));
-            }
+    pub fn list(self, w: String) {
+        println!("{:?}", self);
+        if self._firstChild.is_some() {
+            self._firstChild.unwrap().list(String::from("child"));
         }
-    }
-
-    pub fn sibling(&mut self, elem: &Node) {
-        match self._nextSibling {
-            Address::Adrs(ref mut ns) => {
-                ns.sibling(elem);
-            }
-            Address::Nil => {
-                let node = elem;
-                self._nextSibling = Address::Adrs(Box::new(node.clone()));
-            }
+        if self._nextSibling.is_some() {
+            self._nextSibling.unwrap().list(String::from("sibling"));
         }
-    }
-
-    pub fn list(&self) {
-        println!("{}", self._text);
-        match self._firstChild {
-            Address::Adrs(ref n) => n.list(),
-            Address::Nil => {}
-        }
-        // match self._nextSibling {
-        //     Address::Adrs(ref n) => n.list(),
-        //     Address::Nil => {}
-        // }
     }
 }

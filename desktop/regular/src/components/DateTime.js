@@ -41,7 +41,6 @@ export default function DateTime() {
       style={{
         marginTop: "1px",
         fontSize: "14.6px",
-        alignSelf: "center",
       }}
     >
       {time}

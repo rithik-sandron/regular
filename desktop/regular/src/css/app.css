@@ -11,52 +11,74 @@
 html {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  max-width: 80%;
+  width: 90%;
+  max-width: 1400px;
   margin: auto;
+  box-sizing: border-box;
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  /* font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; */
   background-color: var(--background);
   color: var(--foreground);
   caret-color: #dd4c4f;
+  box-sizing: border-box;
 }
 
 .layout {
-  margin-top: 1em;
   display: flex;
-  gap: 2em;
+  flex-direction: column;
+  margin-top: 4em;
+  display: flex;
+  gap: 1em;
 }
 
 .blocks {
   display: grid;
   outline: none;
-  font-size: 12pt;
+  padding: 0 2mm;
+  font-size: 10.4pt;
   letter-spacing: 0.04mm;
-  line-height: 2em;
   text-rendering: optimizeLegibility;
   align-items: center;
 }
 
 .blocks p {
-  display: list-item;
-  list-style: disc;
+  display: list-item;         
+  list-style-type: disc;   
+  color: inherit;
+  list-style-position: inside; 
+  vertical-align: middle;
+  padding-bottom: 1.2em;
+  line-height: 1.3em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 .blocks p::marker {
   color: var(--dot);
-  font-size: 6mm;
+  font-size: large;
 }
 
+/* .blocks p::before {
+  content: "";
+  display: inline-flex;
+  background-color: var(--dot);
+  width: 6px;
+  height: 6px;
+  min-height: 6px;
+  min-width: 6px;
+  border-radius: 50%;
+  vertical-align: middle;
+  margin-top: 6px;
+  margin-right: 2.6mm;
+} */
+
 .blocks > h1 {
-  font-size: 28px;
+  font-size: 42px;
   font-weight: 700;
   /* text-decoration: underline;
   text-underline-offset: 7px; */
-  margin-bottom: 2mm;
-  line-height: 1.3em;
+  margin-bottom: 6mm;
 }
 
 .blocks > h2 {
@@ -70,18 +92,21 @@ body {
 }
 
 mark {
+  display: inline-flex;
+  vertical-align: middle;
   color: inherit;
-  padding: 0.1em 0.2em;
-  padding-top: 0.16em;
-  font-weight: 500;
-  font-size: 11pt;
   border-radius: 1mm;
+  font-size: 9pt;
   text-wrap: nowrap;
   background-color: var(--date-bg);
   border: 1px solid var(--date-border);
+  margin-right: 4px;
+  height: 12pt;
+  padding: 0 1mm;
 }
 
 mark::before {
+  display: inline-flex;
   content: url("./calendar.svg");
   padding-right: 1mm;
   vertical-align: middle;

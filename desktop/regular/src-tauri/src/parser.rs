@@ -1,5 +1,5 @@
 use crate::node::Node;
-use std::cell::RefCell;
+use crate::renderer::render;
 use std::{
     fs::File,
     io::{BufRead, BufReader},
@@ -8,37 +8,49 @@ use std::{
 const CHARS: usize = 10_000;
 const NEW_LINE: u8 = b'\n';
 const TAB: u8 = b'\t';
+const SPACE: u8 = b' ';
 const TYPE: &str = "p";
-const EMPTY_TYPE: &str = "br";
+// const EMPTY_TYPE: &str = "br";
 
-pub fn parse() -> std::io::Result<()> {
+pub fn parse() -> std::io::Result<String> {
     let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test.md";
     let file = File::open(path)?;
-    let prev = RefCell::new(Node {
+    let mut order = 1;
+    let mut level = 0.0;
+    let mut s: String = String::from("");
+    let mut reader = BufReader::with_capacity(CHARS, file);
+
+    let mut root = Node {
         _text: String::from(""),
         _md_text: String::from(""),
         _skimmedText: String::from(""),
         _type: "h1".to_string(),
         _charStart: 0,
         _charEnd: 0,
-        _level: 0,
+        _level: 0.0,
         _indent: 0.0,
-        _order: 0,
-        // _otder: date1 !== null ? 3 * order++ : 0,
+        _order: order,
+        // _order: date1 !== null ? 3 * order++ : 0,
         _isRoot: true,
-        _pad: 0,
+        _pad: 8.03,
         _date1: "".to_string(),
         _date2: "".to_string(),
         _isUpdated: false,
         _id: Node::count(),
         _firstChild: Default::default(),
         _nextSibling: Default::default(),
-    });
-    let root = RefCell::clone(&prev);
-    let order = 1;
-    let mut level = 0;
-    let mut s: String = String::from("");
-    let mut reader = BufReader::with_capacity(CHARS, file);
+        _color: String::new(),
+        _min_date: 0,
+        _max_date: 0
+    };
+
+    order += 1;
+    let mut prev = &mut root;
+    let mut is_true: bool = true;
+    let mut is_indended = false;
+
+    let mut min_date= 0; 
+    let mut max_date = 0;
 
     loop {
         let buffer = reader.fill_buf()?;
@@ -49,54 +61,150 @@ pub fn parse() -> std::io::Result<()> {
             break;
         }
 
-        buffer.into_iter().for_each(|&c| {
-            if &NEW_LINE == &c {
-                // is root
-                // const [md_text, skimmedText, pad, date1, date2] = render(s);
+        for c in buffer {
+            if !is_indended && (c != &SPACE && c != &TAB) {
+                is_indended = true;
+            }
 
-                if level == prev.borrow()._level {
+            if &NEW_LINE == c {
+                // is root
+                let (md_text, skimmed_text, date1, date2, pad, color, min, max) = render(&s, min_date, max_date);
+                min_date = min;
+                max_date = max;
+                let mut _odr = 0;
+                if date1 != "" {
+                    _odr = 3 * order;
+                    order += 1;
+                }
+                if is_true {
+                    prev._text = String::from(&s);
+                    prev._md_text = String::from(&s);
+                    prev._skimmedText = String::from(&s);
+                    prev._order = _odr;
+
+                    is_true = false;
+                } else if level == prev._level {
                     let current = Node {
                         _text: String::from(&s),
-                        _md_text: String::from(&s),
-                        _skimmedText: String::from(&s),
+                        _md_text: String::from(md_text),
+                        _skimmedText: String::from(skimmed_text),
                         _type: "p".to_string(),
                         _charStart: 0,
                         _charEnd: 0,
                         _level: level,
-                        _indent: level as f32 * 1.4,
-                        _order: 0,
-                        // _otder: date1 !== null ? 3 * order++ : 0,
+                        _indent: level * 1.8,
+                        _order: _odr,
                         _isRoot: false,
-                        _pad: 0,
-                        _date1: "".to_string(),
-                        _date2: "".to_string(),
+                        _pad: pad,
+                        _date1: date1,
+                        _date2: date2,
                         _isUpdated: false,
                         _id: Node::count(),
                         _firstChild: Default::default(),
                         _nextSibling: Default::default(),
+                        _color: color,
+                        _min_date: 0,
+                        _max_date: 0,
                     };
-                    if prev.borrow()._isRoot {
-                        prev.borrow_mut().child(&current);
+                    if prev._isRoot {
+                        prev._firstChild = Some(Box::new(current));
+                        prev = prev._firstChild.as_mut().unwrap();
                     } else {
-                        prev.borrow_mut().sibling(&current);
+                        prev._nextSibling = Some(Box::new(current));
+                        prev = prev._nextSibling.as_mut().unwrap();
                     }
-                    prev.replace(current);
+                } else if level > prev._level {
+                    let current = Node {
+                        _text: String::from(&s),
+                        _md_text: String::from(md_text),
+                        _skimmedText: String::from(skimmed_text),
+                        _type: TYPE.to_string(),
+                        _charStart: 0,
+                        _charEnd: 0,
+                        _level: level,
+                        _indent: level * 1.8,
+                        _order: _odr,
+                        // _order: date1 !== null ? 3 * order++ : 0,
+                        _isRoot: false,
+                        _pad: pad,
+                        _date1: date1,
+                        _date2: date2,
+                        _isUpdated: false,
+                        _id: Node::count(),
+                        _firstChild: Default::default(),
+                        _nextSibling: Default::default(),
+                        _color: color,
+                        _min_date: 0,
+                        _max_date: 0,
+                    };
+                    prev._firstChild = Some(Box::new(current));
+                    prev = prev._firstChild.as_mut().unwrap();
+                } else if level < prev._level {
+                    prev = check(&mut root, level);
+                    let current = Node {
+                        _text: String::from(&s),
+                        _md_text: String::from(md_text),
+                        _skimmedText: String::from(skimmed_text),
+                        _type: "p".to_string(),
+                        _charStart: 0,
+                        _charEnd: 0,
+                        _level: level,
+                        _indent: level * 1.8,
+                        _order: _odr,
+                        _isRoot: false,
+                        _pad: pad,
+                        _date1: date1,
+                        _date2: date2,
+                        _isUpdated: false,
+                        _id: Node::count(),
+                        _firstChild: Default::default(),
+                        _nextSibling: Default::default(),
+                        _color: color,
+                        _min_date: 0,
+                        _max_date: 0,
+                    };
+                    prev._nextSibling = Some(Box::new(current));
+                    prev = prev._nextSibling.as_mut().unwrap();
                 }
                 s.clear();
-                level = 0;
+                level = 0.0;
+                is_indended = false;
             } else {
-                if &TAB == &c {
-                    level = level + 1;
+                if !is_indended {
+                    if &TAB == c {
+                        level = level + 1.0;
+                        println!("{}", level);
+                    } else if &SPACE == c {
+                        level = level + 0.25;
+                    }
                 } else {
-                    s.push(c as char);
+                    s.push(*c as char);
                 }
             }
-        });
+        }
 
         // All bytes consumed from the buffer
         // should not be read again.
         reader.consume(buffer_length);
     }
-    root.clone().into_inner().list();
-    Ok(())
+    root._order = order;
+    root._min_date = min_date;
+    root._max_date = max_date;
+    println!("{}", root._min_date);
+    println!("{}", root._max_date);
+    // root.list(String::from("root"));
+    Ok(serde_json::to_string(&root)?)
+}
+
+pub fn check(mut n: &mut Node, level: f32) -> &mut Node {
+    while n._level != level || n._isRoot {
+        if n._level <= level {
+            n = n._firstChild.as_mut().unwrap();
+        }
+    }
+
+    while n._nextSibling.is_some() {
+        n = n._nextSibling.as_mut().unwrap();
+    }
+    n
 }

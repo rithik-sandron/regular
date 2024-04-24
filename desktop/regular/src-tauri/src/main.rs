@@ -2,17 +2,20 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![recursion_limit = "256"]
 use std::env;
-mod parser;
 pub mod node;
+mod renderer;
+mod parser;
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet])
+        .invoke_handler(tauri::generate_handler![get_doc])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
 
 #[tauri::command]
-fn greet() {
-    parser::parse();
+fn get_doc() -> String {
+    let tree = parser::parse();
+    // println!("{}", tree.expect("paring error"));
+    tree.expect("paring error")
 }
