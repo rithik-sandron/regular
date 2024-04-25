@@ -8,4 +8,3 @@ Release dates
 	Beta testing !(2024-04-19 - 2024-04-21) 
 	Promotions !(2024-04-21 - 2024-05-25) 
 	Aim for release !(2024-05-28) 
-	

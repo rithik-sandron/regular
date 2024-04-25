@@ -7,12 +7,13 @@ import AppLayout from "./components/AppLayout";
 function App() {
   return (
     <AppLayout>
-      <div style={{
-        marginTop: "12mm",
-        display: "grid",
-        gridTemplateColumns: "44% calc(56% - 4mm)",
-        gap: "4mm",
-      }}>
+      <div
+        style={{
+          display: "flex",
+          margin: "auto",
+          marginTop: "12mm",
+        }}
+      >
         <View />
       </div>
     </AppLayout>

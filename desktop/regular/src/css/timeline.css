@@ -1,5 +1,4 @@
 :root {
-  
   --foreground: #333;
   --background: #fefefe;
   --line: rgba(223, 223, 223, 0.647);
@@ -80,20 +79,19 @@ a {
   overflow: hidden;
 }
 
-.timeline-container {
-  display: block;
-  position: relative;
-  max-height: 70vh;
-  overflow-x: scroll;
-}
-
 .list-container {
-  display: block;
+  width: 100%;
+  max-width: 634px;
+  margin: 0 auto;
 }
 
 .timeline-container-view {
   display: block;
   position: relative;
+  max-height: 70vh;
+  overflow-x: scroll;
+  min-width: 80vh;
+  flex-grow: 3;
 }
 
 .grid-tasks-container {

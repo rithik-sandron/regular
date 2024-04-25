@@ -66,37 +66,36 @@ export default forwardRef(function Year(props, ref) {
             <div className="timeline-grid-year-dates">
               {DAYS.map((y) => {
                 if (y === 1 || (y < 26 && y % 5 === 0)) {
+                  console.log(currentDate);
+
                   return (
-                    <div
-                      key={x.year + "" + x.month + "" + y}
-                      style={{
-                        width: 5 * 8 + "px",
-                      }}
-                      className="timeline-grid-year-date"
-                    >
-                      {y}
-                    </div>
-                  );
-                } else if (
-                  currentMonth === x.month &&
-                  currentYear === x.year &&
-                  currentDate === y
-                ) {
-                  return (
-                    <div
-                      key={x.year + "" + x.month + "" + y}
-                      style={{
-                        position: "absolute",
-                        left: y * 8 + "px",
-                      }}
-                    >
-                      <span
-                        className="current"
+                    <div key={x.year + "" + x.month + "" + y}>
+                      <div
                         style={{
-                          height: props.height * 6 + "em",
+                          width: 5 * 8 + "px",
                         }}
-                      />
-                      <span className="currrent-text">{y}</span>
+                        className="timeline-grid-year-date"
+                      >
+                        {y}
+                      </div>
+                      {currentMonth === x.month &&
+                        currentYear === x.year &&
+                        currentDate === y && (
+                          <div
+                            style={{
+                              position: "absolute",
+                              left: y * 8 + "px",
+                            }}
+                          >
+                            <span
+                              className="current"
+                              style={{
+                                height: props.height * 6 + "em",
+                              }}
+                            />
+                            <span className="currrent-text">{y}</span>
+                          </div>
+                        )}
                     </div>
                   );
                 }

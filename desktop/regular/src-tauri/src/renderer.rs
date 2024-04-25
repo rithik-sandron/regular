@@ -32,7 +32,7 @@ pub fn render(
             + result.get(7).unwrap().as_str();
         md_text = result.get(1).unwrap().as_str().to_string()
             + "<mark className='due-date'>"
-            + MONTH[result.get(5).unwrap().as_str().parse::<usize>().unwrap()]
+            + MONTH[result.get(5).unwrap().as_str().parse::<usize>().unwrap()-1]
             + " "
             + result.get(7).unwrap().as_str()
             + ", "
@@ -67,14 +67,13 @@ pub fn render(
 
         md_text = result.get(1).unwrap().as_str().to_string()
             + "<mark className='due-date'>"
-            + "From "
-            + MONTH[result.get(5).unwrap().as_str().parse::<usize>().unwrap()]
+            + MONTH[result.get(5).unwrap().as_str().parse::<usize>().unwrap()-1]
             + " "
             + result.get(7).unwrap().as_str()
             + ", "
             + result.get(3).unwrap().as_str()
-            + " to "
-            + MONTH[result.get(11).unwrap().as_str().parse::<usize>().unwrap()]
+            + " - "
+            + MONTH[result.get(11).unwrap().as_str().parse::<usize>().unwrap()-1]
             + " "
             + result.get(13).unwrap().as_str()
             + ", "
@@ -82,7 +81,7 @@ pub fn render(
             + "</mark>"
             + result.get(15).unwrap().as_str();
         skimmed_text =
-            result.get(1).unwrap().as_str().to_string() + result.get(7).unwrap().as_str();
+            result.get(1).unwrap().as_str().to_string() + result.get(15).unwrap().as_str();
         let (date1, date2, _diff) = parse_date(&d1, &d2);
         (
             md_text,
@@ -165,7 +164,7 @@ fn parse_date(d1: &str, d2: &str) -> (String, String, f64) {
         return (
             date1.to_string(),
             date2.to_string(),
-            ((date2 - date1).num_days() as f64 * 8.03) + 1.0,
+            ((date2 - date1).num_days() as f64 * 8.03),
         );
     }
     (date1.to_string(), String::new(), 8.03)

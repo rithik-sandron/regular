@@ -64,16 +64,27 @@ export default function Tree({ data, root, p }) {
   return (
     data._type && (
       <>
-        <data._type
-          id={data._id}
-          key={data._id}
-          ref={ref}
-          style={{
-            marginLeft: data._indent + "em",
-          }}
-        >
-          {data._text}
-        </data._type>
+        {data._type === "br" ? (
+          <data._type
+            id={data._id}
+            key={data._id}
+            ref={ref}
+            style={{
+              marginLeft: data._indent + "em",
+            }}
+          />
+        ) : (
+          <data._type
+            id={data._id}
+            key={data._id}
+            ref={ref}
+            style={{
+              marginLeft: data._indent + "em",
+            }}
+          >
+            {data._text}
+          </data._type>
+        )}
         {data._firstChild && <Tree data={data._firstChild} root={root} p={p} />}
         {data._nextSibling && (
           <Tree data={data._nextSibling} root={root} p={p} />

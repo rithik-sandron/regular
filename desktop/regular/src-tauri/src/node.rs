@@ -30,6 +30,7 @@ pub struct Node {
     pub _color: String,
     pub _min_date: u32,
     pub _max_date: u32,
+    pub _has_dates: bool,
 }
 
 impl Node {
@@ -57,7 +58,8 @@ impl Node {
         order: u32,
         color: String,
         min_date: u32,
-        max_date: u32
+        max_date: u32,
+        has_date: bool,
     ) -> Node {
         Node {
             _id: Self::count(),
@@ -80,7 +82,8 @@ impl Node {
             _nextSibling: None,
             _color: color,
             _min_date: min_date,
-            _max_date: max_date
+            _max_date: max_date,
+            _has_dates: has_date,
         }
     }
 

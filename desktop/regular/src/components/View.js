@@ -64,7 +64,7 @@ export default function View() {
         </section>
 
         <section className="timeline-container">
-          {component === "Gantt" && (
+          {component === "Gantt" && node._has_dates && (
             <div className="timeline-container-view">
               <Handlers
                 view={view}
@@ -91,12 +91,18 @@ export default function View() {
             </div>
           )}
 
-          {component === "Timeline" && (
-            <div className="line-container">
-              <Tyear min={node._min_date} max={node._max_date} />
-              <Timeline data={node} min={node._min_date} max={node._max_date} />
-            </div>
-          )}
+          {component === "Timeline" &&
+            node._min_date !== 0 &&
+            node._max_date !== 0 && (
+              <div className="line-container">
+                <Tyear min={node._min_date} max={node._max_date} />
+                <Timeline
+                  data={node}
+                  min={node._min_date}
+                  max={node._max_date}
+                />
+              </div>
+            )}
         </section>
       </>
     )
