@@ -13,8 +13,8 @@ const TYPE: &str = "p";
 const EMPTY_TYPE: &str = "br";
 
 pub fn parse() -> std::io::Result<String> {
-    let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/note.md";
-    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/student.md";
+    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/note.md";
+    let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/student.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/lecturer.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/project.md";
     let file = File::open(path)?;
@@ -45,7 +45,7 @@ pub fn parse() -> std::io::Result<String> {
         _color: String::new(),
         _min_date: 0,
         _max_date: 0,
-        _has_dates: false
+        _has_dates: false,
     };
 
     order += 1;
@@ -53,7 +53,7 @@ pub fn parse() -> std::io::Result<String> {
     let mut is_true: bool = true;
     let mut is_indended = false;
 
-    let mut min_date= 0; 
+    let mut min_date = 0;
     let mut max_date = 0;
     let mut _has_dates = false;
 
@@ -73,7 +73,8 @@ pub fn parse() -> std::io::Result<String> {
 
             if &NEW_LINE == c {
                 // is root
-                let (md_text, skimmed_text, date1, date2, pad, color, min, max) = render(&s, min_date, max_date);
+                let (md_text, skimmed_text, date1, date2, pad, color, min, max) =
+                    render(&s, min_date, max_date);
                 min_date = min;
                 max_date = max;
                 let mut _odr = 0;
@@ -101,7 +102,6 @@ pub fn parse() -> std::io::Result<String> {
                     prev._skimmedText = String::from(&s);
                     prev._order = _odr;
                     is_true = false;
-
                 } else if level == prev._level {
                     let current = Node {
                         _text: String::from(&s),
@@ -124,7 +124,7 @@ pub fn parse() -> std::io::Result<String> {
                         _color: color,
                         _min_date: 0,
                         _max_date: 0,
-                        _has_dates: has_date
+                        _has_dates: has_date,
                     };
                     if prev._isRoot {
                         prev._firstChild = Some(Box::new(current));
@@ -156,7 +156,7 @@ pub fn parse() -> std::io::Result<String> {
                         _color: color,
                         _min_date: 0,
                         _max_date: 0,
-                        _has_dates: has_date
+                        _has_dates: has_date,
                     };
                     prev._firstChild = Some(Box::new(current));
                     prev = prev._firstChild.as_mut().unwrap();
@@ -183,7 +183,7 @@ pub fn parse() -> std::io::Result<String> {
                         _color: color,
                         _min_date: 0,
                         _max_date: 0,
-                        _has_dates: has_date
+                        _has_dates: has_date,
                     };
                     prev._nextSibling = Some(Box::new(current));
                     prev = prev._nextSibling.as_mut().unwrap();

@@ -5,35 +5,39 @@ export default function Tree({ data, root, p }) {
 
   const [node, setNode] = useState(data);
 
-  // function getPos(e) {
-  //   let _range = document.getSelection().getRangeAt(0);
-  //   let range = _range.cloneRange();
-  //   range.selectNodeContents(e);
-  //   range.setEnd(_range.endContainer, _range.endOffset);
-  //   console.log(range.toString().length)
-  //   // return range.toString().length;
-  // }
+  function getPos(e) {
+    let _range = document.getSelection().getRangeAt(0);
+    let range = _range.cloneRange();
+    range.selectNodeContents(e);
+    range.setEnd(_range.endContainer, _range.endOffset);
+    console.log(range.toString().length)
+    // return range.toString().length;
+  }
 
-  // function myFunction() {
-  //   let n = window.getSelection().focusdata.parentElement;
-  //   if (ref.current && ref.current.id === n.parentdata.id) {
-  //     let r = document.getElementById(data.id);
-  //     r.innerHTML = data.text;
-  //     getPos(window.getSelection().focusNode);
-  //     // ref.current.focus();
-  //   } else if (ref.current) {
-  //     let r = document.getElementById(data.id);
-  //     r.innerHTML = data.md_text;
-  //     // ref.current.focus();
-  //   }
-  // }
+  function navigate(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    let n = window.getSelection()?.focusdata?.parentElement;
+    if(data._has_dates) {
+      console.log(data._text)
+    }
+    // if (data._date1 && ref.current && n && ref.current.id === n.parentdata.id) {
+    //   let r = document.getElementById(data._id);
+    //   r.innerHTML = data._md_text;
+    //   getPos(window.getSelection().focusNode);
+    //   // ref.current.focus();
+    // } else if (ref.current && data._date1) {
+    //   let r = document.getElementById(data._id);
+    //   r.innerHTML = data._text;
+    //   // ref.current.focus();
+    // }
+  }
 
   useEffect(() => {
-    // document.addEventListener("keydown", myFunction);
-    // document.addEventListener("click", myFunction);
+    // document.addEventListener("keydown", navigate);
+    document.addEventListener("click", e => navigate(e));
     if (data._md_text) {
-      let r = document.getElementById(data._id);
-      r.innerHTML = data._md_text;
+      ref.current.innerHTML = data._md_text;
     }
   }, [data._id, data._md_text]);
 

@@ -32,7 +32,7 @@ pub fn render(
             + result.get(7).unwrap().as_str();
         md_text = result.get(1).unwrap().as_str().to_string()
             + "<mark className='due-date'>"
-            + MONTH[result.get(5).unwrap().as_str().parse::<usize>().unwrap()-1]
+            + MONTH[result.get(5).unwrap().as_str().parse::<usize>().unwrap() - 1]
             + " "
             + result.get(7).unwrap().as_str()
             + ", "
@@ -67,13 +67,13 @@ pub fn render(
 
         md_text = result.get(1).unwrap().as_str().to_string()
             + "<mark className='due-date'>"
-            + MONTH[result.get(5).unwrap().as_str().parse::<usize>().unwrap()-1]
+            + MONTH[result.get(5).unwrap().as_str().parse::<usize>().unwrap() - 1]
             + " "
             + result.get(7).unwrap().as_str()
             + ", "
             + result.get(3).unwrap().as_str()
             + " - "
-            + MONTH[result.get(11).unwrap().as_str().parse::<usize>().unwrap()-1]
+            + MONTH[result.get(11).unwrap().as_str().parse::<usize>().unwrap() - 1]
             + " "
             + result.get(13).unwrap().as_str()
             + ", "
