@@ -21,16 +21,16 @@ export default function GanttEvent({ data }) {
             <p
               className="grid-tasks-text"
               style={{
-                width: data._skimmedText.length + "em",
+                width: data._skimmed_text.length + "em",
               }}
             >
-              {data._skimmedText}
+              {data._skimmed_text}
             </p>
           </div>
         </div>
       )}
-      {data._firstChild && <GanttEvent data={data._firstChild} />}
-      {data._nextSibling && <GanttEvent data={data._nextSibling} />}
+      {data._first_child && <GanttEvent data={data._first_child} />}
+      {data._next_sibling && <GanttEvent data={data._next_sibling} />}
     </div>
   );
 }

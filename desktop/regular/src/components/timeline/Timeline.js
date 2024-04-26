@@ -33,15 +33,15 @@ const Timeline = ({ data, min, max }) => {
               backgroundColor: color,
             }}
           >
-            {data._skimmedText}
+            {data._skimmed_text}
           </div>
         </>
       )}
-      {data._firstChild && (
-        <Timeline data={data._firstChild} min={min} max={max} />
+      {data._first_child && (
+        <Timeline data={data._first_child} min={min} max={max} />
       )}
-      {data._nextSibling && (
-        <Timeline data={data._nextSibling} min={min} max={max} />
+      {data._next_sibling && (
+        <Timeline data={data._next_sibling} min={min} max={max} />
       )}
     </>
   );

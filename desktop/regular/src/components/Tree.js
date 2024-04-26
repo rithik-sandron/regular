@@ -10,7 +10,7 @@ export default function Tree({ data, root, p }) {
     let range = _range.cloneRange();
     range.selectNodeContents(e);
     range.setEnd(_range.endContainer, _range.endOffset);
-    console.log(range.toString().length)
+    console.log(range.toString().length);
     // return range.toString().length;
   }
 
@@ -18,8 +18,8 @@ export default function Tree({ data, root, p }) {
     e.preventDefault();
     e.stopPropagation();
     let n = window.getSelection()?.focusdata?.parentElement;
-    if(data._has_dates) {
-      console.log(data._text)
+    if (data._has_dates) {
+      console.log(data._text);
     }
     // if (data._date1 && ref.current && n && ref.current.id === n.parentdata.id) {
     //   let r = document.getElementById(data._id);
@@ -35,7 +35,7 @@ export default function Tree({ data, root, p }) {
 
   useEffect(() => {
     // document.addEventListener("keydown", navigate);
-    document.addEventListener("click", e => navigate(e));
+    document.addEventListener("click", (e) => navigate(e));
     if (data._md_text) {
       ref.current.innerHTML = data._md_text;
     }
@@ -89,9 +89,11 @@ export default function Tree({ data, root, p }) {
             {data._text}
           </data._type>
         )}
-        {data._firstChild && <Tree data={data._firstChild} root={root} p={p} />}
-        {data._nextSibling && (
-          <Tree data={data._nextSibling} root={root} p={p} />
+        {data._first_child && (
+          <Tree data={data._first_child} root={root} p={p} />
+        )}
+        {data._next_sibling && (
+          <Tree data={data._next_sibling} root={root} p={p} />
         )}
       </>
     )

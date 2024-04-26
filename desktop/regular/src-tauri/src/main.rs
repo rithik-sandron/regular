@@ -3,8 +3,10 @@
 #![recursion_limit = "256"]
 use std::env;
 pub mod node;
-mod renderer;
+pub mod root;
+
 mod parser;
+mod renderer;
 
 fn main() {
     tauri::Builder::default()

@@ -15,6 +15,7 @@ export default function View() {
   useEffect(() => {
     invoke("get_doc", { name: "regular" }).then((data) => {
       setNode(JSON.parse(data));
+      console.log(JSON.parse(data));
     });
   }, []);
 
@@ -59,7 +60,7 @@ export default function View() {
             spellCheck="true"
             suppressContentEditableWarning="true"
           >
-            <Tree data={node} root={node} p={p} />
+            <Tree data={node._first_child} root={node} p={p} />
           </div>
         </section>
 
