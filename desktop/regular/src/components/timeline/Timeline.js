@@ -6,8 +6,6 @@ const Timeline = ({ data, min, max }) => {
   const getColor = () => {
     const h = Math.floor(Math.random() * 800);
     return `hsl(${h}deg, 53%, 58%)`;
-    // const randomColor = Math.floor(Math.random() * 16777215).toString(16);
-    // return "#" + randomColor;
   };
 
   const color = getColor();

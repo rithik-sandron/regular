@@ -14,8 +14,7 @@ export default function View() {
 
   useEffect(() => {
     invoke("get_doc", { name: "regular" }).then((data) => {
-      setNode(JSON.parse(data));
-      console.log(JSON.parse(data));
+      setNode(data);
     });
   }, []);
 

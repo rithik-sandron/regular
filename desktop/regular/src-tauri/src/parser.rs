@@ -1,10 +1,17 @@
 use crate::node::Node;
-use crate::renderer::render;
+// use crate::renderer::render;
 use crate::root::Root;
+use chrono::NaiveDate;
+use regex::Regex;
+
 use std::{
     fs::File,
     io::{BufRead, BufReader},
 };
+
+const MONTH: [&str; 12] = [
+    "Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec",
+];
 
 const CHARS: usize = 10_000;
 const NEW_LINE: u8 = b'\n';
@@ -14,29 +21,32 @@ const HEAD_TYPE: &str = "h1";
 const TYPE: &str = "p";
 const EMPTY_TYPE: &str = "br";
 
-pub fn parse() -> std::io::Result<String> {
+pub fn parse() -> std::io::Result<Root> {
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/srcs-tauri/src/test/note.md";
-    let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/student.md";
+    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/student.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/lecturer.md";
     let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/project.md";
+    // let path = "/Users/ryuu/code/rust/hello/src/test/test.md";
+    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/sample.md";
+
     let file = File::open(path)?;
     let mut order = 1;
     let mut level = 0.0;
-    let mut s: String = String::from("");
+    let mut s: String = String::new();
     let mut reader = BufReader::with_capacity(CHARS, file);
 
     let mut root = Root {
         _id: 0,
-        _text: String::from(""),
+        _text: String::new(),
         _type: HEAD_TYPE.to_string(),
         _level: 0.0,
         _indent: 0.0,
         _order: 0,
         _is_updated: false,
         _first_child: Some(Box::new(Node {
-            _text: String::from(""),
-            _md_text: String::from(""),
-            _skimmed_text: String::from(""),
+            _text: String::new(),
+            _md_text: String::new(),
+            _skimmed_text: String::new(),
             _type: TYPE.to_string(),
             _level: level,
             _indent: level * 1.8,
@@ -64,8 +74,16 @@ pub fn parse() -> std::io::Result<String> {
 
     let mut min_date = 0;
     let mut max_date = 0;
+
+    let mut date = String::new();
+    let mut str = String::new();
+    let mut is_date: bool = false;
     let mut _has_dates = false;
 
+    let mut skimmed: String = String::new();
+    let mut md: String = String::new();
+    let mut d_pos_start: usize = 0;
+    let mut d_pos_end: usize = 0;
     loop {
         let buffer = reader.fill_buf()?;
         let buffer_length = buffer.len();
@@ -76,19 +94,60 @@ pub fn parse() -> std::io::Result<String> {
         }
 
         for c in buffer {
+            let re = b'!';
+            let re2 = b'(';
+            let re3 = b')';
+
+            if !is_date && c == &re {
+                str.push(*c as char);
+            }
+
+            if !is_date && c == &re2 {
+                is_date = true;
+                d_pos_start = s.len() - 1;
+            }
+
+            if is_date && re3 != *c {
+                str.push(*c as char);
+            }
+
+            if is_date && re3 == *c {
+                str.push(*c as char);
+                date = str.clone();
+                str.clear();
+                is_date = false;
+                d_pos_end = s.len();
+            }
+
             if !is_indended && (c != &SPACE && c != &TAB) {
                 is_indended = true;
             }
 
             if &NEW_LINE == c {
-                // is root
-                let (md_text, skimmed_text, date1, date2, pad, color, min, max) =
-                    render(&s, min_date, max_date);
-                min_date = min;
-                max_date = max;
+                // let (md_text, skimmed_text, date1, date2, pad, color, min, max) =
+                //     render(&s, min_date, max_date);
+
+                let pad = 0.0;
+                let color = String::new();
+
+                // convert date to date 1 and 2
+                let date1;
+                let date2;
+                (date1, date2, min_date, max_date) = parse_date(&date, min_date, max_date);
                 let mut _odr = 0;
                 let mut _type: String;
-                let mut has_date: bool = false;
+
+                if date != "" {
+                    if d_pos_end == s.len() - 1 {
+                        skimmed = (&s[0..d_pos_start]).to_string() + &s[d_pos_end..s.len() - 1];
+                    } else if d_pos_start == 0 {
+                        skimmed = s[d_pos_end + 1..s.len()].to_string();
+                    } else {
+                        skimmed = (&s[0..d_pos_start - 1]).to_string() + &s[d_pos_end + 1..s.len()];
+                    }
+                    skimmed = skimmed.trim().to_owned();
+                    println!("{}", skimmed);
+                }
 
                 if s.trim().is_empty() {
                     _type = EMPTY_TYPE.to_string();
@@ -96,10 +155,9 @@ pub fn parse() -> std::io::Result<String> {
                     _type = TYPE.to_string();
                 }
 
-                if date1 != "" {
+                if date != "" {
                     _odr = 3 * order;
                     order += 1;
-                    has_date = true;
 
                     if !_has_dates {
                         _has_dates = true;
@@ -108,8 +166,8 @@ pub fn parse() -> std::io::Result<String> {
 
                 if is_first_itr {
                     prev._text = String::from(&s);
-                    prev._md_text = String::from(&md_text);
-                    prev._skimmed_text = String::from(&skimmed_text);
+                    prev._md_text = String::from(&md);
+                    prev._skimmed_text = String::from(&skimmed);
                     prev._type = HEAD_TYPE.to_string();
                     prev._level = level;
                     prev._indent = level * 1.8;
@@ -122,76 +180,80 @@ pub fn parse() -> std::io::Result<String> {
                     prev._first_child = Default::default();
                     prev._next_sibling = Default::default();
                     prev._color = color.clone();
-                    prev._has_dates = has_date;
+                    prev._has_dates = is_date;
                     is_first_itr = false;
                 } else if level == prev._level {
                     let current = Node {
                         _text: String::from(&s),
-                        _md_text: String::from(md_text),
-                        _skimmed_text: String::from(skimmed_text),
+                        _md_text: String::from(&md),
+                        _skimmed_text: String::from(&skimmed),
                         _type: _type.clone(),
                         _level: level,
                         _indent: level * 1.8,
                         _order: _odr,
                         _pad: pad,
-                        _date1: date1,
-                        _date2: date2,
+                        _date1: date1.clone(),
+                        _date2: date2.clone(),
                         _is_updated: false,
                         _id: Node::count(),
                         _first_child: Default::default(),
                         _next_sibling: Default::default(),
                         _color: color,
-                        _has_dates: has_date,
+                        _has_dates: is_date,
                     };
                     prev._next_sibling = Some(Box::new(current));
                     prev = prev._next_sibling.as_mut().unwrap();
                 } else if level > prev._level {
                     let current = Node {
                         _text: String::from(&s),
-                        _md_text: String::from(&md_text),
-                        _skimmed_text: String::from(&skimmed_text),
+                        _md_text: String::from(&md),
+                        _skimmed_text: String::from(&skimmed),
                         _type: _type.clone(),
                         _level: level,
                         _indent: level * 1.8,
                         _order: _odr,
                         _pad: pad,
-                        _date1: date1,
-                        _date2: date2,
+                        _date1: date1.clone(),
+                        _date2: date2.clone(),
                         _is_updated: false,
                         _id: Node::count(),
                         _first_child: Default::default(),
                         _next_sibling: Default::default(),
                         _color: color,
-                        _has_dates: has_date,
+                        _has_dates: is_date,
                     };
                     prev._first_child = Some(Box::new(current));
                     prev = prev._first_child.as_mut().unwrap();
                 } else if level < prev._level {
-                    prev = check_root(&mut root, level);
+                    prev = check_root(&mut root, level).expect("not found");
+
                     let current = Node {
                         _text: String::from(&s),
-                        _md_text: String::from(&md_text),
-                        _skimmed_text: String::from(&skimmed_text),
+                        _md_text: String::from(&md),
+                        _skimmed_text: String::from(&skimmed),
                         _type: _type.clone(),
                         _level: level,
                         _indent: level * 1.8,
                         _order: _odr,
                         _pad: pad,
-                        _date1: date1,
-                        _date2: date2,
+                        _date1: date1.clone(),
+                        _date2: date2.clone(),
                         _is_updated: false,
                         _id: Node::count(),
                         _first_child: Default::default(),
                         _next_sibling: Default::default(),
                         _color: color,
-                        _has_dates: has_date,
+                        _has_dates: is_date,
                     };
                     prev._next_sibling = Some(Box::new(current));
                     prev = prev._next_sibling.as_mut().unwrap();
                 }
                 s.clear();
+                skimmed.clear();
                 level = 0.0;
                 is_indended = false;
+                date.clear();
+                is_date = false;
             } else {
                 if !is_indended {
                     if &TAB == c {
@@ -214,22 +276,53 @@ pub fn parse() -> std::io::Result<String> {
     root._max_date = max_date;
     root._has_dates = _has_dates;
     // root.list();
-    Ok(serde_json::to_string(&root)?)
+    Ok(root)
 }
 
-fn check_root(r: &mut Root, level: f32) -> &mut Node {
-    check_node(r._first_child.as_mut().unwrap(), level)
+fn check_root(r: &mut Root, level: f32) -> Option<&mut Node> {
+    if level == r._level {
+        return Some(r._first_child.as_mut().unwrap());
+    }
+
+    if r._first_child.is_some() {
+        let a = check_node(r._first_child.as_mut().unwrap(), level);
+        return a;
+    }
+    None
 }
 
-fn check_node(mut n: &mut Node, level: f32) -> &mut Node {
-    while n._level != level {
-        if n._level <= level {
-            n = n._first_child.as_mut().unwrap();
+fn check_node(mut n: &mut Node, level: f32) -> Option<&mut Node> {
+    while n._level < level {
+        println!("hello");
+        if n._first_child.is_none() {
+            break;
         }
+        n = n._first_child.as_mut().unwrap();
     }
 
     while n._next_sibling.is_some() {
         n = n._next_sibling.as_mut().unwrap();
     }
-    n
+    Some(n)
+}
+
+fn parse_date(_date: &str, _min: u32, _max: u32) -> (String, String, u32, u32) {
+    let mut _d1: String = String::new();
+    let mut _d2: String = String::new();
+
+    if !_date.is_empty() {
+        let date = _date.split(" - ").collect::<Vec<&str>>();
+        if date.get(0).is_some() {
+            _d1 = date.get(0).unwrap().to_string();
+            _d1.remove(0);
+            _d1.remove(0);
+        }
+        if date.get(1).is_some() {
+            _d2 = date.get(1).unwrap().to_string();
+            _d2.pop();
+        } else {
+            _d1.pop();
+        }
+    }
+    (_d1.to_owned(), _d2.to_owned(), _min, _max)
 }
