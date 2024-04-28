@@ -6,7 +6,6 @@ pub struct Root {
     // data (type string, char)
     pub _id: u128,
     pub _text: String,
-    pub _type: String,
 
     // N-ary tree (type: Node)
     pub _level: f32,
@@ -23,10 +22,10 @@ pub struct Root {
 }
 
 impl Root {
-    pub fn list(self) {
+    pub fn list(&self) {
         println!("{:?}", self);
         if self._first_child.is_some() {
-            self._first_child.unwrap().list(String::from("child"));
+            self._first_child.clone().unwrap().list();
         }
     }
 }

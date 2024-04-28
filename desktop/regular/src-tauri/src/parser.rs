@@ -2,7 +2,6 @@ use crate::node::Node;
 // use crate::renderer::render;
 use crate::root::Root;
 use chrono::NaiveDate;
-use regex::Regex;
 
 use std::{
     fs::File,
@@ -25,9 +24,9 @@ pub fn parse() -> std::io::Result<Root> {
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/srcs-tauri/src/test/note.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/student.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/lecturer.md";
-    let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/project.md";
-    // let path = "/Users/ryuu/code/rust/hello/src/test/test.md";
-    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/sample.md";
+    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/project.md";
+    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/test.md";
+    let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/sample.md";
 
     let file = File::open(path)?;
     let mut order = 1;
@@ -38,7 +37,6 @@ pub fn parse() -> std::io::Result<Root> {
     let mut root = Root {
         _id: 0,
         _text: String::new(),
-        _type: HEAD_TYPE.to_string(),
         _level: 0.0,
         _indent: 0.0,
         _order: 0,
@@ -56,8 +54,9 @@ pub fn parse() -> std::io::Result<Root> {
             _date2: String::new(),
             _is_updated: false,
             _id: Node::count(),
-            _first_child: Default::default(),
-            _next_sibling: Default::default(),
+            _first_child: None,
+            _next_sibling: None,
+            _prev_sibling: None,
             _color: String::new(),
             _has_dates: false,
         })),
@@ -78,6 +77,7 @@ pub fn parse() -> std::io::Result<Root> {
     let mut date = String::new();
     let mut str = String::new();
     let mut is_date: bool = false;
+    let mut is_prev_char: bool = false;
     let mut _has_dates = false;
 
     let mut skimmed: String = String::new();
@@ -100,9 +100,10 @@ pub fn parse() -> std::io::Result<Root> {
 
             if !is_date && c == &re {
                 str.push(*c as char);
+                is_prev_char = true;
             }
 
-            if !is_date && c == &re2 {
+            if is_prev_char && !is_date && c == &re2 {
                 is_date = true;
                 d_pos_start = s.len() - 1;
             }
@@ -127,13 +128,13 @@ pub fn parse() -> std::io::Result<Root> {
                 // let (md_text, skimmed_text, date1, date2, pad, color, min, max) =
                 //     render(&s, min_date, max_date);
 
-                let pad = 0.0;
+                let mut pad = 0.0;
                 let color = String::new();
 
                 // convert date to date 1 and 2
                 let date1;
                 let date2;
-                (date1, date2, min_date, max_date) = parse_date(&date, min_date, max_date);
+                (date1, date2, pad, min_date, max_date) = parse_date(&date, min_date, max_date);
                 let mut _odr = 0;
                 let mut _type: String;
 
@@ -146,7 +147,6 @@ pub fn parse() -> std::io::Result<Root> {
                         skimmed = (&s[0..d_pos_start - 1]).to_string() + &s[d_pos_end + 1..s.len()];
                     }
                     skimmed = skimmed.trim().to_owned();
-                    println!("{}", skimmed);
                 }
 
                 if s.trim().is_empty() {
@@ -196,8 +196,9 @@ pub fn parse() -> std::io::Result<Root> {
                         _date2: date2.clone(),
                         _is_updated: false,
                         _id: Node::count(),
-                        _first_child: Default::default(),
-                        _next_sibling: Default::default(),
+                        _first_child: None,
+                        _next_sibling: None,
+                        _prev_sibling: Some(Box::new(prev.clone())),
                         _color: color,
                         _has_dates: is_date,
                     };
@@ -217,15 +218,21 @@ pub fn parse() -> std::io::Result<Root> {
                         _date2: date2.clone(),
                         _is_updated: false,
                         _id: Node::count(),
-                        _first_child: Default::default(),
-                        _next_sibling: Default::default(),
+                        _first_child: None,
+                        _next_sibling: None,
+                        _prev_sibling: Some(Box::new(prev.clone())),
                         _color: color,
                         _has_dates: is_date,
                     };
                     prev._first_child = Some(Box::new(current));
                     prev = prev._first_child.as_mut().unwrap();
                 } else if level < prev._level {
-                    prev = check_root(&mut root, level).expect("not found");
+                    while prev._level < level {
+                        if prev._prev_sibling.is_none() {
+                            break;
+                        }
+                        prev = prev._prev_sibling.as_mut().unwrap();
+                    }
 
                     let current = Node {
                         _text: String::from(&s),
@@ -240,8 +247,9 @@ pub fn parse() -> std::io::Result<Root> {
                         _date2: date2.clone(),
                         _is_updated: false,
                         _id: Node::count(),
-                        _first_child: Default::default(),
-                        _next_sibling: Default::default(),
+                        _first_child: None,
+                        _next_sibling: None,
+                        _prev_sibling: Some(Box::new(prev.clone())),
                         _color: color,
                         _has_dates: is_date,
                     };
@@ -254,6 +262,7 @@ pub fn parse() -> std::io::Result<Root> {
                 is_indended = false;
                 date.clear();
                 is_date = false;
+                is_prev_char = false;
             } else {
                 if !is_indended {
                     if &TAB == c {
@@ -275,38 +284,12 @@ pub fn parse() -> std::io::Result<Root> {
     root._min_date = min_date;
     root._max_date = max_date;
     root._has_dates = _has_dates;
+    println!("done");
     // root.list();
     Ok(root)
 }
 
-fn check_root(r: &mut Root, level: f32) -> Option<&mut Node> {
-    if level == r._level {
-        return Some(r._first_child.as_mut().unwrap());
-    }
-
-    if r._first_child.is_some() {
-        let a = check_node(r._first_child.as_mut().unwrap(), level);
-        return a;
-    }
-    None
-}
-
-fn check_node(mut n: &mut Node, level: f32) -> Option<&mut Node> {
-    while n._level < level {
-        println!("hello");
-        if n._first_child.is_none() {
-            break;
-        }
-        n = n._first_child.as_mut().unwrap();
-    }
-
-    while n._next_sibling.is_some() {
-        n = n._next_sibling.as_mut().unwrap();
-    }
-    Some(n)
-}
-
-fn parse_date(_date: &str, _min: u32, _max: u32) -> (String, String, u32, u32) {
+fn parse_date(_date: &str, _min: u32, _max: u32) -> (String, String, f64, u32, u32) {
     let mut _d1: String = String::new();
     let mut _d2: String = String::new();
 
@@ -324,5 +307,59 @@ fn parse_date(_date: &str, _min: u32, _max: u32) -> (String, String, u32, u32) {
             _d1.pop();
         }
     }
-    (_d1.to_owned(), _d2.to_owned(), _min, _max)
+
+    if !_d1.is_empty() {
+        let test = _d1.parse::<u32>();
+
+        match test {
+            Ok(_) => {
+                return timline(&_d1, &_d2, _min, _max);
+            }
+            Err(_) => {
+                return gantt(&_d1, &_d2, _min, _max);
+            }
+        }
+    }
+
+    return (_d1, _d2, 8.03, _min, _max);
+}
+
+fn timline(
+    y1: &str,
+    y2: &str,
+    mut min_date: u32,
+    mut max_date: u32,
+) -> (String, String, f64, u32, u32) {
+    if min_date == 0 || min_date > y1.parse::<u32>().unwrap() {
+        min_date = y1.parse::<u32>().unwrap();
+    }
+
+    if !y2.is_empty() {
+        if max_date == 0 || max_date < y2.parse::<u32>().unwrap() {
+            max_date = y2.parse::<u32>().unwrap();
+        }
+        return (
+            y1.to_owned(),
+            y2.to_owned(),
+            (y2.parse::<u32>().unwrap() - y1.parse::<u32>().unwrap()) as f64 * 3.0 + 1.0,
+            min_date,
+            max_date,
+        );
+    }
+    (y1.to_owned(), String::new(), 1.0, min_date, max_date)
+}
+
+fn gantt(d1: &str, d2: &str, min_date: u32, max_date: u32) -> (String, String, f64, u32, u32) {
+    let date1 = NaiveDate::parse_from_str(d1, "%Y-%m-%d").unwrap();
+    if d2 != "" {
+        let date2 = NaiveDate::parse_from_str(d2, "%Y-%m-%d").unwrap();
+        return (
+            date1.to_string(),
+            date2.to_string(),
+            ((date2 - date1).num_days() as f64 * 8.03),
+            min_date,
+            max_date,
+        );
+    }
+    (date1.to_string(), String::new(), 8.03, min_date, max_date)
 }

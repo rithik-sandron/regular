@@ -17,6 +17,7 @@ pub struct Node {
     pub _order: u32,
     pub _first_child: Option<Box<Node>>,
     pub _next_sibling: Option<Box<Node>>,
+    pub _prev_sibling: Option<Box<Node>>,
 
     // dates
     pub _pad: f64,
@@ -37,13 +38,13 @@ impl Node {
         }
     }
 
-    pub fn list(self, w: String) {
+    pub fn list(&self) {
         println!("{:?}", self);
         if self._first_child.is_some() {
-            self._first_child.unwrap().list(String::from("child"));
+            self._first_child.clone().unwrap().list();
         }
         if self._next_sibling.is_some() {
-            self._next_sibling.unwrap().list(String::from("sibling"));
+            self._next_sibling.clone().unwrap().list();
         }
     }
 }

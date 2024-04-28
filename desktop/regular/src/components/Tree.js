@@ -5,6 +5,8 @@ export default function Tree({ data, root, p }) {
 
   const [node, setNode] = useState(data);
 
+  console.log(data)
+
   function getPos(e) {
     let _range = document.getSelection().getRangeAt(0);
     let range = _range.cloneRange();
