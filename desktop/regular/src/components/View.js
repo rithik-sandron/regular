@@ -80,13 +80,7 @@ export default function View() {
                 {view === "Year" && <Year ref={ref} height={node._order} />}
                 {/* {view === "Month" && <Month ref={ref} />} */}
                 {/* {view === 'Day' && <Day ref={ref} />} */}
-                <div
-                  style={{
-                    marginTop: "4em",
-                  }}
-                >
-                  <GanttEvent data={node} />
-                </div>
+                <GanttEvent data={node} />
               </div>
             </div>
           )}

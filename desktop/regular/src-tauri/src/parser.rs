@@ -12,6 +12,9 @@ const MONTH: [&str; 12] = [
     "Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec",
 ];
 
+const MARK_START: &str = "<mark className='due-date'>";
+const MARK_END: &str = "</mark>";
+
 const CHARS: usize = 10_000;
 const NEW_LINE: u8 = b'\n';
 const TAB: u8 = b'\t';
@@ -26,7 +29,8 @@ pub fn parse() -> std::io::Result<Root> {
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/lecturer.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/project.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/test.md";
-    let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/sample.md";
+    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/sample.md";
+    let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/plan.md";
 
     let file = File::open(path)?;
     let mut order = 1;
@@ -140,10 +144,24 @@ pub fn parse() -> std::io::Result<Root> {
 
                 if date != "" {
                     if d_pos_end == s.len() - 1 {
+                        md = (&s[0..d_pos_start]).to_string()
+                            + MARK_START
+                            + &s[d_pos_start - 1..d_pos_end + 1]
+                            + MARK_END
+                            + &s[d_pos_end..s.len() - 1];
                         skimmed = (&s[0..d_pos_start]).to_string() + &s[d_pos_end..s.len() - 1];
                     } else if d_pos_start == 0 {
+                        md = MARK_START.to_string()
+                            + &s[d_pos_start..d_pos_end + 1]
+                            + MARK_END
+                            + &s[d_pos_end + 1..s.len()];
                         skimmed = s[d_pos_end + 1..s.len()].to_string();
                     } else {
+                        md = (&s[0..d_pos_start]).to_string()
+                        + MARK_START
+                        + &s[d_pos_start..d_pos_end + 1]
+                        + MARK_END
+                        + &s[d_pos_end + 1..s.len()];
                         skimmed = (&s[0..d_pos_start - 1]).to_string() + &s[d_pos_end + 1..s.len()];
                     }
                     skimmed = skimmed.trim().to_owned();
@@ -177,8 +195,8 @@ pub fn parse() -> std::io::Result<Root> {
                     prev._date2 = date2.clone();
                     prev._is_updated = false;
                     prev._id = Node::count();
-                    prev._first_child = Default::default();
-                    prev._next_sibling = Default::default();
+                    prev._first_child = None;
+                    prev._next_sibling = None;
                     prev._color = color.clone();
                     prev._has_dates = is_date;
                     is_first_itr = false;
@@ -258,6 +276,7 @@ pub fn parse() -> std::io::Result<Root> {
                 }
                 s.clear();
                 skimmed.clear();
+                md.clear();
                 level = 0.0;
                 is_indended = false;
                 date.clear();
