@@ -5,7 +5,7 @@ export default function GanttEvent({ data }) {
       Math.max(
         0,
         (new Date(data._date1) - new Date("2024-01-01")) / (1000 * 3600 * 24)
-      ) * 7.96
+      ) * 8.03
     ).toFixed(2) + "px";
   return (
     <div className="grid-tasks-container">

@@ -10,7 +10,7 @@ import Tyear from "./timeline/TYear";
 
 export default function View() {
   const [node, setNode] = useState("");
-  const [component, setComponent] = useState("Timeline");
+  const [component, setComponent] = useState("Gantt");
 
   useEffect(() => {
     invoke("get_doc", { name: "regular" }).then((data) => {

@@ -9,12 +9,14 @@ export default forwardRef(function Year(props, ref) {
   // const DAYS = [1, 5, 10, 15, 20, 25]
   const DAYS = [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-    22, 23, 24, 25, 26, 27, 28, 29, 30,
+    22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
   ];
+
+  const DAY = [1, 6, 11, 16, 21, 26];
 
   const MONTHS = [
     { m: "January", n: 31 },
-    { m: "February", n: 28 },
+    { m: "February", n: 29 },
     { m: "March", n: 31 },
     { m: "April", n: 30 },
     { m: "May", n: 31 },
@@ -44,12 +46,12 @@ export default forwardRef(function Year(props, ref) {
   }
 
   function year_view(x, y) {
-    if (y === 1 || (y < 26 && y % 5 === 0)) {
+    if (DAY.includes(y)) {
       return (
         <div key={x.year + "" + x.month + "" + y}>
           <div
             style={{
-              width: 5 * 8 + "px",
+              width: y === 26 ? (MONTHS[x.month].n - y + 1) * 8 : 5 * 8 + "px",
             }}
             className="timeline-grid-year-date"
           >
@@ -70,13 +72,13 @@ export default forwardRef(function Year(props, ref) {
         <div
           style={{
             position: "absolute",
-            left: y * 8 + "px",
+            left: y * 4 + "px",
           }}
         >
           <span
             className="current"
             style={{
-              height: props.height * 6 + "em",
+              height: props.height * 2.6 + "em",
             }}
           />
           <span className="currrent-text">{y}</span>
@@ -89,7 +91,7 @@ export default forwardRef(function Year(props, ref) {
     <div
       className="timeline-grid-year"
       style={{
-        height: props.height * 6 + "em",
+        height: props.height * 2.6 + "em",
       }}
     >
       <span className="sticky">{currentYear}</span>

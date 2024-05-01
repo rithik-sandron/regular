@@ -20,7 +20,7 @@ pub struct Node {
     pub _prev_sibling: Option<Box<Node>>,
 
     // dates
-    pub _pad: f64,
+    pub _pad: i64,
     pub _date1: String,
     pub _date2: String,
     pub _is_updated: bool,

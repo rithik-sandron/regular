@@ -41,20 +41,22 @@
 .current {
   display: block;
   position: absolute;
-  width: 1.6px;
+  width: 1.3px;
   background-color: var(--current-text);
 }
 
 .currrent-text {
   position: absolute;
-  margin-left: -8.6px;
+  margin-left: -9px;
   top: -5mm;
   background-color: var(--current-text);
   color: #fff;
-  padding: 1mm;
+  width: 21px;
+  height: 17px;
   border-radius: 50%;
   font-size: 7.6pt;
-  padding-bottom: 0.45em;
+  text-align: center;
+  padding-top: 4px;
 }
 
 .grid-container {
@@ -91,7 +93,8 @@ a {
   position: relative;
   /* max-height: 70vh; */
   overflow-x: scroll;
-  min-width: 60vw;
+  min-width: 100vw;
+  font-size: 9.6pt;
 }
 
 .grid-tasks-container {
@@ -105,11 +108,11 @@ a {
 
 .grid-tasks > div {
   border-radius: 0.2em;
-  box-shadow: var(--shadow1) 0px 0px 1px 1px inset, var(--shadow2) 0px 1px 3px;
+  box-shadow: var(--shadow1) 0px 0px 1px 1px inset, var(--shadow2) 0px 2px 3px;
   position: absolute;
   background-color: var(--button);
   /* background-color: var(--event); */
-  padding: 1.4mm 0;
+  padding: 1.6mm 0;
   cursor: move;
 }
 
@@ -132,7 +135,7 @@ a {
 .handlers > div {
   display: block;
   border: 1px solid var(--date-border);
-  padding: 0.4mm 1.6mm;
+  padding: 0.4mm 1.6mm 0.7mm 1.6mm;
   border-radius: 0.24em;
   font-size: 12pt;
 }
@@ -173,7 +176,7 @@ a {
   position: fixed;
   padding: 2.6mm 0 0 0;
   background-color: var(--timeline);
-  font-weight: 550;
+  font-weight: 800;
   height: fit-content;
 }
 
@@ -190,7 +193,7 @@ a {
 }
 
 .timeline-grid-year > div span {
-  font-weight: 550;
+  font-weight: 800;
 }
 
 .timeline-grid-year > div:last-child {
@@ -207,7 +210,7 @@ a {
 .timeline-grid-year-date {
   display: block;
   font-size: 2.4mm;
-  opacity: 0.9;
+  opacity: 0.7;
 }
 
 .timeline-grid-day {

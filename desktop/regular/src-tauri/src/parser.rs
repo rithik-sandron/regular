@@ -27,10 +27,10 @@ pub fn parse() -> std::io::Result<Root> {
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/srcs-tauri/src/test/note.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/student.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/lecturer.md";
-    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/project.md";
+    let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/project.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/test.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/sample.md";
-    let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/plan.md";
+    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/plan.md";
 
     let file = File::open(path)?;
     let mut order = 1;
@@ -53,7 +53,7 @@ pub fn parse() -> std::io::Result<Root> {
             _level: level,
             _indent: level * 1.8,
             _order: 0,
-            _pad: 0.0,
+            _pad: 0,
             _date1: String::new(),
             _date2: String::new(),
             _is_updated: false,
@@ -132,7 +132,7 @@ pub fn parse() -> std::io::Result<Root> {
                 // let (md_text, skimmed_text, date1, date2, pad, color, min, max) =
                 //     render(&s, min_date, max_date);
 
-                let mut pad = 0.0;
+                let mut pad = 0;
                 let color = String::new();
 
                 // convert date to date 1 and 2
@@ -158,10 +158,10 @@ pub fn parse() -> std::io::Result<Root> {
                         skimmed = s[d_pos_end + 1..s.len()].to_string();
                     } else {
                         md = (&s[0..d_pos_start]).to_string()
-                        + MARK_START
-                        + &s[d_pos_start..d_pos_end + 1]
-                        + MARK_END
-                        + &s[d_pos_end + 1..s.len()];
+                            + MARK_START
+                            + &s[d_pos_start..d_pos_end + 1]
+                            + MARK_END
+                            + &s[d_pos_end + 1..s.len()];
                         skimmed = (&s[0..d_pos_start - 1]).to_string() + &s[d_pos_end + 1..s.len()];
                     }
                     skimmed = skimmed.trim().to_owned();
@@ -308,7 +308,7 @@ pub fn parse() -> std::io::Result<Root> {
     Ok(root)
 }
 
-fn parse_date(_date: &str, _min: u32, _max: u32) -> (String, String, f64, u32, u32) {
+fn parse_date(_date: &str, _min: u32, _max: u32) -> (String, String, i64, u32, u32) {
     let mut _d1: String = String::new();
     let mut _d2: String = String::new();
 
@@ -340,7 +340,7 @@ fn parse_date(_date: &str, _min: u32, _max: u32) -> (String, String, f64, u32, u
         }
     }
 
-    return (_d1, _d2, 8.03, _min, _max);
+    return (_d1, _d2, 8, _min, _max);
 }
 
 fn timline(
@@ -348,7 +348,7 @@ fn timline(
     y2: &str,
     mut min_date: u32,
     mut max_date: u32,
-) -> (String, String, f64, u32, u32) {
+) -> (String, String, i64, u32, u32) {
     if min_date == 0 || min_date > y1.parse::<u32>().unwrap() {
         min_date = y1.parse::<u32>().unwrap();
     }
@@ -360,25 +360,25 @@ fn timline(
         return (
             y1.to_owned(),
             y2.to_owned(),
-            (y2.parse::<u32>().unwrap() - y1.parse::<u32>().unwrap()) as f64 * 3.0 + 1.0,
+            (y2.parse::<i64>().unwrap() - y1.parse::<i64>().unwrap()) * 3 + 1,
             min_date,
             max_date,
         );
     }
-    (y1.to_owned(), String::new(), 1.0, min_date, max_date)
+    (y1.to_owned(), String::new(), 1, min_date, max_date)
 }
 
-fn gantt(d1: &str, d2: &str, min_date: u32, max_date: u32) -> (String, String, f64, u32, u32) {
+fn gantt(d1: &str, d2: &str, min_date: u32, max_date: u32) -> (String, String, i64, u32, u32) {
     let date1 = NaiveDate::parse_from_str(d1, "%Y-%m-%d").unwrap();
     if d2 != "" {
         let date2 = NaiveDate::parse_from_str(d2, "%Y-%m-%d").unwrap();
         return (
             date1.to_string(),
             date2.to_string(),
-            ((date2 - date1).num_days() as f64 * 8.03),
+            (((date2 - date1).num_days() + 1) * 8),
             min_date,
             max_date,
         );
     }
-    (date1.to_string(), String::new(), 8.03, min_date, max_date)
+    (date1.to_string(), String::new(), 8, min_date, max_date)
 }
