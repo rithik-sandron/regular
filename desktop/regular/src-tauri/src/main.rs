@@ -8,7 +8,6 @@ pub mod node;
 pub mod root;
 
 mod parser;
-mod renderer;
 
 fn main() {
     tauri::Builder::default()

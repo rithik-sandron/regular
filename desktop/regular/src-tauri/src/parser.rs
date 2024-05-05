@@ -1,7 +1,6 @@
 use crate::node::Node;
-// use crate::renderer::render;
 use crate::root::Root;
-use chrono::NaiveDate;
+use chrono::{Datelike, NaiveDate};
 
 use std::{
     fs::File,
@@ -27,10 +26,10 @@ pub fn parse() -> std::io::Result<Root> {
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/srcs-tauri/src/test/note.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/student.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/lecturer.md";
-    let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/project.md";
+    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/project.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/test.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/sample.md";
-    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/plan.md";
+    let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/plan.md";
 
     let file = File::open(path)?;
     let mut order = 1;
@@ -85,7 +84,7 @@ pub fn parse() -> std::io::Result<Root> {
     let mut _has_dates = false;
 
     let mut skimmed: String = String::new();
-    let mut md: String = String::new();
+    let mut md: String;
     let mut d_pos_start: usize = 0;
     let mut d_pos_end: usize = 0;
     loop {
@@ -132,34 +131,40 @@ pub fn parse() -> std::io::Result<Root> {
                 // let (md_text, skimmed_text, date1, date2, pad, color, min, max) =
                 //     render(&s, min_date, max_date);
 
-                let mut pad = 0;
+                let pad;
                 let color = String::new();
 
                 // convert date to date 1 and 2
                 let date1;
                 let date2;
-                (date1, date2, pad, min_date, max_date) = parse_date(&date, min_date, max_date);
+                let date1_md;
+                let date2_md;
+                (date1, date1_md, date2, date2_md, pad, min_date, max_date) =
+                    parse_date(&date, min_date, max_date);
                 let mut _odr = 0;
                 let mut _type: String;
+
+                if !date2.is_empty() {
+                    md = date1_md + " - " + &date2_md;
+                } else {
+                    md = date1_md;
+                }
 
                 if date != "" {
                     if d_pos_end == s.len() - 1 {
                         md = (&s[0..d_pos_start]).to_string()
                             + MARK_START
-                            + &s[d_pos_start - 1..d_pos_end + 1]
+                            + &md
                             + MARK_END
                             + &s[d_pos_end..s.len() - 1];
                         skimmed = (&s[0..d_pos_start]).to_string() + &s[d_pos_end..s.len() - 1];
                     } else if d_pos_start == 0 {
-                        md = MARK_START.to_string()
-                            + &s[d_pos_start..d_pos_end + 1]
-                            + MARK_END
-                            + &s[d_pos_end + 1..s.len()];
+                        md = MARK_START.to_string() + &md + MARK_END + &s[d_pos_end + 1..s.len()];
                         skimmed = s[d_pos_end + 1..s.len()].to_string();
                     } else {
                         md = (&s[0..d_pos_start]).to_string()
                             + MARK_START
-                            + &s[d_pos_start..d_pos_end + 1]
+                            + &md
                             + MARK_END
                             + &s[d_pos_end + 1..s.len()];
                         skimmed = (&s[0..d_pos_start - 1]).to_string() + &s[d_pos_end + 1..s.len()];
@@ -308,7 +313,11 @@ pub fn parse() -> std::io::Result<Root> {
     Ok(root)
 }
 
-fn parse_date(_date: &str, _min: u32, _max: u32) -> (String, String, i64, u32, u32) {
+fn parse_date(
+    _date: &str,
+    _min: u32,
+    _max: u32,
+) -> (String, String, String, String, i64, u32, u32) {
     let mut _d1: String = String::new();
     let mut _d2: String = String::new();
 
@@ -340,7 +349,7 @@ fn parse_date(_date: &str, _min: u32, _max: u32) -> (String, String, i64, u32, u
         }
     }
 
-    return (_d1, _d2, 8, _min, _max);
+    return (_d1, String::new(), _d2, String::new(), 8, _min, _max);
 }
 
 fn timline(
@@ -348,7 +357,7 @@ fn timline(
     y2: &str,
     mut min_date: u32,
     mut max_date: u32,
-) -> (String, String, i64, u32, u32) {
+) -> (String, String, String, String, i64, u32, u32) {
     if min_date == 0 || min_date > y1.parse::<u32>().unwrap() {
         min_date = y1.parse::<u32>().unwrap();
     }
@@ -359,26 +368,64 @@ fn timline(
         }
         return (
             y1.to_owned(),
+            String::new(),
             y2.to_owned(),
+            String::new(),
             (y2.parse::<i64>().unwrap() - y1.parse::<i64>().unwrap()) * 3 + 1,
             min_date,
             max_date,
         );
     }
-    (y1.to_owned(), String::new(), 1, min_date, max_date)
+    (
+        y1.to_owned(),
+        String::new(),
+        String::new(),
+        String::new(),
+        1,
+        min_date,
+        max_date,
+    )
 }
 
-fn gantt(d1: &str, d2: &str, min_date: u32, max_date: u32) -> (String, String, i64, u32, u32) {
+fn gantt(
+    d1: &str,
+    d2: &str,
+    min_date: u32,
+    max_date: u32,
+) -> (String, String, String, String, i64, u32, u32) {
     let date1 = NaiveDate::parse_from_str(d1, "%Y-%m-%d").unwrap();
+    let a = MONTH[date1.month0() as usize].to_string()
+        + " "
+        + (date1.day0() + 1).to_string().as_str()
+        + ", "
+        + NaiveDate::year(&date1).to_string().as_str();
     if d2 != "" {
         let date2 = NaiveDate::parse_from_str(d2, "%Y-%m-%d").unwrap();
+
+        let b = MONTH[date2.month0() as usize].to_string()
+            + " "
+            + (date2.day0() + 1).to_string().as_str()
+            + ", "
+            + NaiveDate::year(&date2).to_string().as_str();
+
+        NaiveDate::year(&date2);
         return (
             date1.to_string(),
+            a,
             date2.to_string(),
+            b,
             (((date2 - date1).num_days() + 1) * 8),
             min_date,
             max_date,
         );
     }
-    (date1.to_string(), String::new(), 8, min_date, max_date)
+    (
+        date1.to_string(),
+        a,
+        String::new(),
+        String::new(),
+        8,
+        min_date,
+        max_date,
+    )
 }

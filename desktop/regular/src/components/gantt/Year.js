@@ -72,7 +72,7 @@ export default forwardRef(function Year(props, ref) {
         <div
           style={{
             position: "absolute",
-            left: y * 4 + "px",
+            left: (y * 8) - 8 + "px",
           }}
         >
           <span
