@@ -2,6 +2,7 @@
   ms-overflow-style: none;
   scrollbar-width: none;
   margin: 0;
+  box-sizing: border-box;
 }
 
 *::-webkit-scrollbar {
@@ -43,21 +44,19 @@ body {
 }
 
 .blocks p {
-  display: list-item;         
-  list-style-type: disc;   
   color: inherit;
-  list-style-position: inside; 
-  vertical-align: middle;
-  padding-bottom: 1.2em;
-  line-height: 1.3em;
+  line-height: 1.5;
+  display: block;
+  padding-bottom: 2mm;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  margin: auto;
 }
 
-.blocks p::marker {
+/* .blocks p::marker {
   color: var(--dot);
   font-size: large;
-}
+} */
 
 /* .blocks p::before {
   content: "";
@@ -92,21 +91,16 @@ body {
 }
 
 mark {
-  display: inline-flex;
   vertical-align: middle;
   color: inherit;
   border-radius: 1mm;
-  font-size: 9pt;
   text-wrap: nowrap;
   background-color: var(--date-bg);
   border: 1px solid var(--date-border);
-  margin-right: 4px;
-  height: 12pt;
   padding: 0 1mm;
 }
 
 mark::before {
-  display: inline-flex;
   content: url("./calendar.svg");
   padding-right: 1mm;
   vertical-align: middle;

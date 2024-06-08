@@ -26,10 +26,10 @@ pub fn parse() -> std::io::Result<Root> {
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/srcs-tauri/src/test/note.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/student.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/lecturer.md";
-    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/project.md";
+    let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/project.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/test.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/sample.md";
-    let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/plan.md";
+    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/plan.md";
 
     let file = File::open(path)?;
     let mut order = 1;

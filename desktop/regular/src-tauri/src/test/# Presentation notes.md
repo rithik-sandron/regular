@@ -52,9 +52,6 @@
     2.  Agile
     3.  Git repo      
       
-13. The name of the app is Regular
-      > "As it covers all the regualr day-to-day productivity for you."
-    
-      > Developer - Rithik - Thats me    
+13. Risk Analysis
 
 14. Thank you!      
