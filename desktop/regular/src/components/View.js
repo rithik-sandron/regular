@@ -7,27 +7,24 @@ import TopComponent from "./TopComponent";
 import Handlers from "./gantt/Handlers";
 import Timeline from "./timeline/Timeline";
 import Tyear from "./timeline/TYear";
+import { navigate, getMutationObserver } from '../lib/editorUtility'
 
 export default function View() {
   const [node, setNode] = useState("");
   const [component, setComponent] = useState("Gantt");
-
-  useEffect(() => {
-    invoke("get_doc", { name: "regular" }).then((data) => {
-      setNode(data);
-    });
-  }, []);
-
-  async function p() {
-    fetch("/u", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(node),
-    });
-  }
-
+  const mutationObserver = useRef(null);
+  const activeId = useRef('');
+  const editor = useRef(null);
   const [view, setView] = useState("Year");
   const ref = useRef(null);
+
+  useEffect(() => {
+    document.addEventListener("click", (e) => navigate(e, mutationObserver, activeId, editor));
+    document.addEventListener("keydown", (e) => navigate(e, mutationObserver, activeId, editor));
+    invoke("get_doc", { name: "regular" }).then((data) => {
+      setNode(JSON.parse(data));
+    });
+  }, []);
 
   function handleClick(e) {
     e.preventDefault();
@@ -46,26 +43,41 @@ export default function View() {
     }
   }
 
+  // =========for saving=========
+  useEffect(() => {
+    mutationObserver.current = getMutationObserver();
+    if (editor.current) {
+      mutationObserver.current.observe(editor.current, {
+        childList: true,
+        characterData: true,
+        attributeOldValue: true,
+        characterDataOldValue: true
+      });
+      return () => {
+        mutationObserver.current.disconnect();
+      };
+    }
+  }, [node]);
+
   return (
     node && (
       <>
         <section className="list-container">
           <TopComponent setComponent={setComponent} />
-
           <div
             id="m-list"
+            ref={editor}
             className="blocks"
             contentEditable
             spellCheck="true"
             suppressContentEditableWarning="true"
           >
-            <Tree data={node._first_child} root={node} p={p} />
+            <Tree data={node._first_child} root={node} />
           </div>
         </section>
-
-        <section className="timeline-container">
-          {component === "Gantt" && node._has_dates && (
-            <div className="timeline-container-view">
+        {component === "Gantt" && node._has_dates &&
+          (<section className="timeline-container">
+            <div>
               <Handlers
                 view={view}
                 handleClick={handleClick}
@@ -83,21 +95,21 @@ export default function View() {
                 <GanttEvent data={node} />
               </div>
             </div>
-          )}
 
-          {component === "Timeline" &&
-            node._min_date !== 0 &&
-            node._max_date !== 0 && (
-              <div className="line-container">
-                <Tyear min={node._min_date} max={node._max_date} />
-                <Timeline
-                  data={node}
-                  min={node._min_date}
-                  max={node._max_date}
-                />
-              </div>
-            )}
-        </section>
+            {component === "Timeline" &&
+              node._min_date !== 0 &&
+              node._max_date !== 0 && (
+                <div className="line-container">
+                  <Tyear min={node._min_date} max={node._max_date} />
+                  <Timeline
+                    data={node}
+                    min={node._min_date}
+                    max={node._max_date}
+                  />
+                </div>
+              )}
+          </section>
+          )}
       </>
     )
   );

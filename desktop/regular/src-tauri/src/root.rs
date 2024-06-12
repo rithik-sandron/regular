@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 pub struct Root {
     // data (type string, char)
     pub _id: u128,
+    pub _uid: u128,
     pub _text: String,
 
     // N-ary tree (type: Node)

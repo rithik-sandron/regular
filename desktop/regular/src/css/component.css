@@ -9,7 +9,7 @@
 
 .top > div {
   padding: 1mm 4mm;
-  background-color: var(--line-bg);
+  background-color: var(--line);
   border-radius: 1mm;
   cursor: pointer;
 }

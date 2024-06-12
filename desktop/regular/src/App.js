@@ -7,15 +7,7 @@ import AppLayout from "./components/AppLayout";
 function App() {
   return (
     <AppLayout>
-      <div
-        style={{
-          display: "flex",
-          margin: "auto",
-          marginTop: "12mm",
-        }}
-      >
-        <View />
-      </div>
+      <View />
     </AppLayout>
   );
 }

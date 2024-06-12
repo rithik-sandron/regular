@@ -3,7 +3,6 @@
 #![recursion_limit = "256"]
 use std::env;
 
-use root::Root;
 pub mod node;
 pub mod root;
 
@@ -17,8 +16,8 @@ fn main() {
 }
 
 #[tauri::command]
-fn get_doc() -> Root {
+fn get_doc() -> String {
     let tree = parser::parse();
     // println!("{}", tree.expect("paring error"));
-    tree.expect("paring error")
+    serde_json::to_string(&tree.expect("paring error")).expect("conversion error")
 }

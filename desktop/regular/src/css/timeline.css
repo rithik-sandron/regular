@@ -23,17 +23,17 @@
     --background: #181818;
     --line: rgba(45, 45, 45, 0.628);
     --line-bg: rgba(78, 78, 78, 0.523);
-    --shadow1: rgba(57, 57, 57, 0.346);
-    --shadow2: rgba(15, 15, 15, 0.053);
+    --shadow1: rgba(97, 97, 97, 0.704);
+    --shadow2: rgba(45, 45, 45, 0.053);
     --timeline: #181818;
     --dates: rgba(132, 131, 131, 0.893);
 
-    --date-bg: rgb(37, 37, 37);
-    --date-border: #3d3d3d;
+    --date-bg: rgba(67, 67, 67, 0.517);
+    --date-border: #595959e0;
     --dot: #7a7a7a;
     --current-line: #ec202075;
     --current-text: rgb(180, 65, 60);
-    --button: rgb(37, 37, 37);
+    --button: rgb(43, 43, 43);
     --event: #23394a;
   }
 }
@@ -47,16 +47,16 @@
 
 .currrent-text {
   position: absolute;
-  margin-left: -10px;
-  top: -5mm;
+  margin-left: -2mm;
+  top: -4mm;
   background-color: var(--current-text);
   color: #fff;
-  width: 21px;
-  height: 17px;
-  border-radius: 50%;
+  width: 18px;
+  height: 16px;
+  border-radius: 1mm;
   font-size: 7.6pt;
   text-align: center;
-  padding-top: 4px;
+  padding-top: 0.465mm;
 }
 
 .grid-container {
@@ -73,28 +73,38 @@ a {
 
 .app-container {
   position: relative;
-  display: grid;
-  /* grid-template-columns: 10% calc(90% - 12mm); */
-  grid-template-columns: 100%;
-  margin-top: 10mm;
-  gap: 12mm;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 12mm;
   overflow: hidden;
+  gap: 12mm;
+  justify-content: space-between;
 }
 
 .list-container {
-  width: 100%;
-  max-width: 734px;
-  min-width: 40vw;
+  min-width: calc(45% - 6mm);
   margin: 0 auto;
 }
 
-.timeline-container-view {
-  display: block;
+.timeline-container {
   position: relative;
-  /* max-height: 70vh; */
   overflow-x: scroll;
-  min-width: 100vw;
-  font-size: 9.6pt;
+  font-size: 10pt;
+  min-width: calc(55% - 6mm);
+}
+
+@media (max-width: 799px) {
+  .app-container {
+    gap: 16mm;
+  }
+
+  .list-container {
+    width: 100%;
+  }
+
+  .timeline-container {
+    width: 100%;
+  }
 }
 
 .grid-tasks-container {
@@ -106,12 +116,11 @@ a {
   position: absolute;
 }
 
-.grid-tasks > div {
+.grid-tasks>div {
   border-radius: 0.2em;
-  box-shadow: var(--shadow1) 0px 0px 1px 1px inset, var(--shadow2) 0px 2px 3px;
+  box-shadow: var(--shadow1) 0px 0px 0px 0.7px inset, var(--shadow2) 0px 1px 1px;
   position: absolute;
   background-color: var(--button);
-  /* background-color: var(--event); */
   padding: 1.6mm 0;
   cursor: move;
 }
@@ -132,7 +141,7 @@ a {
   cursor: pointer;
 }
 
-.handlers > div {
+.handlers>div {
   display: block;
   border: 1px solid var(--date-border);
   padding: 0.4mm 1.6mm 0.7mm 1.6mm;
@@ -160,11 +169,11 @@ a {
     rgba(15, 15, 15, 0.1) 0px 3px 6px, rgba(15, 15, 15, 0.2) 0px 9px 24px;
 }
 
-.dropdown-content > p {
+.dropdown-content>p {
   padding: 1mm 4mm;
 }
 
-.dropdown-content > p:hover {
+.dropdown-content>p:hover {
   background-color: var(--line);
 }
 
@@ -173,7 +182,6 @@ a {
 }
 
 .sticky {
-  position: fixed;
   padding: 2.6mm 0 0 0;
   background-color: var(--timeline);
   font-weight: 800;
@@ -185,18 +193,18 @@ a {
   position: absolute;
 }
 
-.timeline-grid-year > div {
+.timeline-grid-year>div {
   background-color: var(--timeline);
   border-right: 1px solid var(--line);
   text-align: center;
   padding-top: 2.6mm;
 }
 
-.timeline-grid-year > div span {
+.timeline-grid-year>div span {
   font-weight: 800;
 }
 
-.timeline-grid-year > div:last-child {
+.timeline-grid-year>div:last-child {
   border-right: none;
 }
 
@@ -219,7 +227,7 @@ a {
   grid-template-columns: repeat(24, 1fr);
 }
 
-.timeline-grid-day > div {
+.timeline-grid-day>div {
   background-color: var(--line-bg);
   border-right: 1px solid var(--line);
   text-align: center;

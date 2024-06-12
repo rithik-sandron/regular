@@ -1,5 +1,4 @@
 * {
-  ms-overflow-style: none;
   scrollbar-width: none;
   margin: 0;
   box-sizing: border-box;
@@ -28,80 +27,53 @@ body {
 .layout {
   display: flex;
   flex-direction: column;
-  margin-top: 4em;
   display: flex;
-  gap: 1em;
 }
 
 .blocks {
   display: grid;
   outline: none;
-  padding: 0 2mm;
-  font-size: 10.4pt;
-  letter-spacing: 0.04mm;
+  font-size: 11pt;
   text-rendering: optimizeLegibility;
   align-items: center;
 }
 
 .blocks p {
   color: inherit;
-  line-height: 1.5;
-  display: block;
-  padding-bottom: 2mm;
+  /* line-height: 2.2; */
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  margin: auto;
+  /* display: list-item; */
+  /* list-style-type: square; */
+  margin: 2mm;
 }
 
-/* .blocks p::marker {
+.blocks p::marker {
   color: var(--dot);
-  font-size: large;
-} */
+}
 
-/* .blocks p::before {
-  content: "";
-  display: inline-flex;
-  background-color: var(--dot);
-  width: 6px;
-  height: 6px;
-  min-height: 6px;
-  min-width: 6px;
-  border-radius: 50%;
-  vertical-align: middle;
-  margin-top: 6px;
-  margin-right: 2.6mm;
-} */
-
-.blocks > h1 {
-  font-size: 38px;
+.blocks>h1 {
+  font-size: 24pt;
   font-weight: 700;
-  /* text-decoration: underline;
-  text-underline-offset: 7px; */
   margin-bottom: 6mm;
 }
 
-.blocks > h2 {
-  font-size: 24px;
+.blocks>h2 {
+  font-size: 20pt;
   font-weight: 600;
 }
 
-.blocks > h3 {
-  font-size: 20px;
+.blocks>h3 {
+  font-size: 16pt;
   font-weight: 600;
 }
 
 mark {
-  vertical-align: middle;
+  display: inline;
   color: inherit;
   border-radius: 1mm;
   text-wrap: nowrap;
   background-color: var(--date-bg);
   border: 1px solid var(--date-border);
-  padding: 0 1mm;
-}
-
-mark::before {
-  content: url("./calendar.svg");
-  padding-right: 1mm;
-  vertical-align: middle;
+  padding: 0.2mm 1mm;
 }

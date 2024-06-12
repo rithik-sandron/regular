@@ -11,7 +11,7 @@ const MONTH: [&str; 12] = [
     "Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec",
 ];
 
-const MARK_START: &str = "<mark className='due-date'>";
+const MARK_START: &str = "<mark className='due-date' contentEditable data-text='";
 const MARK_END: &str = "</mark>";
 
 const CHARS: usize = 10_000;
@@ -24,9 +24,10 @@ const EMPTY_TYPE: &str = "br";
 
 pub fn parse() -> std::io::Result<Root> {
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/srcs-tauri/src/test/note.md";
-    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/student.md";
+    // let path = "/Users/azula/Downloads/regular-main/desktop/regular/src-tauri/src/test/student.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/lecturer.md";
     let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/project.md";
+    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/plan.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/test.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/sample.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/plan.md";
@@ -39,6 +40,7 @@ pub fn parse() -> std::io::Result<Root> {
 
     let mut root = Root {
         _id: 0,
+        _uid: 0,
         _text: String::new(),
         _level: 0.0,
         _indent: 0.0,
@@ -50,13 +52,13 @@ pub fn parse() -> std::io::Result<Root> {
             _skimmed_text: String::new(),
             _type: TYPE.to_string(),
             _level: level,
-            _indent: level * 1.8,
+            _indent: 0.0,
             _order: 0,
             _pad: 0,
             _date1: String::new(),
             _date2: String::new(),
             _is_updated: false,
-            _id: Node::count(),
+            _id: 0,
             _first_child: None,
             _next_sibling: None,
             _prev_sibling: None,
@@ -131,6 +133,7 @@ pub fn parse() -> std::io::Result<Root> {
                 // let (md_text, skimmed_text, date1, date2, pad, color, min, max) =
                 //     render(&s, min_date, max_date);
 
+                root._uid = root._uid + 1;
                 let pad;
                 let color = String::new();
 
@@ -151,23 +154,47 @@ pub fn parse() -> std::io::Result<Root> {
                 }
 
                 if date != "" {
+                    skimmed = (&s[0..d_pos_start]).to_string() + &s[d_pos_end..s.len() - 1];
                     if d_pos_end == s.len() - 1 {
                         md = (&s[0..d_pos_start]).to_string()
                             + MARK_START
+                            + &date
+                            + "'"
+                            + " id='due-date-"
+                            + &root._uid.to_string()
+                            + "' data-md='"
+                            + &md
+                            + "'>"
                             + &md
                             + MARK_END
                             + &s[d_pos_end..s.len() - 1];
-                        skimmed = (&s[0..d_pos_start]).to_string() + &s[d_pos_end..s.len() - 1];
                     } else if d_pos_start == 0 {
-                        md = MARK_START.to_string() + &md + MARK_END + &s[d_pos_end + 1..s.len()];
                         skimmed = s[d_pos_end + 1..s.len()].to_string();
-                    } else {
-                        md = (&s[0..d_pos_start]).to_string()
-                            + MARK_START
+                        md = MARK_START.to_string()
+                            + &date
+                            + "'"
+                            + " id='due-date-"
+                            + &root._uid.to_string()
+                            + "' data-md='"
+                            + &md
+                            + "'>"
                             + &md
                             + MARK_END
                             + &s[d_pos_end + 1..s.len()];
+                    } else {
                         skimmed = (&s[0..d_pos_start - 1]).to_string() + &s[d_pos_end + 1..s.len()];
+                        md = (&s[0..d_pos_start]).to_string()
+                            + MARK_START
+                            + &date
+                            + "'"
+                            + " id='due-date-"
+                            + &root._uid.to_string()
+                            + "' data-md='"
+                            + &md
+                            + "'>"
+                            + &md
+                            + MARK_END
+                            + &s[d_pos_end + 1..s.len()];
                     }
                     skimmed = skimmed.trim().to_owned();
                 }
@@ -199,7 +226,8 @@ pub fn parse() -> std::io::Result<Root> {
                     prev._date1 = date1.clone();
                     prev._date2 = date2.clone();
                     prev._is_updated = false;
-                    prev._id = Node::count();
+                    prev._id = root._uid;
+                    prev._id = root._uid;
                     prev._first_child = None;
                     prev._next_sibling = None;
                     prev._color = color.clone();
@@ -212,13 +240,13 @@ pub fn parse() -> std::io::Result<Root> {
                         _skimmed_text: String::from(&skimmed),
                         _type: _type.clone(),
                         _level: level,
-                        _indent: level * 1.8,
+                        _indent: (level * 1.8) + 1.2,
                         _order: _odr,
                         _pad: pad,
                         _date1: date1.clone(),
                         _date2: date2.clone(),
                         _is_updated: false,
-                        _id: Node::count(),
+                        _id: root._uid,
                         _first_child: None,
                         _next_sibling: None,
                         _prev_sibling: Some(Box::new(prev.clone())),
@@ -234,13 +262,13 @@ pub fn parse() -> std::io::Result<Root> {
                         _skimmed_text: String::from(&skimmed),
                         _type: _type.clone(),
                         _level: level,
-                        _indent: level * 1.8,
+                        _indent: (level * 1.8) + 1.2,
                         _order: _odr,
                         _pad: pad,
                         _date1: date1.clone(),
                         _date2: date2.clone(),
                         _is_updated: false,
-                        _id: Node::count(),
+                        _id: root._uid,
                         _first_child: None,
                         _next_sibling: None,
                         _prev_sibling: Some(Box::new(prev.clone())),
@@ -263,13 +291,13 @@ pub fn parse() -> std::io::Result<Root> {
                         _skimmed_text: String::from(&skimmed),
                         _type: _type.clone(),
                         _level: level,
-                        _indent: level * 1.8,
+                        _indent: (level * 1.8) + 1.2,
                         _order: _odr,
                         _pad: pad,
                         _date1: date1.clone(),
                         _date2: date2.clone(),
                         _is_updated: false,
-                        _id: Node::count(),
+                        _id: root._uid,
                         _first_child: None,
                         _next_sibling: None,
                         _prev_sibling: Some(Box::new(prev.clone())),

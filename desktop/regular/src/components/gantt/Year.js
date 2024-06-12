@@ -91,7 +91,7 @@ export default forwardRef(function Year(props, ref) {
     <div
       className="timeline-grid-year"
       style={{
-        height: props.height * 2.6 + "em",
+        height: props.height * 3.12 + "em",
       }}
     >
       <span className="sticky">{currentYear}</span>
@@ -110,10 +110,10 @@ export default forwardRef(function Year(props, ref) {
             <div className="timeline-grid-year-dates">
               {DAYS.map((y) => {
                 return (
-                  <>
+                  <div key={y}>
                     {current_date_view(x, y)}
                     {year_view(x, y)}
-                  </>
+                  </div>
                 );
               })}
             </div>

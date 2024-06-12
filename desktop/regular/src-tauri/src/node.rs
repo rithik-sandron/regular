@@ -1,7 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-static mut UUID: u128 = 0;
-
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct Node {
     // data
@@ -31,13 +29,6 @@ pub struct Node {
 }
 
 impl Node {
-    pub fn count() -> u128 {
-        unsafe {
-            UUID += 1;
-            UUID
-        }
-    }
-
     pub fn list(&self) {
         println!("{:?}", self);
         if self._first_child.is_some() {
