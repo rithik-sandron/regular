@@ -8,13 +8,28 @@
   --timeline: #fdfdfd;
   --dates: rgba(137, 137, 137, 0.893);
 
-  --date-bg: #f5f5f5;
+  --date-bg: rgb(220, 254, 174, 0.8);
   --date-border: #ccc;
   --dot: #7a7a7a;
   --current-line: #f00f0f91;
   --current-text: rgb(211, 79, 67);
   --button: #fff;
   --event: #d3d3d3;
+
+  --font-primary: sans-serif;
+  --font-size: 11pt;
+
+  --line-height-p: 1.9;
+  --padding-p: 1.45mm;
+
+  --padding-h1: 0.54mm;
+  --line-height-h1: 1.29;
+
+  --padding-h2: 0.95mm;
+  --line-height-h2: 1.4;
+
+  --padding-h3: 1.2mm;
+  --line-height-h3: 1.58;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,7 +43,7 @@
     --timeline: #181818;
     --dates: rgba(132, 131, 131, 0.893);
 
-    --date-bg: rgba(67, 67, 67, 0.517);
+    --date-bg: rgba(22, 101, 160, 0.684);
     --date-border: #595959e0;
     --dot: #7a7a7a;
     --current-line: #ec202075;
@@ -83,6 +98,7 @@ a {
 
 .list-container {
   min-width: calc(45% - 6mm);
+  width: calc(45% - 6mm);
   margin: 0 auto;
 }
 
@@ -91,6 +107,7 @@ a {
   overflow-x: scroll;
   font-size: 10pt;
   min-width: calc(55% - 6mm);
+  width: calc(55% - 6mm);
 }
 
 @media (max-width: 799px) {

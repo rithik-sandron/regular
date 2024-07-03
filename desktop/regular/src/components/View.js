@@ -7,7 +7,7 @@ import TopComponent from "./TopComponent";
 import Handlers from "./gantt/Handlers";
 import Timeline from "./timeline/Timeline";
 import Tyear from "./timeline/TYear";
-import { navigate, getMutationObserver } from '../lib/editorUtility'
+import { startMutationObserver, navigate, getMutationObserver } from '../lib/editorUtility'
 
 export default function View() {
   const [node, setNode] = useState("");
@@ -17,13 +17,20 @@ export default function View() {
   const editor = useRef(null);
   const [view, setView] = useState("Year");
   const ref = useRef(null);
+  const mutate = useRef(new Map());
 
   useEffect(() => {
+    mutationObserver.current = getMutationObserver(mutate.current);
+    startMutationObserver(mutationObserver, editor);
+    return () => {
+      mutationObserver.current.disconnect();
+    };
+  }, [node]);
+
+  useEffect(() => {
+    invoke("get_doc", { name: "regular" }).then(data => setNode(JSON.parse(data)));
     document.addEventListener("click", (e) => navigate(e, mutationObserver, activeId, editor));
     document.addEventListener("keydown", (e) => navigate(e, mutationObserver, activeId, editor));
-    invoke("get_doc", { name: "regular" }).then((data) => {
-      setNode(JSON.parse(data));
-    });
   }, []);
 
   function handleClick(e) {
@@ -43,22 +50,6 @@ export default function View() {
     }
   }
 
-  // =========for saving=========
-  useEffect(() => {
-    mutationObserver.current = getMutationObserver();
-    if (editor.current) {
-      mutationObserver.current.observe(editor.current, {
-        childList: true,
-        characterData: true,
-        attributeOldValue: true,
-        characterDataOldValue: true
-      });
-      return () => {
-        mutationObserver.current.disconnect();
-      };
-    }
-  }, [node]);
-
   return (
     node && (
       <>
@@ -72,7 +63,7 @@ export default function View() {
             spellCheck="true"
             suppressContentEditableWarning="true"
           >
-            <Tree data={node._first_child} root={node} />
+            <Tree data={node._first_child} />
           </div>
         </section>
         {component === "Gantt" && node._has_dates &&

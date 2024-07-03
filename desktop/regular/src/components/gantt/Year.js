@@ -78,7 +78,7 @@ export default forwardRef(function Year(props, ref) {
           <span
             className="current"
             style={{
-              height: props.height * 2.6 + "em",
+              height: props.height * 2.7 + "em",
             }}
           />
           <span className="currrent-text">{y}</span>

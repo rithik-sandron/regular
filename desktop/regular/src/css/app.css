@@ -11,17 +11,19 @@
 html {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  width: 90%;
+  width: 85%;
   max-width: 1600px;
   margin: auto;
   box-sizing: border-box;
 }
 
 body {
+  font-family: var(--font-primary);
   background-color: var(--background);
   color: var(--foreground);
   caret-color: #dd4c4f;
   box-sizing: border-box;
+  font-size: var(--font-size);
 }
 
 .layout {
@@ -31,49 +33,77 @@ body {
 }
 
 .blocks {
-  display: grid;
+  display: inline-block;
   outline: none;
-  font-size: 11pt;
   text-rendering: optimizeLegibility;
-  align-items: center;
 }
 
 .blocks p {
   color: inherit;
-  /* line-height: 2.2; */
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  /* display: list-item; */
-  /* list-style-type: square; */
-  margin: 2mm;
 }
 
-.blocks p::marker {
-  color: var(--dot);
+.blocks p::before {
+  content: "";
+  width: 1.45mm;
+  height: 1.45mm;
+  border-radius: 50%;
+  background-color: #dd4c4f;
+  display: inline-block;
+  margin-right: 3mm;
+  vertical-align: middle;
 }
 
 .blocks>h1 {
   font-size: 24pt;
-  font-weight: 700;
-  margin-bottom: 6mm;
-}
-
-.blocks>h2 {
-  font-size: 20pt;
-  font-weight: 600;
-}
-
-.blocks>h3 {
-  font-size: 16pt;
-  font-weight: 600;
 }
 
 mark {
   display: inline;
   color: inherit;
-  border-radius: 1mm;
+  border-radius: 0.5mm;
   text-wrap: nowrap;
   background-color: var(--date-bg);
-  border: 1px solid var(--date-border);
-  padding: 0.2mm 1mm;
+  padding: var(--padding-p) 1mm;
+}
+
+
+::-moz-selection {
+  background: rgb(211, 235, 255);
+}
+
+::selection {
+  background: rgb(211, 235, 255);
+}
+
+.blocks h1,
+.blocks h2,
+.blocks h3,
+.blocks p {
+  display: inline;
+}
+
+.blocks h1 {
+  line-height: var(--line-height-h1);
+  padding: var(--padding-h1) 0;
+}
+
+.blocks h2 {
+  line-height: var(--line-height-h2);
+  padding: var(--padding-h2) 0;
+}
+
+.blocks h3 {
+  line-height: var(--line-height-h3);
+  padding: var(--padding-h3) 0;
+}
+
+.blocks p {
+  line-height: var(--line-height-p);
+  padding: var(--padding-p) 0;
+}
+
+.blocks strong {
+  padding: var(--padding-p) 0;
 }

@@ -26,7 +26,7 @@ pub fn parse() -> std::io::Result<Root> {
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/srcs-tauri/src/test/note.md";
     // let path = "/Users/azula/Downloads/regular-main/desktop/regular/src-tauri/src/test/student.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/lecturer.md";
-    let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/project.md";
+    let path = "//Users/azula/Downloads/regular-main/desktop/regular/src-tauri/src/test/project.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/plan.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/test.md";
     // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/sample.md";
@@ -240,7 +240,7 @@ pub fn parse() -> std::io::Result<Root> {
                         _skimmed_text: String::from(&skimmed),
                         _type: _type.clone(),
                         _level: level,
-                        _indent: (level * 1.8) + 1.2,
+                        _indent: (level * 1.8) + 0.4,
                         _order: _odr,
                         _pad: pad,
                         _date1: date1.clone(),
@@ -262,7 +262,7 @@ pub fn parse() -> std::io::Result<Root> {
                         _skimmed_text: String::from(&skimmed),
                         _type: _type.clone(),
                         _level: level,
-                        _indent: (level * 1.8) + 1.2,
+                        _indent: (level * 1.8) + 0.4,
                         _order: _odr,
                         _pad: pad,
                         _date1: date1.clone(),
@@ -291,7 +291,7 @@ pub fn parse() -> std::io::Result<Root> {
                         _skimmed_text: String::from(&skimmed),
                         _type: _type.clone(),
                         _level: level,
-                        _indent: (level * 1.8) + 1.2,
+                        _indent: (level * 1.8) + 0.4,
                         _order: _odr,
                         _pad: pad,
                         _date1: date1.clone(),
