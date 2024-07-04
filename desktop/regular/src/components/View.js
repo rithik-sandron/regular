@@ -8,6 +8,7 @@ import Handlers from "./gantt/Handlers";
 import Timeline from "./timeline/Timeline";
 import Tyear from "./timeline/TYear";
 import { startMutationObserver, navigate, getMutationObserver } from '../lib/editorUtility'
+import DateTime from "./DateTime";
 
 export default function View() {
   const [node, setNode] = useState("");
@@ -20,18 +21,16 @@ export default function View() {
   const mutate = useRef(new Map());
 
   useEffect(() => {
-    mutationObserver.current = getMutationObserver(mutate.current);
+    invoke("get_doc", { name: "regular" }).then(data => setNode(JSON.parse(data)));
+  }, []);
+
+  useEffect(() => {
+    mutationObserver.current = getMutationObserver(mutate.current, activeId);
     startMutationObserver(mutationObserver, editor);
     return () => {
       mutationObserver.current.disconnect();
     };
   }, [node]);
-
-  useEffect(() => {
-    invoke("get_doc", { name: "regular" }).then(data => setNode(JSON.parse(data)));
-    document.addEventListener("click", (e) => navigate(e, mutationObserver, activeId, editor));
-    document.addEventListener("keydown", (e) => navigate(e, mutationObserver, activeId, editor));
-  }, []);
 
   function handleClick(e) {
     e.preventDefault();
@@ -56,12 +55,15 @@ export default function View() {
         <section className="list-container">
           <TopComponent setComponent={setComponent} />
           <div
-            id="m-list"
+            id="editor"
             ref={editor}
             className="blocks"
             contentEditable
             spellCheck="true"
             suppressContentEditableWarning="true"
+            onClick={(e) => navigate(e, mutationObserver, activeId, editor)}
+            onKeyDown={(e) => navigate(e, mutationObserver, activeId, editor)}
+            onKeyUp={(e) => navigate(e, mutationObserver, activeId, editor)}
           >
             <Tree data={node._first_child} />
           </div>

@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import DateTime from "../DateTime";
 
 export default forwardRef(function Year(props, ref) {
   let current = new Date();
@@ -69,20 +70,24 @@ export default forwardRef(function Year(props, ref) {
       currentDate === y
     ) {
       return (
-        <div
-          style={{
-            position: "absolute",
-            left: (y * 8) - 8 + "px",
-          }}
-        >
-          <span
-            className="current"
+        <>
+          <DateTime />
+          <div
             style={{
-              height: props.height * 2.7 + "em",
+              position: "absolute",
+              left: (y * 8) - 8 + "px",
             }}
-          />
-          <span className="currrent-text">{y}</span>
-        </div>
+          >
+            <span
+              className="current"
+              style={{
+                height: props.height * 2.7 + "em",
+              }}
+            />
+            <span className="currrent-text">{y}</span>
+          </div>
+        </>
+
       );
     }
   }

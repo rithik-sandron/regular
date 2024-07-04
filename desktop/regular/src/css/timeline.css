@@ -12,7 +12,7 @@
   --date-border: #ccc;
   --dot: #7a7a7a;
   --current-line: #f00f0f91;
-  --current-text: rgb(211, 79, 67);
+  --current-text: rgba(246, 89, 89, 0.851);
   --button: #fff;
   --event: #d3d3d3;
 
@@ -47,7 +47,7 @@
     --date-border: #595959e0;
     --dot: #7a7a7a;
     --current-line: #ec202075;
-    --current-text: rgb(180, 65, 60);
+    --current-text: rgba(237, 63, 54, 0.714);
     --button: rgb(43, 43, 43);
     --event: #23394a;
   }
@@ -56,13 +56,23 @@
 .current {
   display: block;
   position: absolute;
-  width: 0.36mm;
+  width: 3px;
+  left: 2.5px;
   background-color: var(--current-text);
+}
+
+#time-current {
+  display: block;
+  width: 100px;
+  position: absolute;
+  top: -14.5px;
+  left: 46px;
+  font-size: 8pt;
 }
 
 .currrent-text {
   position: absolute;
-  margin-left: -2mm;
+  margin-left: -5px;
   top: -4mm;
   background-color: var(--current-text);
   color: #fff;
@@ -153,17 +163,19 @@ a {
 .handlers {
   display: flex;
   gap: 4mm;
-  margin: 2.3mm 0.1mm 4mm 0.1mm;
+  margin: 4mm 0;
   width: fit-content;
   cursor: pointer;
+  width: 100%;
+  justify-content: flex-end;
 }
 
 .handlers>div {
   display: block;
-  border: 1px solid var(--date-border);
-  padding: 0.4mm 1.6mm 0.7mm 1.6mm;
+  border: 0.5px solid var(--date-border);
+  padding: 1.2mm 1.8mm 1.2mm 1.8mm;
   border-radius: 0.24em;
-  font-size: 12pt;
+  font-size: 10pt;
 }
 
 .dropdown {
@@ -203,6 +215,7 @@ a {
   background-color: var(--timeline);
   font-weight: 800;
   height: fit-content;
+  position: absolute;
 }
 
 .timeline-grid-year {

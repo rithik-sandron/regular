@@ -17,19 +17,22 @@ export function getCursor(e) {
 }
 
 export function clear(activeId) {
-  let date = document.getElementById(activeId.current);
-  date.innerText = date.getAttribute("data-md");
+  let p = document.getElementById(activeId.current);
   activeId.current = "";
+  p.childNodes.forEach(x => {
+    if (x.nodeName === "MARK") {
+      x.innerText = x.getAttribute("data-md");
+    }
+  })
 }
 
-export function updateDuringClick(e, activeId) {
-  activeId.current = e.target.id
-  e.target.innerText = e.target.getAttribute("data-text");
-}
-
-export function updateDuringKeyDown(selection, activeId) {
-  activeId.current = selection.focusNode.parentNode.id;
-  selection.focusNode.parentNode.innerText = selection.focusNode.parentNode.getAttribute("data-text")
+export function updateContent(node, activeId) {
+  activeId.current = node.id;
+  node.childNodes.forEach(x => {
+    if (x.nodeName === "MARK") {
+      x.innerText = x.getAttribute("data-text");
+    }
+  })
 }
 
 export function startMutationObserver(mutationObserver, editor) {
@@ -39,7 +42,9 @@ export function startMutationObserver(mutationObserver, editor) {
       subtree: true,
       childList: true,
       attributeOldValue: true,
-      characterDataOldValue: true
+      characterDataOldValue: true,
+      attributes: true,
+      attributeFilter: ['style']
     });
   }
 }
@@ -55,59 +60,71 @@ export const navigate = (e, mutationObserver, activeId, editor) => {
   switch (e.type) {
     case "click":
       pauseMutationObserver(mutationObserver);
-      if (e.target.nodeName === "MARK") {
-        if (activeId.current !== "" && activeId.current !== e.target.id) {
-          clear(activeId)
-          updateDuringClick(e, activeId)
-        } else if (activeId.current === "") {
-          updateDuringClick(e, activeId)
-        } 
-      } else if (activeId.current !== "") {
-        clear(activeId);
+      const selection = window.getSelection();
+      let node = selection.anchorNode.parentNode;
+      if (selection.anchorNode.parentNode.nodeName === "MARK") {
+        node = selection.focusNode.parentNode.parentNode;
+      }
+
+      if (activeId.current !== "" && activeId.current !== node.id) {
+        clear(activeId)
+        updateContent(node, activeId)
+      } else if (activeId.current === "") {
+        updateContent(node, activeId)
       }
       startMutationObserver(mutationObserver, editor);
       break;
 
-    case "keydown":
+    case "keyup":
+      // !e.altKey && !e.shiftKey &&
       if (e.keyCode > 36 && e.keyCode < 41) {
-        
         pauseMutationObserver(mutationObserver);
         const selection = window.getSelection();
-        console.log(selection)
-        if (selection.focusNode.parentNode.nodeName === "MARK") {
-          if (activeId.current !== "" && activeId.current !== selection.focusNode.parentNode.id) {
-            clear(activeId);
-            updateDuringKeyDown(selection, activeId);
-          } else if (activeId.current === "") {
-            updateDuringKeyDown(selection, activeId);
-          }
-        } else if (activeId.current !== "") {
+        let node = selection.anchorNode.parentNode;
+        if (selection.anchorNode.parentNode.nodeName === "MARK") {
+          node = selection.focusNode.parentNode.parentNode;
+        }
+
+        if (activeId.current !== "" && activeId.current !== node.id) {
           clear(activeId)
+          updateContent(node, activeId);
+        } else if (activeId.current === "") {
+          updateContent(node, activeId);
         }
         startMutationObserver(mutationObserver, editor);
       }
-      else if (e.keyCode === 13) {
-        handleEnter(e)
-      }
-      else if (e.keyCode === 8) {
-        handleBackspace(e)
+      break;
+
+    case "keydown":
+      switch (e.keyCode) {
+        case 13:
+          handleEnter(e, activeId);
+          break;
+        case 8:
+          handleBackspace(e, activeId, mutationObserver, editor);
+          break;
+        case 9:
+          handleTab(e, activeId);
+          break;
       }
       break;
   }
 }
 
-export function getMutationObserver(mutate) {
+export function getMutationObserver(mutate, activeId) {
   return new MutationObserver(async (mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.type === "childList") {
+
         if (mutation.target.nodeName !== "P" && mutation.removedNodes.length > 0) {
           mutation.removedNodes.forEach(node => {
+            // delete mutation, no further action be done for this id after deletion.
             let existingNode = mutate.get(node.id);
             if (existingNode !== undefined) {
               existingNode.action = "delete";
               mutate.set(node.id, existingNode);
             } else {
-              mutate.set(node.id, { action: "delete", id: node.id });
+              mutate.set(node.id, { action: "delete" });
             }
           })
         }
@@ -115,6 +132,7 @@ export function getMutationObserver(mutate) {
         if (mutation.addedNodes.length > 0) {
           mutation.addedNodes.forEach(node => {
             if (mutation.target.nodeName === "P" || node.nodeType === 3) {
+              // add mutation
               let existingNode = mutate.get(mutation.target.id);
               if (existingNode !== undefined) {
                 existingNode.text = node.textContent;
@@ -123,20 +141,13 @@ export function getMutationObserver(mutate) {
                 mutate.set(mutation.target.id, { action: "update", parentId: mutation.target.id, text: node.textContent });
               }
             } else if (node.nodeName !== "BR") {
-              let existingNode = mutate.get(node.id);
-              if (existingNode !== undefined) {
-                existingNode.text = node.textContent;
-                if (existingNode.action === "delete") {
-                  mutate.set(node.id, { action: "update", parentId: mutation.previousSibling.previousSibling.id, text: node.textContent });
-                }
-              } else {
-                mutate.set(node.id, { action: "add", parentId: mutation.previousSibling.previousSibling.id, text: node.textContent });
-              }
+              mutate.set(node.id, { action: "add", parentId: mutation.previousSibling.previousSibling.id, text: node.textContent, level: document.getElementById(activeId.current) ? parseFloat(document.getElementById(activeId.current).style.marginLeft) / 1.8 : 0 });
             }
           })
         }
 
       } else if (mutation.type === "characterData") {
+        // update mutation
         let existingNode = mutate.get(mutation.target.parentNode.id);
         if (existingNode !== undefined) {
           existingNode.text = mutation.target.textContent;
@@ -145,13 +156,28 @@ export function getMutationObserver(mutate) {
           mutate.set(mutation.target.parentNode.id, { action: "update", id: mutation.target.parentNode.id, text: mutation.target.textContent });
         }
 
+      } else if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+        let value = "";
+        if (mutation.oldValue > mutation.target.style.cssText) {
+          value = -1;
+        } else {
+          value = 1;
+        }
+
+        let existingNode = mutate.get(activeId.current);
+        if (existingNode !== undefined) {
+          existingNode.level = (existingNode.level ? existingNode.level : 0) + value;
+          mutate.set(activeId.current, existingNode);
+        } else {
+          mutate.set(activeId.current, { action: "tab", id: activeId.current, level: value });
+        }
       }
     })
-    // console.log(mutate);
+    console.log(mutate);
   });
 }
 
-const handleEnter = function (e) {
+const handleEnter = function (e, activeId) {
   e.preventDefault();
   const selection = window.getSelection();
   let range = selection.getRangeAt(0);
@@ -179,13 +205,14 @@ const handleEnter = function (e) {
   range.setEndAfter(el);
   selection.removeAllRanges();
   selection.addRange(range);
-  createNewElement(e, range, tag, selection, el, textContent);
+  createNewElement(e, range, tag, selection, el, textContent, node, activeId);
 }
 
-function createNewElement(e, range, tag, selection, n, textContent) {
+function createNewElement(e, range, tag, selection, n, textContent, node, activeId) {
   const el = document.createElement(tag);
   el.id = uuid();
-  el.style.marginLeft = "0.4em";
+  activeId.current = el.id;
+  el.style.marginLeft = node.style.marginLeft;
   range.deleteContents();
   range.setStart(el, 0);
   range.setEnd(el, 0);
@@ -197,7 +224,7 @@ function createNewElement(e, range, tag, selection, n, textContent) {
   selection.removeAllRanges();
   selection.addRange(range);
   e.stopPropagation();
-  el.focus()
+  el.focus();
 }
 
 const uuid = () => {
@@ -206,26 +233,51 @@ const uuid = () => {
   return dateString + randomness;
 };
 
-const handleBackspace = function (e) {
-  // e.preventDefault();
+const handleBackspace = function (e, activeId, mutationObserver, editor) {
   const selection = window.getSelection();
   let range = selection.getRangeAt(0);
-  let nodeType = selection.getRangeAt(0).startContainer.nodeType;
 
   if ((selection.focusOffset === 0 && selection.anchorOffset === 1)
     || (selection.anchorOffset < 2 && selection.anchorNode.textContent.length === selection.focusOffset)
     || (selection.focusOffset < 1 && selection.anchorNode.textContent.length === selection.anchorOffset)) {
     e.preventDefault();
     range.startContainer.textContent = "\u200D";
-  } else if (selection.focusOffset === 0 && selection.anchorOffset === 0) {
+  } else if ((selection.focusOffset === 0 && selection.anchorOffset === 0) || selection.focusNode.textContent.length === 1) {
     e.preventDefault()
-    let nodeType = range.startContainer.nodeType;
-    let node = "P";
-    if (nodeType === 3) {
-      node = range.startContainer.parentElement;
-    } else {
-      node = range.startContainer;
+
+    let p = document.getElementById(activeId.current);
+    pauseMutationObserver(mutationObserver);
+    p.previousElementSibling.remove();
+    let content = p.innerText;
+    let prev = p.previousElementSibling;
+    clear(activeId)
+    updateContent(prev, activeId);
+    startMutationObserver(mutationObserver, editor);
+
+    const pos = prev.textContent.length;
+    prev.textContent = document.getElementById(activeId.current).textContent + content;
+    setCursor(prev, pos);
+    p.remove();
+  }
+}
+
+const handleTab = function (e, activeId) {
+  e.preventDefault();
+
+  const selection = window.getSelection();
+  let node = selection.anchorNode.parentNode;
+  if (selection.anchorNode.parentNode.nodeName === "MARK") {
+    node = selection.focusNode.parentNode.parentNode;
+  }
+  let p = document.getElementById(activeId.current);
+  const prev = p?.previousElementSibling?.previousElementSibling;
+  if (!e.shiftKey) {
+    if (prev && prev.nodeName !== "H1" && prev.style.marginLeft >= p.style.marginLeft && p.nodeName === 'P') {
+      p.style.marginLeft = parseFloat(p.style.marginLeft) + 1.8 + "em";
     }
-    console.log(node.innerHTML)
+  } else {
+    if (prev && prev.nodeName !== "H1" && p.style.marginLeft !== "0em" && prev.style.marginLeft <= p.style.marginLeft && p.nodeName === 'P') {
+      p.style.marginLeft = parseFloat(p.style.marginLeft) - 1.8 + "em";
+    }
   }
 }

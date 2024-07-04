@@ -46,8 +46,8 @@ body {
 
 .blocks p::before {
   content: "";
-  width: 1.45mm;
-  height: 1.45mm;
+  width: 1.6mm;
+  height: 1.6mm;
   border-radius: 50%;
   background-color: #dd4c4f;
   display: inline-block;

@@ -3,26 +3,22 @@ import { useEffect, useState } from "react";
 function getTime() {
   let dates = new Date();
   let months = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday",
+    "Mon",
+    "Tues",
+    "Wed",
+    "Thur",
+    "Fri",
+    "Sat",
+    "Sun",
   ];
 
   return (
     months[dates.getMonth()] +
     " " +
-    dates.getDate() +
-    ", " +
-    dates.getFullYear() +
-    " " +
     dates.getHours() +
-    " : " +
+    ":" +
     dates.getMinutes() +
-    " : " +
+    ":" +
     dates.getSeconds()
   );
 }
@@ -35,15 +31,8 @@ export default function DateTime() {
     }, 1000);
     return () => clearInterval(id);
   }, []);
+  
   return (
-    <time
-      suppressHydrationWarning
-      style={{
-        marginTop: "1px",
-        fontSize: "14.6px",
-      }}
-    >
-      {time}
-    </time>
+    <time id="time-current" suppressHydrationWarning>{time}</time>
   );
 }
