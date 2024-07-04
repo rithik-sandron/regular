@@ -81,7 +81,7 @@ export default forwardRef(function Year(props, ref) {
             <span
               className="current"
               style={{
-                height: props.height * 2.7 + "em",
+                height: `calc(${props.height * 3.12}em - 38.5px)`,
               }}
             />
             <span className="currrent-text">{y}</span>
@@ -96,7 +96,7 @@ export default forwardRef(function Year(props, ref) {
     <div
       className="timeline-grid-year"
       style={{
-        height: props.height * 3.12 + "em",
+        height: `${props.height * 3.12}em`,
       }}
     >
       <span className="sticky">{currentYear}</span>

@@ -5,6 +5,7 @@ use chrono::{Datelike, NaiveDate};
 use std::{
     fs::File,
     io::{BufRead, BufReader},
+    path::Path
 };
 
 const MONTH: [&str; 12] = [
@@ -23,14 +24,17 @@ const TYPE: &str = "p";
 const EMPTY_TYPE: &str = "br";
 
 pub fn parse() -> std::io::Result<Root> {
-    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/srcs-tauri/src/test/note.md";
-    // let path = "/Users/azula/Downloads/regular-main/desktop/regular/src-tauri/src/test/student.md";
-    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/lecturer.md";
-    let path = "/Users/azula/code/rithik/regular/desktop/regular/src-tauri/src/test/project.md";
-    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/plan.md";
-    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/test.md";
-    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/sample.md";
-    // let path = "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/src/test/plan.md";
+    let base_path = Path::new("/Users/azula/code/rithik/regular/desktop/regular/src-tauri/test/");
+    // let base_path = Path::new("/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/test");
+    // let path = base_path.join("note.md");
+    // let path = base_path.join("student.md");
+    // let path = base_path.join("lecturer.md");
+    // let path = base_path.join("plan.md");
+    // let path = base_path.join("test.md");
+    // let path = base_path.join("sample.md");
+    // let path = base_path.join("plan.md");
+    let path = base_path.join("project.md");
+
 
     let file = File::open(path)?;
     let mut order = 1;
@@ -114,7 +118,7 @@ pub fn parse() -> std::io::Result<Root> {
                     d_pos_start = s.len() - 1;
                 }
             }
-            
+
             if is_date && re3 != *c {
                 str.push(*c as char);
             }

@@ -8,7 +8,6 @@ import Handlers from "./gantt/Handlers";
 import Timeline from "./timeline/Timeline";
 import Tyear from "./timeline/TYear";
 import { startMutationObserver, navigate, getMutationObserver } from '../lib/editorUtility'
-import DateTime from "./DateTime";
 
 export default function View() {
   const [node, setNode] = useState("");
@@ -25,6 +24,7 @@ export default function View() {
   }, []);
 
   useEffect(() => {
+    // Changes observer
     mutationObserver.current = getMutationObserver(mutate.current, activeId);
     startMutationObserver(mutationObserver, editor);
     return () => {
@@ -83,8 +83,6 @@ export default function View() {
                 }}
               >
                 {view === "Year" && <Year ref={ref} height={node._order} />}
-                {/* {view === "Month" && <Month ref={ref} />} */}
-                {/* {view === 'Day' && <Day ref={ref} />} */}
                 <GanttEvent data={node} />
               </div>
             </div>

@@ -55,44 +55,41 @@ export function pauseMutationObserver(mutationObserver) {
   }
 }
 
+export function fetchActiveNode() {
+  const selection = window.getSelection();
+  let node = selection.anchorNode.parentNode;
+  if (selection.anchorNode.parentNode.nodeName === "MARK") {
+    node = selection.focusNode.parentNode.parentNode;
+  }
+  return node;
+}
+
+export function toggleUntoggleDateContent(activeId, node) {
+  if (activeId.current !== "" && activeId.current !== node.id) {
+    clear(activeId)
+    updateContent(node, activeId)
+  } else if (activeId.current === "") {
+    updateContent(node, activeId)
+  }
+}
+
+export function action(mutationObserver, activeId, editor) {
+  pauseMutationObserver(mutationObserver);
+  toggleUntoggleDateContent(activeId, fetchActiveNode());
+  startMutationObserver(mutationObserver, editor);
+}
+
 export const navigate = (e, mutationObserver, activeId, editor) => {
   e.stopPropagation();
   switch (e.type) {
     case "click":
-      pauseMutationObserver(mutationObserver);
-      const selection = window.getSelection();
-      let node = selection.anchorNode.parentNode;
-      if (selection.anchorNode.parentNode.nodeName === "MARK") {
-        node = selection.focusNode.parentNode.parentNode;
-      }
-
-      if (activeId.current !== "" && activeId.current !== node.id) {
-        clear(activeId)
-        updateContent(node, activeId)
-      } else if (activeId.current === "") {
-        updateContent(node, activeId)
-      }
-      startMutationObserver(mutationObserver, editor);
+      action(mutationObserver, activeId, editor);
       break;
 
     case "keyup":
       // !e.altKey && !e.shiftKey &&
-      if (e.keyCode > 36 && e.keyCode < 41) {
-        pauseMutationObserver(mutationObserver);
-        const selection = window.getSelection();
-        let node = selection.anchorNode.parentNode;
-        if (selection.anchorNode.parentNode.nodeName === "MARK") {
-          node = selection.focusNode.parentNode.parentNode;
-        }
-
-        if (activeId.current !== "" && activeId.current !== node.id) {
-          clear(activeId)
-          updateContent(node, activeId);
-        } else if (activeId.current === "") {
-          updateContent(node, activeId);
-        }
-        startMutationObserver(mutationObserver, editor);
-      }
+      if (e.keyCode > 36 && e.keyCode < 41)
+        action(mutationObserver, activeId, editor);
       break;
 
     case "keydown":
