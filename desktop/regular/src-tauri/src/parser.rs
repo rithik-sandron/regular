@@ -5,7 +5,7 @@ use chrono::{Datelike, NaiveDate};
 use std::{
     fs::File,
     io::{BufRead, BufReader},
-    path::Path
+    path::Path,
 };
 
 const MONTH: [&str; 12] = [
@@ -23,19 +23,14 @@ const HEAD_TYPE: &str = "h1";
 const TYPE: &str = "p";
 const EMPTY_TYPE: &str = "br";
 
-pub fn parse() -> std::io::Result<Root> {
-    let base_path = Path::new("/Users/azula/code/rithik/regular/desktop/regular/src-tauri/test/");
+pub fn get_dir() -> String {
+    // let base_path = Path::new("/Users/azula/code/rithik/regular/desktop/regular/src-tauri/test/");
     // let base_path = Path::new("/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/test");
-    // let path = base_path.join("note.md");
-    // let path = base_path.join("student.md");
-    // let path = base_path.join("lecturer.md");
-    // let path = base_path.join("plan.md");
-    // let path = base_path.join("test.md");
-    // let path = base_path.join("sample.md");
-    // let path = base_path.join("plan.md");
-    let path = base_path.join("project.md");
+    return "/Users/azula/code/rithik/regular/desktop/regular/src-tauri/test/".to_string();
+}
 
-
+pub fn parse() -> std::io::Result<Root> {
+    let path = Path::new(&get_dir()).join("project.md");
     let file = File::open(path)?;
     let mut order = 1;
     let mut level = 0.0;

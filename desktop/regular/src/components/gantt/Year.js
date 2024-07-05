@@ -84,7 +84,11 @@ export default forwardRef(function Year(props, ref) {
                 height: `calc(${props.height * 3.12}em - 38.5px)`,
               }}
             />
-            <span className="currrent-text">{y}</span>
+            <span 
+             ref={
+              currentMonth === x.month && currentYear === x.year ? ref : null
+            }
+            id="date-current">{y}</span>
           </div>
         </>
 
@@ -104,9 +108,7 @@ export default forwardRef(function Year(props, ref) {
         return (
           <div
             key={x.year + "" + x.month}
-            ref={
-              currentMonth === x.month && currentYear === x.year ? ref : null
-            }
+           
             style={{
               width: 8 * MONTHS[x.month].n + "px",
             }}

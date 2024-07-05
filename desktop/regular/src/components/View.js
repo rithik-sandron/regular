@@ -3,15 +3,13 @@ import Year from "./gantt/Year";
 import GanttEvent from "./gantt/GanttEvent";
 import Tree from "./Tree";
 import { invoke } from "@tauri-apps/api";
-import TopComponent from "./TopComponent";
 import Handlers from "./gantt/Handlers";
 import Timeline from "./timeline/Timeline";
 import Tyear from "./timeline/TYear";
 import { startMutationObserver, navigate, getMutationObserver } from '../lib/editorUtility'
 
-export default function View() {
+export default function View({ component }) {
   const [node, setNode] = useState("");
-  const [component, setComponent] = useState("Gantt");
   const mutationObserver = useRef(null);
   const activeId = useRef('');
   const editor = useRef(null);
@@ -37,7 +35,8 @@ export default function View() {
     e.stopPropagation();
     ref.current?.scrollIntoView({
       behavior: "smooth",
-      inline: "start",
+      inline: "center",
+      block: "nearest"
     });
   }
 
@@ -53,7 +52,6 @@ export default function View() {
     node && (
       <>
         <section className="list-container">
-          <TopComponent setComponent={setComponent} />
           <div
             id="editor"
             ref={editor}
@@ -68,7 +66,7 @@ export default function View() {
             <Tree data={node._first_child} />
           </div>
         </section>
-        {component === "Gantt" && node._has_dates &&
+        {component && node._has_dates &&
           (<section className="timeline-container">
             <div>
               <Handlers
@@ -87,7 +85,7 @@ export default function View() {
               </div>
             </div>
 
-            {component === "Timeline" &&
+            {!component &&
               node._min_date !== 0 &&
               node._max_date !== 0 && (
                 <div className="line-container">

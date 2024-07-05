@@ -17,9 +17,7 @@ function getTime() {
     " " +
     dates.getHours() +
     ":" +
-    dates.getMinutes() +
-    ":" +
-    dates.getSeconds()
+    dates.getMinutes()
   );
 }
 

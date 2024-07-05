@@ -54,11 +54,13 @@
     },
     "windows": [
       {
+        "minWidth": 600,
+        "minHeight": 400,
         "fullscreen": false,
         "height": 800,
         "resizable": true,
         "title": "Regular",
-        "width": 560
+        "width": 600
       }
     ]
   }

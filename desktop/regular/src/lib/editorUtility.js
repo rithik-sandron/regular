@@ -170,7 +170,7 @@ export function getMutationObserver(mutate, activeId) {
         }
       }
     })
-    console.log(mutate);
+    // console.log(mutate);
   });
 }
 
@@ -268,13 +268,13 @@ const handleTab = function (e, activeId) {
   }
   let p = document.getElementById(activeId.current);
   const prev = p?.previousElementSibling?.previousElementSibling;
-  if (!e.shiftKey) {
-    if (prev && prev.nodeName !== "H1" && prev.style.marginLeft >= p.style.marginLeft && p.nodeName === 'P') {
-      p.style.marginLeft = parseFloat(p.style.marginLeft) + 1.8 + "em";
+  if (e.shiftKey) {
+    if (prev && prev.nodeName !== "H1" && p.style.marginLeft !== "0em") {
+      p.style.marginLeft = parseFloat(p.style.marginLeft) - 1.8 + "em";
     }
   } else {
-    if (prev && prev.nodeName !== "H1" && p.style.marginLeft !== "0em" && prev.style.marginLeft <= p.style.marginLeft && p.nodeName === 'P') {
-      p.style.marginLeft = parseFloat(p.style.marginLeft) - 1.8 + "em";
+    if (prev && prev.nodeName !== "H1" && prev.style.marginLeft >= p.style.marginLeft && p.nodeName === 'P') {
+      p.style.marginLeft = parseFloat(p.style.marginLeft) + 1.8 + "em";
     }
   }
 }

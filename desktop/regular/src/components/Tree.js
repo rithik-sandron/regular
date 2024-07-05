@@ -13,15 +13,18 @@ export default function Tree({ data }) {
     data._type && (
       <>
         {data._type === "br" ? (
-          <p
-            id={data._id}
-            key={data._id}
-            ref={ref}
-            style={{
-              marginLeft: data._indent + "em",
-            }}>
+          <>
+            <p
+              id={data._id}
+              key={data._id}
+              ref={ref}
+              style={{
+                marginLeft: data._indent + "em",
+              }}>
+              {"\u200D"}
+            </p>
             <data._type />
-          </p>
+          </>
         ) : (
           <>
             <data._type

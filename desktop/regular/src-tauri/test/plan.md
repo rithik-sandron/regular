@@ -13,7 +13,7 @@ Completed
 Yet to Complete
     Core
         Presentation. !(2024-05-08)
-        Support other markdown features. (2024-05-10 - 2024-05-15)
+        Support other markdown features. !(2024-05-10 - 2024-05-15)
         File save. !(2024-05-15 - 2024-05-20)      
         Theme customization. !(2024-07-15 - 2024-07-20)  
         Dependant events functionality. !(2024-07-20 - 2024-07-30)

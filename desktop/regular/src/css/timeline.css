@@ -1,24 +1,29 @@
 .current {
   display: block;
   position: absolute;
-  width: 3px;
+  width: 2px;
   left: 2.5px;
+  top: -0.5mm;
   background-color: var(--current-text);
 }
 
 #time-current {
-  display: block;
-  width: 100px;
   position: absolute;
-  top: -14.5px;
-  left: 46px;
-  font-size: 8pt;
+  margin-left: 3mm;
+  top: -4.5mm;
+  background-color: var(--current-text);
+  color: #fff;
+  height: 16px;
+  border-radius: 1mm;
+  font-size: 7.6pt;
+  text-align: center;
+  padding: 0.465mm 2mm;
 }
 
-.currrent-text {
+#date-current {
   position: absolute;
   margin-left: -5px;
-  top: -4mm;
+  top: -4.5mm;
   background-color: var(--current-text);
   color: #fff;
   width: 18px;
@@ -44,23 +49,49 @@ a {
 .app-container {
   position: relative;
   display: flex;
-  flex-wrap: wrap;
-  margin-top: 12mm;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
-  justify-content: space-between;
+}
+
+.list-container,
+.file-explorer,
+.timeline-container {
+  display: block;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  padding: 8mm;
 }
 
 .list-container {
-  width:48%;
   margin: 0 auto;
+  flex: 1 1 auto;
+  max-width: 197mm;
+  width: 40%;
+  padding: inherit 6mm;
 }
 
 .timeline-container {
-  position: relative;
-  overflow-x: scroll;
+  border-left: 1px solid var(--line);
   font-size: 10pt;
-  width: 48%;
+  width: 46%;
 }
+
+.file-explorer {
+  border-right: 1px solid var(--line);
+  width: 14%;
+}
+
+.file-explorer>div {
+  width: 90%;
+  margin: auto;
+  padding: 2mm 0;
+  border-bottom: 0.5px solid var(--line);
+  cursor: default;
+  font-size: 11pt;
+  font-weight: 500;
+}
+
 
 @media (max-width: 899px) {
   .app-container {
@@ -105,7 +136,6 @@ a {
 .handlers {
   display: flex;
   gap: 4mm;
-  margin: 4mm 0;
   width: fit-content;
   cursor: pointer;
   width: 100%;
