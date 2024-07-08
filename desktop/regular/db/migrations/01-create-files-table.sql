@@ -5,8 +5,6 @@ CREATE TABLE IF NOT EXISTS file (
     markdown TEXT
     modified_date DATE DEFAULT CURRENT_DATE)
 
-ALTER TABLE file 
-ADD COLUMN modified_date DATE;
+ALTER TABLE file ADD COLUMN modified_date DATE;
 
-UPDATE file
-SET modified_date = DATE('now');
+UPDATE file SET modified_date = DATE('now');

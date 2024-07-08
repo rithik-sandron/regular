@@ -19,7 +19,11 @@ function App() {
 
   return (
     <AppLayout>
-      <FileExplorer component={component} setComponent={setComponent} fileId={fileId} setFileId={setFileId} />
+      <FileExplorer
+        component={component}
+        setComponent={setComponent}
+        fileId={fileId}
+        setFileId={setFileId} />
       <View component={component} markdown={markdown} />
     </AppLayout>
   );

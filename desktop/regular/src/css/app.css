@@ -115,7 +115,7 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-.blocks p:before {
+/* .blocks p:before {
   content: "";
   width: 1.6mm;
   height: 1.6mm;
@@ -124,7 +124,7 @@ body {
   display: inline-block;
   margin-right: 3mm;
   vertical-align: middle;
-}
+} */
 
 .blocks h1,
 .blocks h2,

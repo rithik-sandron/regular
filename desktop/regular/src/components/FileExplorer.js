@@ -30,7 +30,8 @@ const FileExplorer = ({ component, setComponent, setFileId, fileId }) => {
                     <div
                         id={`file-exp-list-${file.id}`}
                         key={file.id}
-                        onClick={(e) => handlleFileClick(e, file.id)}>
+                        onClick={(e) => handlleFileClick(e, file.id)}
+                        className={file.id === fileId && 'file-active'}>
                         <h3>{file.name}</h3>
                         <date>{file.modified_date}</date>
                     </div>
