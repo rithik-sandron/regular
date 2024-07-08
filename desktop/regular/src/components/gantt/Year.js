@@ -49,13 +49,10 @@ export default forwardRef(function Year(props, ref) {
   function year_view(x, y) {
     if (DAY.includes(y)) {
       return (
-        <div key={x.year + "" + x.month + "" + y}>
+        <div key={`${x.year}${x.month}${y}`}>
           <div
-            style={{
-              width: y === 26 ? (MONTHS[x.month].n - y + 1) * 8 : 5 * 8 + "px",
-            }}
-            className="timeline-grid-year-date"
-          >
+            style={{ width: `${y === 26 ? (MONTHS[x.month].n - y + 1) * 8 : 5 * 8}px` }}
+            className="timeline-grid-year-date">
             {y}
           </div>
         </div>
@@ -71,11 +68,10 @@ export default forwardRef(function Year(props, ref) {
     ) {
       return (
         <>
-          <DateTime />
           <div
             style={{
               position: "absolute",
-              left: (y * 8) - 8 + "px",
+              left: `${(y * 8) - 8}px`,
             }}
           >
             <span
@@ -84,11 +80,12 @@ export default forwardRef(function Year(props, ref) {
                 height: `calc(${props.height * 3.12}em - 38.5px)`,
               }}
             />
-            <span 
-             ref={
-              currentMonth === x.month && currentYear === x.year ? ref : null
-            }
-            id="date-current">{y}</span>
+            <span
+              ref={
+                currentMonth === x.month && currentYear === x.year ? ref : null
+              }
+              id="date-current">{y}</span>
+            <DateTime />
           </div>
         </>
 
@@ -99,21 +96,16 @@ export default forwardRef(function Year(props, ref) {
   return (
     <div
       className="timeline-grid-year"
-      style={{
-        height: `${props.height * 3.12}em`,
-      }}
-    >
+      style={{ height: `${props.height * 3.12}em` }}>
       <span className="sticky">{currentYear}</span>
       {grid().map((x) => {
         return (
           <div
             key={x.year + "" + x.month}
-           
-            style={{
-              width: 8 * MONTHS[x.month].n + "px",
-            }}
-          >
-            <span>{MONTHS[x.month].m}</span>
+            style={{ width: `${8 * MONTHS[x.month].n}px` }}>
+
+            <span className="month">{MONTHS[x.month].m}</span>
+
             <div className="timeline-grid-year-dates">
               {DAYS.map((y) => {
                 return (
@@ -124,6 +116,7 @@ export default forwardRef(function Year(props, ref) {
                 );
               })}
             </div>
+
           </div>
         );
       })}

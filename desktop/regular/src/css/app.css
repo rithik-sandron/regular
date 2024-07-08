@@ -1,55 +1,53 @@
 :root {
   --foreground: #333;
   --background: #fefefe;
-  --line: rgba(223, 223, 223, 0.647);
-  --line-bg: rgba(160, 160, 160, 0.429);
+  --line: rgba(223, 223, 223, 0.75);
+  --line-bg: rgba(244, 245, 247);
   --shadow1: rgba(15, 15, 15, 0.175);
   --shadow2: rgba(15, 15, 15, 0.175);
   --timeline: #fdfdfd;
-  --dates: rgba(137, 137, 137, 0.893);
+  --accent: #dd4c4f;
+  --file-date: rgb(172, 173, 173, 0.9);
+  --selection: rgba(5, 143, 255, 0.1);
 
   --date-bg: rgb(220, 254, 174, 0.8);
-  --date-border: #ccc;
-  --dot: #7a7a7a;
   --current-line: #f00f0f91;
   --current-text: rgba(246, 89, 89, 0.851);
   --button: #fff;
-  --event: #d3d3d3;
 
-  --font-primary: sans-serif;
+  --font-primary: Avenir Next;
   --font-size: 11pt;
 
-  --line-height-p: 1.9;
-  --padding-p: 1.45mm;
+  --line-height-p: 2;
+  --padding-p: 1.191mm;
 
-  --padding-h1: 0.54mm;
-  --line-height-h1: 1.29;
+  --padding-h1: 0;
+  --line-height-h1: 1.36;
 
-  --padding-h2: 0.95mm;
-  --line-height-h2: 1.4;
+  --padding-h2: 0.265mm;
+  --line-height-h2: 1.46;
 
-  --padding-h3: 1.2mm;
-  --line-height-h3: 1.58;
+  --padding-h3: 0.265mm;
+  --line-height-h3: 1.51;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground: #fefefe;
+    --foreground: rgb(207, 219, 228);
     --background: #181818;
-    --line: rgba(45, 45, 45, 0.628);
-    --line-bg: rgba(78, 78, 78, 0.523);
+    --line: rgba(45, 45, 45, 0.828);
+    --line-bg: rgba(63, 63, 63, 0.35);
     --shadow1: rgba(97, 97, 97, 0.704);
     --shadow2: rgba(45, 45, 45, 0.053);
     --timeline: #181818;
-    --dates: rgba(132, 131, 131, 0.893);
+    --accent: rgba(22, 101, 160, 0.684);
+    --file-date: rgb(107, 108, 109, 80);
+    --selection: rgba(144, 169, 213, 0.1);
 
     --date-bg: rgba(22, 101, 160, 0.684);
-    --date-border: #595959e0;
-    --dot: #7a7a7a;
     --current-line: #ec202075;
     --current-text: rgba(237, 63, 54, 0.714);
     --button: rgb(43, 43, 43);
-    --event: #23394a;
   }
 }
 
@@ -57,11 +55,24 @@
   scrollbar-width: none;
   margin: 0;
   box-sizing: border-box;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
 }
 
 *::-webkit-scrollbar {
   display: none;
 }
+
+::-moz-selection {
+  background: var(--selection);
+  mix-blend-mode: difference;
+}
+
+::selection {
+  background: var(--selection);
+  mix-blend-mode: difference;
+}
+
 
 #app {
   padding: 8mm;
@@ -85,16 +96,6 @@ body {
   overflow: hidden;
 }
 
-.view-changer {
-  display: grid;
-  grid-template-columns: 40% 60%;
-  justify-content: space-around;
-}
-
-.view-changer>h3 {
-  margin: auto 0;
-}
-
 .layout {
   display: flex;
   flex-direction: column;
@@ -112,8 +113,6 @@ body {
   color: inherit;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
 }
 
 .blocks p:before {
@@ -127,53 +126,66 @@ body {
   vertical-align: middle;
 }
 
-.blocks>h1 {
-  font-size: 24pt;
-}
-
-mark {
-  display: inline;
-  color: inherit;
-  border-radius: 0.5mm;
-  text-wrap: wrap;
-  background-color: var(--date-bg);
-  padding: var(--padding-p) 1mm;
-}
-
-
-::-moz-selection {
-  background: rgb(211, 235, 255);
-}
-
-::selection {
-  background: rgb(211, 235, 255);
-}
-
 .blocks h1,
 .blocks h2,
 .blocks h3,
 .blocks p {
   display: inline;
+  /* background-color: #dedede; */
+}
+
+.blocks h1,
+.blocks h2,
+.blocks h3 {
+  font-weight: 600;
 }
 
 .blocks h1 {
   line-height: var(--line-height-h1);
   padding: var(--padding-h1) 0;
+  font-size: 21pt;
 }
 
 .blocks h2 {
   line-height: var(--line-height-h2);
   padding: var(--padding-h2) 0;
+  font-size: 17pt;
 }
 
 .blocks h3 {
   line-height: var(--line-height-h3);
   padding: var(--padding-h3) 0;
+  font-size: 14pt;
 }
 
 .blocks p {
   line-height: var(--line-height-p);
   padding: var(--padding-p) 0;
+  font-weight: 500;
+}
+
+.blocks mark {
+  display: inline;
+  color: inherit;
+  border-radius: 0.5mm;
+  text-wrap: wrap;
+  background-color: var(--date-bg);
+}
+
+.blocks h1>mark {
+  padding: var(--padding-h1) 1mm;
+}
+
+.blocks h2>mark {
+  padding: var(--padding-h2) 1mm;
+}
+
+.blocks h3>mark {
+  padding: var(--padding-h3) 1mm;
+}
+
+.blocks p>mark {
+  padding: var(--padding-p) 1mm;
 }
 
 .blocks strong {
@@ -187,7 +199,7 @@ mark {
 .top>div {
   display: block;
   padding: 1mm 4mm;
-  background-color: var(--line);
+  background-color: var(--line-bg);
   border-radius: 1mm;
   cursor: pointer;
   text-align: center;
@@ -216,5 +228,5 @@ mark {
   left: 260px;
   font-size: 10pt;
   color: var(--background);
-  font-weight: bold;
+  font-weight: 600;
 }

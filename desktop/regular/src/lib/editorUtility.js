@@ -170,7 +170,7 @@ export function getMutationObserver(mutate, activeId) {
         }
       }
     })
-    // console.log(mutate);
+    console.log(mutate);
   });
 }
 

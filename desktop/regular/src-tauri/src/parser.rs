@@ -29,11 +29,19 @@ pub fn get_dir() -> String {
     return "/Users/azula/code/rithik/regular/desktop/regular/src-tauri/test/".to_string();
 }
 
-pub fn parse() -> std::io::Result<Root> {
+pub fn get_dir_save() -> String {
+    // let base_path = Path::new("/Users/azula/code/rithik/regular/desktop/regular/src-tauri/test/");
+    // let base_path = Path::new("/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/test");
+    return "/Users/azula/code/rithik/regular/desktop/regular/json/".to_string();
+}
+
+pub fn parse() -> std::io::Result<(String, String, Root)> {
     let path = Path::new(&get_dir()).join("project.md");
     let file = File::open(path)?;
     let mut order = 1;
     let mut level = 0.0;
+    let mut raw_string: String = String::new();
+    let mut raw_name: String = String::new();
     let mut s: String = String::new();
     let mut reader = BufReader::with_capacity(CHARS, file);
 
@@ -98,6 +106,7 @@ pub fn parse() -> std::io::Result<Root> {
         }
 
         for c in buffer {
+            raw_string.push(*c as char);
             let re = b'!';
             let re2 = b'(';
             let re3 = b')';
@@ -216,6 +225,7 @@ pub fn parse() -> std::io::Result<Root> {
                 }
 
                 if is_first_itr {
+                    raw_name = String::from(&s);
                     prev._text = String::from(&s);
                     prev._md_text = String::from(&md);
                     prev._skimmed_text = String::from(&skimmed);
@@ -339,7 +349,7 @@ pub fn parse() -> std::io::Result<Root> {
     root._has_dates = _has_dates;
     println!("done");
     // root.list();
-    Ok(root)
+    Ok((raw_name, raw_string, root))
 }
 
 fn parse_date(

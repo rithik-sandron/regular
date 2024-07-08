@@ -3,35 +3,33 @@
   position: absolute;
   width: 2px;
   left: 2.5px;
-  top: -0.5mm;
+  top: -2.9mm;
   background-color: var(--current-text);
 }
 
 #time-current {
   position: absolute;
-  margin-left: 3mm;
-  top: -4.5mm;
+  width: 80px;
+  margin-left: 5mm;
+  top: -8mm;
   background-color: var(--current-text);
   color: #fff;
-  height: 16px;
   border-radius: 1mm;
-  font-size: 7.6pt;
+  font-size: 9pt;
   text-align: center;
-  padding: 0.465mm 2mm;
+  padding: 0.8mm 1mm 0.6mm 1mm;
 }
 
 #date-current {
   position: absolute;
-  margin-left: -5px;
-  top: -4.5mm;
+  margin-left: -7px;
+  top: -8mm;
   background-color: var(--current-text);
   color: #fff;
-  width: 18px;
-  height: 16px;
   border-radius: 1mm;
-  font-size: 7.6pt;
+  font-size: 9pt;
   text-align: center;
-  padding-top: 0.465mm;
+  padding: 0.8mm 2mm 0.6mm 2mm;
 }
 
 .grid-container {
@@ -60,6 +58,9 @@ a {
   display: block;
   overflow-y: scroll;
   overflow-x: hidden;
+}
+
+.list-container {
   padding: 8mm;
 }
 
@@ -75,23 +76,54 @@ a {
   border-left: 1px solid var(--line);
   font-size: 10pt;
   width: 46%;
+  padding-top: 8mm;
+}
+
+.view-changer {
+  display: flex;
+  justify-content: space-around;
+  margin: 4mm 0;
+}
+
+.view-changer>h3 {
+  font-weight: 500;
+  margin: auto 0;
+  font-size: 11pt;
 }
 
 .file-explorer {
   border-right: 1px solid var(--line);
   width: 14%;
+  padding: 4mm 4mm 0 4mm;
 }
 
 .file-explorer>div {
-  width: 90%;
   margin: auto;
-  padding: 2mm 0;
-  border-bottom: 0.5px solid var(--line);
+  padding: 3mm 0 3mm 8px;
+  border-bottom: 1px solid var(--line);
   cursor: default;
-  font-size: 11pt;
+  border-left: 5px solid transparent;
+}
+
+.file-explorer>div>h3 {
+  font-size: 10.5pt;
   font-weight: 500;
 }
 
+.file-explorer>div>date {
+  font-size: 9pt;
+  color: var(--file-date);
+}
+
+.file-explorer>div:first-child {
+  border: none;
+}
+
+.file-active {
+  border-left: 5px solid var(--accent) !important;
+  background-color: var(--line-bg);
+  border-radius: 1.4mm;
+}
 
 @media (max-width: 899px) {
   .app-container {
@@ -140,11 +172,12 @@ a {
   cursor: pointer;
   width: 100%;
   justify-content: flex-end;
+  padding-right: 8mm;
 }
 
 .handlers>div {
   display: block;
-  border: 0.5px solid var(--date-border);
+  border: 1px solid var(--line);
   padding: 1.2mm 1.8mm 1.2mm 1.8mm;
   border-radius: 0.24em;
   font-size: 10pt;
@@ -175,7 +208,7 @@ a {
 }
 
 .dropdown-content>p:hover {
-  background-color: var(--line);
+  background-color: var(--line-bg);
 }
 
 .dropdown:hover .dropdown-content {
@@ -185,7 +218,7 @@ a {
 .sticky {
   padding: 2.6mm 0 0 0;
   background-color: var(--timeline);
-  font-weight: 800;
+  font-weight: 600;
   height: fit-content;
   position: absolute;
 }
@@ -193,6 +226,12 @@ a {
 .timeline-grid-year {
   display: flex;
   position: absolute;
+}
+
+.month {
+  display: block;
+  margin-bottom: 10mm;
+  font-size: 12pt;
 }
 
 .timeline-grid-year>div {
@@ -203,7 +242,7 @@ a {
 }
 
 .timeline-grid-year>div span {
-  font-weight: 800;
+  font-weight: 600;
 }
 
 .timeline-grid-year>div:last-child {
@@ -219,7 +258,7 @@ a {
 
 .timeline-grid-year-date {
   display: block;
-  font-size: 2.4mm;
+  font-size: 8pt;
   opacity: 0.7;
 }
 

@@ -14,15 +14,15 @@ export default function GanttEvent({ data }) {
         <div className="grid-tasks">
           <div
             style={{
-              width: data._pad + "px",
+              width: `${data._pad}px`,
               left: pad,
-              top: data._order + "em",
+              top: `${data._order + 1}em`,
             }}
           >
             <p
               className="grid-tasks-text"
               style={{
-                width: data._skimmed_text.length + "em",
+                width: `${data._skimmed_text.length}em`,
               }}
             >
               {data._skimmed_text}
