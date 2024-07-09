@@ -61,15 +61,11 @@ a {
 }
 
 .list-container {
-  padding: 8mm;
-}
-
-.list-container {
   margin: 0 auto;
   flex: 1 1 auto;
   max-width: 197mm;
   width: 40%;
-  padding: inherit 6mm;
+  padding: 8mm 6mm 8mm 6mm;
 }
 
 .timeline-container {
@@ -79,10 +75,37 @@ a {
   padding-top: 8mm;
 }
 
+.line-container {
+  position: relative;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  font-size: 9pt;
+  margin-left: 8mm;
+}
+
+.line-event {
+  position: absolute;
+  border-bottom: none;
+  background-color: var(--line-bg);
+  padding: 0 4mm;
+  width: 180px;
+  left: 18mm;
+}
+
+.line-event-text {
+  position: absolute;
+  left: 260px;
+  font-size: 11pt;
+  color: var(--background);
+  font-weight: 600;
+  padding: 0 2mm;
+  border-radius: 0.8mm;
+}
+
 .view-changer {
-  display: flex;
-  justify-content: space-around;
-  margin: 4mm 0;
+  display: grid;
+  grid-template-columns: 30% 70%;
+  margin: 4mm;
 }
 
 .view-changer>h3 {

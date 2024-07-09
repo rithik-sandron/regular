@@ -1,4 +1,5 @@
 const Timeline = ({ data, min, max }) => {
+  console.log(data)
   function top() {
     return (data._date1 - min) * 3 + "px";
   }
@@ -18,7 +19,7 @@ const Timeline = ({ data, min, max }) => {
             id={`event-timeline-${data._id}`}
             className="line-event"
             style={{
-              height: data._pad + "px",
+              height: `${data._pad}px`,
               top: top(),
               // backgroundColor: data._color,
               backgroundColor: color,

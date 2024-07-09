@@ -36,7 +36,7 @@ pub fn get_dir_save() -> String {
 }
 
 pub fn parse() -> std::io::Result<(String, String, Root)> {
-    let path = Path::new(&get_dir()).join("project.md");
+    let path = Path::new(&get_dir()).join("student.md");
     let file = File::open(path)?;
     let mut order = 1;
     let mut level = 0.0;
@@ -377,10 +377,9 @@ fn parse_date(
 
     if !_d1.is_empty() {
         let test = _d1.parse::<u32>();
-
         match test {
             Ok(_) => {
-                return timline(&_d1, &_d2, _min, _max);
+                return timeline(&_d1, &_d2, _min, _max);
             }
             Err(_) => {
                 return gantt(&_d1, &_d2, _min, _max);
@@ -391,7 +390,7 @@ fn parse_date(
     return (_d1, String::new(), _d2, String::new(), 8, _min, _max);
 }
 
-fn timline(
+fn timeline(
     y1: &str,
     y2: &str,
     mut min_date: u32,

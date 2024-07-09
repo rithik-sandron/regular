@@ -11,20 +11,11 @@ pub mod parser;
 pub mod root;
 pub mod uuid;
 
-// #[tauri::command]
-// fn parse() -> String {
-//     // let _ = db::create_file(&raw_name, &raw_string, &json);
-//     let (raw_name, raw_string, tree) = parser::parse().expect("paring error");
-//     let json = serde_json::to_string(&tree).expect("conversion error");
-//     json
-// }
-
 fn main() {
     tauri::Builder::default()
         .setup(|_app| {
             // run when app initializes
             db::init().expect("Failed to initialize database");
-
             // run when app closes TODO:this is not working
             let window = _app.get_window("main").unwrap();
             window.on_window_event(|event| {

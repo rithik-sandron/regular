@@ -1,20 +1,20 @@
-import { forwardRef } from "react";
+import { forwardRef, useState } from "react";
 import DateTime from "../DateTime";
 
 export default forwardRef(function Year(props, ref) {
+
+  const [scrollYearLeft, setScrollYearLeft] = useState(new Date().getFullYear());
+  const [scrollYearRight, setScrollYearRight] = useState(new Date().getFullYear());
+  const [isLoading, setIsLoading] = useState(false);
+
   let current = new Date();
   let currentMonth = current.getMonth();
   let currentYear = current.getFullYear();
   let currentDate = current.getDate();
 
   // const DAYS = [1, 5, 10, 15, 20, 25]
-  const DAYS = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-    22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
-  ];
-
+  const DAYS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31];
   const DAY = [1, 6, 11, 16, 21, 26];
-
   const MONTHS = [
     { m: "January", n: 31 },
     { m: "February", n: 29 },
@@ -30,10 +30,68 @@ export default forwardRef(function Year(props, ref) {
     { m: "December", n: 31 },
   ];
 
+  // useEffect(() => {
+  //   const timelineContainer = timelineContainerRef.current;
+
+  //   const handleScroll = () => {
+  //     const { scrollLeft, scrollWidth, clientWidth } = timelineContainer;
+  //     const isAtTheEnd = scrollLeft + clientWidth >= scrollWidth;
+  //     const isAtTheStart = scrollLeft === 0;
+
+  //     if (isAtTheStart && currentYear > 1900) {
+  //       setIsLoading(true);
+  //       // Load previous year data
+  //       setCurrentYear(currentYear - 1);
+  //       setIsLoading(false);
+  //     } else if (isAtTheEnd) {
+  //       setIsLoading(true);
+  //       // Load next year data
+  //       setCurrentYear(currentYear + 1);
+  //       setIsLoading(false);
+  //     }
+  //   };
+
+  //   timelineContainer.addEventListener('scroll', handleScroll);
+
+  //   return () => {
+  //     timelineContainer.removeEventListener('scroll', handleScroll);
+  //   };
+  // }, [currentYear]);
+
+  return (
+    <div
+      className="timeline-grid-year"
+      style={{ height: `${props.height * 3.12}em` }}>
+      <span className="sticky">{currentYear}</span>
+      {grid().map((x) => {
+        return (
+          <div
+            key={`${x.year}-${x.month}`}
+            style={{ width: `${8 * MONTHS[x.month].n}px` }}>
+
+            <span className="month">{MONTHS[x.month].m}</span>
+
+            <div className="timeline-grid-year-dates">
+              {DAYS.map((y) => {
+                return (
+                  <div key={y}>
+                    {current_date_view(x, y)}
+                    {year_view(x, y)}
+                  </div>
+                );
+              })}
+            </div>
+
+          </div>
+        );
+      })}
+    </div>
+  );
+
   function grid() {
     let arr = [];
-    let start = new Date("2024-01-01");
-    let end = new Date(`${new Date().getFullYear()}-12-31`);
+    let start = new Date(`${currentYear}-01-01`);
+    let end = new Date(`${currentYear}-12-31`);
     // year
     let startYear = start.getFullYear();
     while (startYear <= end.getFullYear()) {
@@ -92,34 +150,4 @@ export default forwardRef(function Year(props, ref) {
       );
     }
   }
-
-  return (
-    <div
-      className="timeline-grid-year"
-      style={{ height: `${props.height * 3.12}em` }}>
-      <span className="sticky">{currentYear}</span>
-      {grid().map((x) => {
-        return (
-          <div
-            key={x.year + "" + x.month}
-            style={{ width: `${8 * MONTHS[x.month].n}px` }}>
-
-            <span className="month">{MONTHS[x.month].m}</span>
-
-            <div className="timeline-grid-year-dates">
-              {DAYS.map((y) => {
-                return (
-                  <div key={y}>
-                    {current_date_view(x, y)}
-                    {year_view(x, y)}
-                  </div>
-                );
-              })}
-            </div>
-
-          </div>
-        );
-      })}
-    </div>
-  );
 });

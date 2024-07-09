@@ -204,29 +204,3 @@ body {
   cursor: pointer;
   text-align: center;
 }
-
-.line-container {
-  position: relative;
-  height: 70vh;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  font-size: 8pt;
-}
-
-.line-event {
-  position: absolute;
-  font-size: 9pt;
-  border-bottom: none;
-  background-color: var(--line-bg);
-  padding: 0 4mm;
-  width: 180px;
-  left: 10mm;
-}
-
-.line-event-text {
-  position: absolute;
-  left: 260px;
-  font-size: 10pt;
-  color: var(--background);
-  font-weight: 600;
-}

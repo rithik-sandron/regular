@@ -63,40 +63,41 @@ export default function View({ component, markdown }) {
           >
             <Tree data={markdown._first_child} />
           </div>
-        </section>
-        {component && markdown._has_dates &&
-          (<section className="timeline-container">
-            <div>
-              <Handlers
-                view={view}
-                handleClick={handleClick}
-                handleClickView={handleClickView}
-              />
-              <div
-                className="grid-container"
-                style={{
-                  height: markdown._order * 5 + "em",
-                }}
-              >
-                {view === "Year" && <Year ref={ref} height={markdown._order} />}
-                <GanttEvent data={markdown} />
-              </div>
-            </div>
 
-            {!component &&
-              markdown._min_date !== 0 &&
+        </section>
+        {component && (
+          <section className="timeline-container">
+
+
+            {markdown._min_date !== 0 &&
+              markdown._max_date !== 0 ? markdown._min_date !== 0 &&
               markdown._max_date !== 0 && (
-                <div className="line-container">
-                  <Tyear min={markdown._min_date} max={markdown._max_date} />
-                  <Timeline
-                    data={markdown}
-                    min={markdown._min_date}
-                    max={markdown._max_date}
-                  />
-                </div>
+              <div className="line-container">
+                <Tyear min={markdown._min_date} max={markdown._max_date} />
+                <Timeline
+                  data={markdown}
+                  min={markdown._min_date}
+                  max={markdown._max_date}
+                />
+              </div>
+            )
+              :
+              (
+                <>
+                  <Handlers
+                    view={view}
+                    handleClick={handleClick}
+                    handleClickView={handleClickView} />
+                  <div
+                    className="grid-container"
+                    style={{ height: `${markdown._order * 5}em` }}>
+                    {view === "Year" && <Year ref={ref} height={markdown._order} />}
+                    <GanttEvent data={markdown} />
+                  </div>
+                </>
               )}
           </section>
-          )}
+        )}
       </>
     )
   );

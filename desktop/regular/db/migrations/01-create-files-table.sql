@@ -8,3 +8,7 @@ CREATE TABLE IF NOT EXISTS file (
 ALTER TABLE file ADD COLUMN modified_date DATE;
 
 UPDATE file SET modified_date = DATE('now');
+
+UPDATE file SET modified_date = DATE('now') where id = 5;
+
+
