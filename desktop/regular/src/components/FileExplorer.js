@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api";
 import TopComponent from "./TopComponent";
+import { convertDate } from "../lib/generalUtility";
 
 const FileExplorer = ({ component, setComponent, setFileId, fileId }) => {
     const [files, setFiles] = useState([]);
-
     useEffect(() => {
         invoke("get_files").then(data => {
             setFiles(data);
@@ -31,9 +31,9 @@ const FileExplorer = ({ component, setComponent, setFileId, fileId }) => {
                         id={`file-exp-list-${file.id}`}
                         key={file.id}
                         onClick={(e) => handlleFileClick(e, file.id)}
-                        className={file.id === fileId && 'file-active'}>
+                        className={file.id === fileId ? 'file-active' : ""}>
                         <h3>{file.name}</h3>
-                        <date>{file.modified_date}</date>
+                        <time>{convertDate(file.modified_date)}</time>
                     </div>
                 );
             })}

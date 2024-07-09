@@ -1,5 +1,4 @@
 const Timeline = ({ data, min, max }) => {
-  console.log(data)
   function top() {
     return (data._date1 - min) * 3 + "px";
   }

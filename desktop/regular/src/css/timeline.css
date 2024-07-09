@@ -133,7 +133,7 @@ a {
   font-weight: 500;
 }
 
-.file-explorer>div>date {
+.file-explorer>div>time {
   font-size: 9pt;
   color: var(--file-date);
 }
