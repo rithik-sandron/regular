@@ -5,9 +5,9 @@ export default function Tree({ data }) {
 
   useEffect(() => {
     if (data._md_text) {
-      ref.current.innerHTML = data._md_text;
+      ref.current.innerHTML = "\u200D" + data._md_text + "\u200D";
     }
-  }, [data._id, data._md_text]);
+  }, [data._id]);
 
   return (
     data._type && (
@@ -21,7 +21,6 @@ export default function Tree({ data }) {
               style={{
                 marginLeft: data._indent + "em",
               }}>
-              {"\u200D"}
             </p>
             <data._type />
           </>

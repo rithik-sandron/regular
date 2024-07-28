@@ -11,4 +11,4 @@ UPDATE file SET modified_date = DATE('now');
 
 UPDATE file SET modified_date = DATE('now') where id = 5;
 
-
+DELETE FROM file WHERE id = 5;

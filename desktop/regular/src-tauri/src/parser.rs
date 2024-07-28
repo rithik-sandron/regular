@@ -406,9 +406,9 @@ fn timeline(
         }
         return (
             y1.to_owned(),
-            String::new(),
+            y1.to_owned(),
             y2.to_owned(),
-            String::new(),
+            y2.to_owned(),
             (y2.parse::<i64>().unwrap() - y1.parse::<i64>().unwrap()) * 3 + 1,
             min_date,
             max_date,

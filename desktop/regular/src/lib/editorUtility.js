@@ -8,12 +8,40 @@ export function setCursor(ref, index) {
   ref.focus();
 }
 
-export function getCursor(e) {
-  let _range = document.getSelection().getRangeAt(0);
-  let range = _range.cloneRange();
-  range.selectNodeContents(e);
-  range.setEnd(_range.endContainer, _range.endOffset);
-  return range.toString();
+function getCaret(element) {
+  var caretOffset = 0;
+  var doc = element.ownerDocument || element.document;
+  var win = doc.defaultView || doc.parentWindow;
+  var sel;
+  if (typeof win.getSelection != "undefined") {
+    sel = win.getSelection();
+    if (sel.rangeCount > 0) {
+      var range = sel.getRangeAt(0);
+      var preCaretRange = range.cloneRange();
+      preCaretRange.selectNodeContents(element);
+      preCaretRange.setEnd(range.endContainer, range.endOffset);
+      caretOffset = preCaretRange.toString().length;
+    }
+  } else if ((sel = doc.selection) && sel.type != "Control") {
+    var textRange = sel.createRange();
+    var preCaretTextRange = doc.body.createTextRange();
+    preCaretTextRange.moveToElementText(element);
+    preCaretTextRange.setEndPoint("EndToEnd", textRange);
+    caretOffset = preCaretTextRange.text.length;
+  }
+  return caretOffset;
+}
+
+function getSelectedElement() {
+  const selection = window.getSelection();
+  if (selection.rangeCount > 0) {
+    const range = selection.getRangeAt(0);
+    let node = range.commonAncestorContainer;
+    if (node.nodeType === Node.TEXT_NODE) {
+      node = node.parentNode;
+    }
+    return node;
+  }
 }
 
 export function clear(activeId) {
@@ -44,7 +72,7 @@ export function startMutationObserver(mutationObserver, editor) {
       attributeOldValue: true,
       characterDataOldValue: true,
       attributes: true,
-      attributeFilter: ['style']
+      attributeFilter: ['style', '']
     });
   }
 }
@@ -111,8 +139,10 @@ export const navigate = (e, mutationObserver, activeId, editor) => {
 export function getMutationObserver(mutate, activeId) {
   return new MutationObserver(async (mutations) => {
     mutations.forEach((mutation) => {
+      if(mutation.target.nodeName === "MARK") {
+        return
+      }
       if (mutation.type === "childList") {
-
         if (mutation.target.nodeName !== "P" && mutation.removedNodes.length > 0) {
           mutation.removedNodes.forEach(node => {
             // delete mutation, no further action be done for this id after deletion.
@@ -147,10 +177,10 @@ export function getMutationObserver(mutate, activeId) {
         // update mutation
         let existingNode = mutate.get(mutation.target.parentNode.id);
         if (existingNode !== undefined) {
-          existingNode.text = mutation.target.textContent;
+          existingNode.text = mutation.target.parentNode.outerText;
           mutate.set(mutation.target.parentNode.id, existingNode);
         } else {
-          mutate.set(mutation.target.parentNode.id, { action: "update", id: mutation.target.parentNode.id, text: mutation.target.textContent });
+          mutate.set(mutation.target.parentNode.id, { action: "update", id: mutation.target.parentNode.id, text: mutation.target.parentNode.outerText });
         }
 
       } else if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
@@ -186,7 +216,8 @@ const handleEnter = function (e, activeId) {
     node = selection.getRangeAt(0).startContainer;
   }
   let tag = node.nodeName;
-  const cursorPoint = selection.anchorOffset;
+  // const cursorPoint = selection.anchorOffset;
+  const cursorPoint = getCaret(getSelectedElement())
   let textContent = "\u200D";
   if (cursorPoint < node.textContent.length) {
     // cursorPoint === node.textContent.length && node.textContent.length !== 0
@@ -233,13 +264,27 @@ const uuid = () => {
 const handleBackspace = function (e, activeId, mutationObserver, editor) {
   const selection = window.getSelection();
   let range = selection.getRangeAt(0);
+  const cursorPoint = getCaret(getSelectedElement())
+  
+
+  if (activeId.current < 2) {
+    if ((selection.focusOffset === 0 && selection.anchorOffset === 1)
+      || (selection.anchorOffset < 2 && selection.anchorNode.textContent.length === selection.focusOffset)
+      || (selection.focusOffset < 1 && selection.anchorNode.textContent.length === selection.anchorOffset)
+      || (range.startOffset < 2 || range.endOffset < 2)
+    ) {
+      e.preventDefault();
+      range.startContainer.textContent = "\u200D";
+    }
+    return
+  }
 
   if ((selection.focusOffset === 0 && selection.anchorOffset === 1)
     || (selection.anchorOffset < 2 && selection.anchorNode.textContent.length === selection.focusOffset)
     || (selection.focusOffset < 1 && selection.anchorNode.textContent.length === selection.anchorOffset)) {
     e.preventDefault();
     range.startContainer.textContent = "\u200D";
-  } else if ((selection.focusOffset === 0 && selection.anchorOffset === 0) || selection.focusNode.textContent.length === 1) {
+  } else if (cursorPoint === 0) {
     e.preventDefault()
 
     let p = document.getElementById(activeId.current);
