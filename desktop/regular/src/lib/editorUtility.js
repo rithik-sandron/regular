@@ -139,7 +139,7 @@ export const navigate = (e, mutationObserver, activeId, editor) => {
 export function getMutationObserver(mutate, activeId) {
   return new MutationObserver(async (mutations) => {
     mutations.forEach((mutation) => {
-      if(mutation.target.nodeName === "MARK") {
+      if (mutation.target.nodeName === "MARK") {
         return
       }
       if (mutation.type === "childList") {
@@ -200,7 +200,7 @@ export function getMutationObserver(mutate, activeId) {
         }
       }
     })
-    console.log(mutate);
+    // console.log(mutate);
   });
 }
 
@@ -221,7 +221,7 @@ const handleEnter = function (e, activeId) {
   let textContent = "\u200D";
   if (cursorPoint < node.textContent.length) {
     // cursorPoint === node.textContent.length && node.textContent.length !== 0
-    textContent += node.textContent.substring(cursorPoint, node.textContent.length);
+    textContent = node.textContent.substring(cursorPoint, node.textContent.length);
     node.innerText = node.textContent.substring(0, cursorPoint).length > 0 ? node.textContent.substring(0, cursorPoint) : "\u200D";
   }
 
@@ -237,6 +237,9 @@ const handleEnter = function (e, activeId) {
 }
 
 function createNewElement(e, range, tag, selection, n, textContent, node, activeId) {
+  if (tag === "H1") {
+    tag = "P"
+  }
   const el = document.createElement(tag);
   el.id = uuid();
   activeId.current = el.id;
@@ -261,45 +264,43 @@ const uuid = () => {
   return dateString + randomness;
 };
 
+function removeContent(e, activeId, mutationObserver, editor) {
+  e.preventDefault();
+  let element = document.getElementById(activeId.current);
+  pauseMutationObserver(mutationObserver);
+  if (element.nodeName === "H1") {
+    element.textContent = "\u200D";
+    startMutationObserver(mutationObserver, editor);
+  } else {
+    element.previousElementSibling.remove();
+    let content = element.innerText;
+    let prev = element.previousElementSibling;
+    clear(activeId)
+    updateContent(prev, activeId);
+    startMutationObserver(mutationObserver, editor);
+    const pos = prev.textContent.length;
+    prev.textContent = document.getElementById(activeId.current).textContent + content;
+    setCursor(prev, pos);
+    element.remove();
+  }
+}
+
 const handleBackspace = function (e, activeId, mutationObserver, editor) {
   const selection = window.getSelection();
   let range = selection.getRangeAt(0);
   const cursorPoint = getCaret(getSelectedElement())
-  
-
-  if (activeId.current < 2) {
-    if ((selection.focusOffset === 0 && selection.anchorOffset === 1)
-      || (selection.anchorOffset < 2 && selection.anchorNode.textContent.length === selection.focusOffset)
-      || (selection.focusOffset < 1 && selection.anchorNode.textContent.length === selection.anchorOffset)
-      || (range.startOffset < 2 || range.endOffset < 2)
-    ) {
-      e.preventDefault();
-      range.startContainer.textContent = "\u200D";
-    }
-    return
-  }
-
+  console.log()
   if ((selection.focusOffset === 0 && selection.anchorOffset === 1)
     || (selection.anchorOffset < 2 && selection.anchorNode.textContent.length === selection.focusOffset)
-    || (selection.focusOffset < 1 && selection.anchorNode.textContent.length === selection.anchorOffset)) {
+    || (selection.focusOffset < 1 && selection.anchorNode.textContent.length === selection.anchorOffset)
+    || (cursorPoint === 1)) {
     e.preventDefault();
-    range.startContainer.textContent = "\u200D";
+    if (document.getElementById(activeId.current).textContent.charCodeAt(0) === 8205)
+      removeContent(e, activeId, mutationObserver, editor);
+    else
+      document.getElementById(activeId.current).textContent = "\u200D";
   } else if (cursorPoint === 0) {
-    e.preventDefault()
-
-    let p = document.getElementById(activeId.current);
-    pauseMutationObserver(mutationObserver);
-    p.previousElementSibling.remove();
-    let content = p.innerText;
-    let prev = p.previousElementSibling;
-    clear(activeId)
-    updateContent(prev, activeId);
-    startMutationObserver(mutationObserver, editor);
-
-    const pos = prev.textContent.length;
-    prev.textContent = document.getElementById(activeId.current).textContent + content;
-    setCursor(prev, pos);
-    p.remove();
+    removeContent(e, activeId, mutationObserver, editor);
   }
 }
 

@@ -5,10 +5,15 @@ CREATE TABLE IF NOT EXISTS file (
     markdown TEXT
     modified_date DATE DEFAULT CURRENT_DATE)
 
+SELECT id FROM file;
+
 ALTER TABLE file ADD COLUMN modified_date DATE;
 
 UPDATE file SET modified_date = DATE('now');
 
 UPDATE file SET modified_date = DATE('now') where id = 5;
 
-DELETE FROM file WHERE id = 5;
+DELETE FROM file WHERE id = 2;
+
+sqlite3 
+.open /Users/azula/code/rithik/regular/desktop/regular/db/data.db

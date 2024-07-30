@@ -12,8 +12,8 @@ const MONTH: [&str; 12] = [
     "Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec",
 ];
 
-const MARK_START: &str = "<mark className='due-date' contentEditable data-text='";
-const MARK_END: &str = "</mark>";
+const MARK_START: &str = "\u{200D}<mark className='due-date' contentEditable data-text='";
+const MARK_END: &str = "</mark>\u{200D}";
 
 const CHARS: usize = 10_000;
 const NEW_LINE: u8 = b'\n';
@@ -36,7 +36,7 @@ pub fn get_dir_save() -> String {
 }
 
 pub fn parse() -> std::io::Result<(String, String, Root)> {
-    let path = Path::new(&get_dir()).join("student.md");
+    let path = Path::new(&get_dir()).join("project.md");
     let file = File::open(path)?;
     let mut order = 1;
     let mut level = 0.0;

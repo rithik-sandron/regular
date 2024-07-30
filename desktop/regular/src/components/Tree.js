@@ -5,7 +5,7 @@ export default function Tree({ data }) {
 
   useEffect(() => {
     if (data._md_text) {
-      ref.current.innerHTML = "\u200D" + data._md_text + "\u200D";
+      ref.current.innerHTML = data._md_text;
     }
   }, [data._id]);
 
