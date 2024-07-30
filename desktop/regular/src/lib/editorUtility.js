@@ -44,14 +44,22 @@ function getSelectedElement() {
   }
 }
 
+const uuid = () => {
+  const dateString = Date.now().toString(36);
+  const randomness = Math.random().toString(36).substring(2);
+  return dateString + randomness;
+};
+
 export function clear(activeId) {
   let p = document.getElementById(activeId.current);
   activeId.current = "";
-  p.childNodes.forEach(x => {
-    if (x.nodeName === "MARK") {
-      x.innerText = x.getAttribute("data-md");
-    }
-  })
+  if (p.childNodes.length > 0) {
+    p.childNodes.forEach(x => {
+      if (x.nodeName === "MARK") {
+        x.innerText = x.getAttribute("data-md");
+      }
+    })
+  }
 }
 
 export function updateContent(node, activeId) {
@@ -175,12 +183,13 @@ export function getMutationObserver(mutate, activeId) {
 
       } else if (mutation.type === "characterData") {
         // update mutation
-        let existingNode = mutate.get(mutation.target.parentNode.id);
+        console.log(mutation)
+        let existingNode = mutate.get(activeId.current);
         if (existingNode !== undefined) {
-          existingNode.text = mutation.target.parentNode.outerText;
-          mutate.set(mutation.target.parentNode.id, existingNode);
+          existingNode.text = document.getElementById(activeId.current).outerText;
+          mutate.set(activeId.current, existingNode);
         } else {
-          mutate.set(mutation.target.parentNode.id, { action: "update", id: mutation.target.parentNode.id, text: mutation.target.parentNode.outerText });
+          mutate.set(activeId.current, { action: "update", id: activeId.current, text:  document.getElementById(activeId.current).outerText });
         }
 
       } else if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
@@ -233,36 +242,25 @@ const handleEnter = function (e, activeId) {
   range.setEndAfter(el);
   selection.removeAllRanges();
   selection.addRange(range);
-  createNewElement(e, range, tag, selection, el, textContent, node, activeId);
+  createNewElement(e, range, tag, textContent, node, activeId);
 }
 
-function createNewElement(e, range, tag, selection, n, textContent, node, activeId) {
+function createNewElement(e, range, tag, textContent, node, activeId) {
   if (tag === "H1") {
     tag = "P"
   }
   const el = document.createElement(tag);
+  el.innerText = textContent;
   el.id = uuid();
   activeId.current = el.id;
   el.style.marginLeft = node.style.marginLeft;
   range.deleteContents();
+  range.insertNode(el)
   range.setStart(el, 0);
   range.setEnd(el, 0);
-  const ze = document.createTextNode(textContent);
-  range.insertNode(ze);
-  range.setStartBefore(ze);
-  range.setEndBefore(ze);
-  n.insertAdjacentElement("afterend", el);
-  selection.removeAllRanges();
-  selection.addRange(range);
   e.stopPropagation();
   el.focus();
 }
-
-const uuid = () => {
-  const dateString = Date.now().toString(36);
-  const randomness = Math.random().toString(36).substring(2);
-  return dateString + randomness;
-};
 
 function removeContent(e, activeId, mutationObserver, editor) {
   e.preventDefault();
@@ -273,34 +271,42 @@ function removeContent(e, activeId, mutationObserver, editor) {
     startMutationObserver(mutationObserver, editor);
   } else {
     element.previousElementSibling.remove();
-    let content = element.innerText;
+    let content = element.innerText.substring(1);
     let prev = element.previousElementSibling;
     clear(activeId)
     updateContent(prev, activeId);
     startMutationObserver(mutationObserver, editor);
     const pos = prev.textContent.length;
+
     prev.textContent = document.getElementById(activeId.current).textContent + content;
     setCursor(prev, pos);
     element.remove();
   }
 }
 
+function findNonUniChar(cursorPoint, node) {
+  while(node.textContent.charCodeAt(cursorPoint-1) === 8205) {
+    cursorPoint--;
+  }
+  console.log(cursorPoint, node.textContent.charCodeAt(cursorPoint))
+}
+
 const handleBackspace = function (e, activeId, mutationObserver, editor) {
   const selection = window.getSelection();
-  let range = selection.getRangeAt(0);
-  const cursorPoint = getCaret(getSelectedElement())
-  console.log()
-  if ((selection.focusOffset === 0 && selection.anchorOffset === 1)
-    || (selection.anchorOffset < 2 && selection.anchorNode.textContent.length === selection.focusOffset)
-    || (selection.focusOffset < 1 && selection.anchorNode.textContent.length === selection.anchorOffset)
-    || (cursorPoint === 1)) {
+  const node = getSelectedElement();
+  let cursorPoint = getCaret(node);
+  let selectedText = selection.toString();
+  // console.log(cursorPoint, node.textContent.length, node.textContent.charCodeAt(1))
+  // default behavior deletes last char and p tag entirely 
+  if ((node.textContent.length !== 1 && node.textContent.length === selectedText.length) 
+    || (cursorPoint === 1 && node.textContent.charCodeAt(0) !== 8205)
+    || (cursorPoint === 2 && node.textContent.charCodeAt(1) === 8205)) {
     e.preventDefault();
-    if (document.getElementById(activeId.current).textContent.charCodeAt(0) === 8205)
-      removeContent(e, activeId, mutationObserver, editor);
-    else
-      document.getElementById(activeId.current).textContent = "\u200D";
-  } else if (cursorPoint === 0) {
-    removeContent(e, activeId, mutationObserver, editor);
+    node.textContent = "\u200D";
+  } else if (cursorPoint === 0 || cursorPoint === 1 || (cursorPoint === 2 && node.textContent.charCodeAt(0) !== 8205)) {
+    removeContent(e, activeId, mutationObserver, editor, node);
+  } else {
+    findNonUniChar(cursorPoint, node);
   }
 }
 

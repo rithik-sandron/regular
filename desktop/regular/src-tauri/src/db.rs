@@ -8,7 +8,7 @@ use rusqlite::{Connection, Result};
 static mut CONN: Option<Connection> = None;
 
 fn get_db() -> String {
-    "/Users/azula/code/rithik/regular/desktop/regular/db/data.db".to_string()
+    "/Users/ryuu/code/repo/regular/desktop/regular/db/data.db".to_string()
 }
 
 fn open() -> Result<()> {
