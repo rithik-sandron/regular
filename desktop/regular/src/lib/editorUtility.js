@@ -399,8 +399,26 @@ function handleTyping(e) {
       let pos = getCaret(paragraph);
       const text = startContainer.textContent;
       const boldRegex = /\*\*(.+?)\*\*/g;
+      const boldRegexWithUnicCode = /\u200D\*\*(.+?)\*\*\u200D/g;
       let match;
       if (match = boldRegex.exec(text)) {
+        var start = match.index;
+        var end = boldRegex.lastIndex;
+        e.preventDefault();
+        e.stopPropagation();
+        console.log(startContainer.textContent.substring(end, startContainer.textContent.length).charCodeAt(0))
+        let text = startContainer.textContent.slice(start, end);
+        let b = document.createElement('span');
+        b.className = "bold-wrapper";
+        b.innerHTML = `<span class="asterisk">${text.slice(0, 2)}</span><strong>${match[0].slice(2, -2)}</strong><span class="asterisk">${text.slice(-2)}</span>`
+        let last = paragraph.insertBefore(document.createTextNode('\u200B' + startContainer.textContent.substring(end, startContainer.textContent.length)), startContainer);
+        paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start) + '\u200B'), last);
+        paragraph.insertBefore(b, last);
+        paragraph.removeChild(startContainer);
+        setCaretAtIndex(paragraph, pos + 2);
+
+      } else if (match = boldRegexWithUnicCode.exec(text)) {
+        console.log("YYY")
         var start = match.index;
         var end = boldRegex.lastIndex;
         e.preventDefault();
