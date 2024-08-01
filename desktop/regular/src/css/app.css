@@ -192,6 +192,15 @@ body {
   padding: var(--padding-p) 0;
 }
 
+.blocks .bold-wrapper {
+  display: inline;
+}
+
+.blocks .asterisk {
+  color: #dedede;
+  font-weight: normal;
+}
+
 .top {
   width: fit-content;
 }

@@ -1,11 +1,11 @@
-export function setCursor(ref, index) {
+export function setCursor(e, index) {
   let range = document.createRange();
   let sel = window.getSelection();
-  range.setStart(ref.childNodes[0], index);
+  range.setStart(e.childNodes[0], index);
   range.collapse(true);
   sel.removeAllRanges();
   sel.addRange(range);
-  ref.focus();
+  e.focus();
 }
 
 function getCaret(element) {
@@ -141,6 +141,9 @@ export const navigate = (e, mutationObserver, activeId, editor) => {
           break;
       }
       break;
+    case "input":
+      handleTyping(e);
+      break;
   }
 }
 
@@ -183,13 +186,12 @@ export function getMutationObserver(mutate, activeId) {
 
       } else if (mutation.type === "characterData") {
         // update mutation
-        console.log(mutation)
         let existingNode = mutate.get(activeId.current);
         if (existingNode !== undefined) {
           existingNode.text = document.getElementById(activeId.current).outerText;
           mutate.set(activeId.current, existingNode);
         } else {
-          mutate.set(activeId.current, { action: "update", id: activeId.current, text:  document.getElementById(activeId.current).outerText });
+          mutate.set(activeId.current, { action: "update", id: activeId.current, text: document.getElementById(activeId.current).outerText });
         }
 
       } else if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
@@ -209,7 +211,7 @@ export function getMutationObserver(mutate, activeId) {
         }
       }
     })
-    // console.log(mutate);
+    console.log(mutate);
   });
 }
 
@@ -262,51 +264,71 @@ function createNewElement(e, range, tag, textContent, node, activeId) {
   el.focus();
 }
 
-function removeContent(e, activeId, mutationObserver, editor) {
-  e.preventDefault();
-  let element = document.getElementById(activeId.current);
-  pauseMutationObserver(mutationObserver);
-  if (element.nodeName === "H1") {
-    element.textContent = "\u200D";
-    startMutationObserver(mutationObserver, editor);
-  } else {
-    element.previousElementSibling.remove();
-    let content = element.innerText.substring(1);
-    let prev = element.previousElementSibling;
-    clear(activeId)
-    updateContent(prev, activeId);
-    startMutationObserver(mutationObserver, editor);
-    const pos = prev.textContent.length;
+// function removeContent(e, activeId, mutationObserver, editor) {
+//   e.preventDefault();
+//   let element = document.getElementById(activeId.current);
+//   pauseMutationObserver(mutationObserver);
+//   if (element.nodeName === "H1") {
+//     element.textContent = "\u200D";
+//     startMutationObserver(mutationObserver, editor);
+//   } else {
+//     element.previousElementSibling.remove();
+//     let content = element.innerText.substring(1);
+//     let prev = element.previousElementSibling;
+//     clear(activeId)
+//     updateContent(prev, activeId);
+//     startMutationObserver(mutationObserver, editor);
+//     const pos = prev.textContent.length;
 
-    prev.textContent = document.getElementById(activeId.current).textContent + content;
-    setCursor(prev, pos);
-    element.remove();
-  }
-}
-
-function findNonUniChar(cursorPoint, node) {
-  while(node.textContent.charCodeAt(cursorPoint-1) === 8205) {
-    cursorPoint--;
-  }
-  console.log(cursorPoint, node.textContent.charCodeAt(cursorPoint))
-}
+//     prev.textContent = document.getElementById(activeId.current).textContent + content;
+//     setCursor(prev, pos);
+//     element.remove();
+//   }
+// }
+//
+// const handleBackspace = function (e, activeId, mutationObserver, editor) {
+//   const selection = window.getSelection();
+//   const node = getSelectedElement();
+//   let cursorPoint = getCaret(node);
+//   let selectedText = selection.toString();
+//   // console.log(cursorPoint, node.textContent.length, node.textContent.charCodeAt(1))
+//   // default behavior deletes last char and p tag entirely 
+//   if ((node.textContent.length !== 1 && node.textContent.length === selectedText.length)
+//     || (cursorPoint === 1 && node.textContent.charCodeAt(0) !== 8205)
+//     || (cursorPoint === 2 && node.textContent.charCodeAt(1) === 8205)) {
+//     e.preventDefault();
+//     node.textContent = "\u200D";
+//   } else if (cursorPoint === 0 || cursorPoint === 1 || (cursorPoint === 2 && node.textContent.charCodeAt(0) !== 8205)) {
+//     removeContent(e, activeId, mutationObserver, editor, node);
+//   } else {
+//     findNonUniChar(cursorPoint, node);
+//   }
+// }
 
 const handleBackspace = function (e, activeId, mutationObserver, editor) {
+  pauseMutationObserver(mutationObserver);
   const selection = window.getSelection();
-  const node = getSelectedElement();
-  let cursorPoint = getCaret(node);
-  let selectedText = selection.toString();
-  // console.log(cursorPoint, node.textContent.length, node.textContent.charCodeAt(1))
-  // default behavior deletes last char and p tag entirely 
-  if ((node.textContent.length !== 1 && node.textContent.length === selectedText.length) 
-    || (cursorPoint === 1 && node.textContent.charCodeAt(0) !== 8205)
-    || (cursorPoint === 2 && node.textContent.charCodeAt(1) === 8205)) {
-    e.preventDefault();
-    node.textContent = "\u200D";
-  } else if (cursorPoint === 0 || cursorPoint === 1 || (cursorPoint === 2 && node.textContent.charCodeAt(0) !== 8205)) {
-    removeContent(e, activeId, mutationObserver, editor, node);
-  } else {
-    findNonUniChar(cursorPoint, node);
+  const range = selection.getRangeAt(0);
+  const currentNode = range.startContainer;
+  console.log(currentNode.parentNode.nodeName)
+  if (currentNode.parentNode.nodeName === "SPAN") {
+    const p = currentNode.parentNode.parentNode.parentNode;
+    const paragraph = currentNode.parentNode.parentNode;
+    const text = paragraph.textContent;
+    const boldRegex = /\*\*(.+?)\*\*/g;
+    if (boldRegex.test(text)) {
+      console.log(paragraph)
+      p.removeChild(paragraph);
+      const newText = text.replace(boldRegex, text.substring(0, text.length));
+      p.innerText = p.innerHTML + newText;
+      const newRange = document.createRange();
+      newRange.setStart(paragraph, getCaret(getSelectedElement()))
+      newRange.setEnd(paragraph, getCaret(getSelectedElement()))
+      newRange.selectNodeContents(p);
+      newRange.collapse(false);
+      selection.removeAllRanges();
+      selection.addRange(newRange);
+    }
   }
 }
 
@@ -327,6 +349,47 @@ const handleTab = function (e, activeId) {
   } else {
     if (prev && prev.nodeName !== "H1" && prev.style.marginLeft >= p.style.marginLeft && p.nodeName === 'P') {
       p.style.marginLeft = parseFloat(p.style.marginLeft) + 1.8 + "em";
+    }
+  }
+}
+
+function handleTyping(e) {
+  if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    const startContainer = range.startContainer;
+    if (startContainer.nodeType === Node.TEXT_NODE) {
+      const paragraph = startContainer.parentNode;
+      const text = startContainer.textContent;
+      const boldRegex = /\*\*(.+?)\*\*/g;
+      let match;
+      if (match = boldRegex.exec(text)) {
+        var start = match.index;
+        var end = boldRegex.lastIndex;
+        e.preventDefault();
+        e.stopPropagation();
+        let text = startContainer.textContent.slice(start, end);
+        let b = document.createElement('span');
+        b.className = "bold-wrapper";
+        b.innerHTML = `<span class="asterisk">${text.slice(0, 2)}</span><strong>${match[0].slice(2, -2)}</strong><span class="asterisk">${text.slice(-2)}</span>`
+        let last = paragraph.insertBefore(document.createTextNode(' ' + startContainer.textContent.substring(end, startContainer.textContent.length)), startContainer);
+        paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start) + ' '), last);
+        paragraph.insertBefore(b, last);
+        paragraph.removeChild(startContainer);
+        paragraph.focus();
+        if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+          range.selectNodeContents(paragraph);
+          range.collapse(false);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } else if (typeof document.body.createTextRange != "undefined") {
+          var textRange = document.body.createTextRange();
+          textRange.moveToElementText(paragraph);
+          textRange.collapse(false);
+          textRange.select();
+        }
+      }
     }
   }
 }

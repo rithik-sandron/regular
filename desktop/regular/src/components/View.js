@@ -58,6 +58,7 @@ export default function View({ component, markdown }) {
             spellCheck="true"
             suppressContentEditableWarning="true"
             onClick={(e) => navigate(e, mutationObserver, activeId, editor)}
+            onInput={(e) => navigate(e, mutationObserver, activeId, editor)}
             onKeyDown={(e) => navigate(e, mutationObserver, activeId, editor)}
             onKeyUp={(e) => navigate(e, mutationObserver, activeId, editor)}
           >
