@@ -172,31 +172,36 @@ body {
   background-color: var(--date-bg);
 }
 
-.blocks h1>mark {
-  padding: var(--padding-h1) 1mm;
+.blocks h1>span>mark {
+  padding: var(--padding-h1) 2mm;
 }
 
-.blocks h2>mark {
-  padding: var(--padding-h2) 1mm;
+.blocks h2>span>mark {
+  padding: var(--padding-h2) 2mm;
 }
 
-.blocks h3>mark {
-  padding: var(--padding-h3) 1mm;
+.blocks h3>span>mark {
+  padding: var(--padding-h3) 2mm;
 }
 
-.blocks p>mark {
-  padding: var(--padding-p) 1mm;
+.blocks p>span>mark {
+  padding: var(--padding-p) 2mm;
 }
 
 .blocks strong {
   padding: var(--padding-p) 0;
 }
 
-.blocks .bold-wrapper {
+.blocks .x-wrapper {
   display: inline;
 }
 
 .blocks .asterisk {
+  color: #dedede;
+  font-weight: normal;
+}
+
+.blocks .date-prefix {
   color: #dedede;
   font-weight: normal;
 }

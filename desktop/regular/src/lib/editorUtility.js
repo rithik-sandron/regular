@@ -1,3 +1,5 @@
+import { bold, date, reCheckBold, reCheckDate } from "./nodeType"
+
 export function setCursor(e, index) {
   let range = document.createRange();
   let sel = window.getSelection();
@@ -9,6 +11,9 @@ export function setCursor(e, index) {
 }
 
 function getCaret(element) {
+  if (!element)
+    return
+
   var caretOffset = 0;
   var doc = element.ownerDocument || element.document;
   var win = doc.defaultView || doc.parentWindow;
@@ -37,10 +42,16 @@ function getSelectedElement() {
   if (selection.rangeCount > 0) {
     const range = selection.getRangeAt(0);
     let node = range.commonAncestorContainer;
-    if (node.nodeType === Node.TEXT_NODE) {
-      node = node.parentNode;
+    const type = node.nodeName;
+    while (node) {
+      if (node.nodeType === Node.TEXT_NODE || node.nodeName !== "P" || node.nodeName !== "H1") {
+        node = node.parentNode;
+      }
+      if (node.nodeName === "P" || node.nodeName === "H1") {
+        break;
+      }
     }
-    return node;
+    return [node, type === "SPAN"];
   }
 }
 
@@ -91,15 +102,6 @@ export function pauseMutationObserver(mutationObserver) {
   }
 }
 
-export function fetchActiveNode() {
-  const selection = window.getSelection();
-  let node = selection.anchorNode.parentNode;
-  if (selection.anchorNode.parentNode.nodeName === "MARK") {
-    node = selection.focusNode.parentNode.parentNode;
-  }
-  return node;
-}
-
 export function toggleUntoggleDateContent(activeId, node) {
   if (activeId.current !== "" && activeId.current !== node.id) {
     clear(activeId)
@@ -111,7 +113,17 @@ export function toggleUntoggleDateContent(activeId, node) {
 
 export function handleClickAndKeyUp(e, mutationObserver, activeId, editor) {
   pauseMutationObserver(mutationObserver);
-  toggleUntoggleDateContent(activeId, fetchActiveNode());
+  const res = getSelectedElement();
+  const node = res[0];
+  toggleUntoggleDateContent(activeId, node);
+  let pos = getCaret(node);
+  while (node.textContent.charCodeAt(pos) === 8205 || node.textContent.charCodeAt(pos) === 8203) {
+    if (e.keyCode === 37)
+      pos -= 1;
+    else if (e.keyCode === 39)
+      pos += 1;
+  }
+  setCaretAtIndex(node, pos);
   startMutationObserver(mutationObserver, editor);
 }
 
@@ -119,18 +131,15 @@ export const navigate = (e, mutationObserver, activeId, editor) => {
   e.stopPropagation();
   switch (e.type) {
     case "click":
-      // console.log("[click] event triggered")
       handleClickAndKeyUp(e, mutationObserver, activeId, editor);
       break;
 
     case "keyup":
-      // console.log("[keyup] event triggered")
-      if (e.keyCode > 36 && e.keyCode < 41)
+      if (!e.shiftKey && !e.ctrlKey && e.keyCode > 36 && e.keyCode < 41)
         handleClickAndKeyUp(e, mutationObserver, activeId, editor);
       break;
 
     case "keydown":
-      // console.log("[keydown] event triggered")
       switch (e.keyCode) {
         case 13:
           handleEnter(e, activeId);
@@ -144,8 +153,7 @@ export const navigate = (e, mutationObserver, activeId, editor) => {
       }
       break;
     case "input":
-      // console.log("[input] event triggered")
-      handleTyping(e);
+      handleTyping(e, mutationObserver, editor);
       break;
   }
 }
@@ -153,7 +161,7 @@ export const navigate = (e, mutationObserver, activeId, editor) => {
 export function getMutationObserver(mutate, activeId) {
   return new MutationObserver(async (mutations) => {
     mutations.forEach((mutation) => {
-      if (mutation.target.nodeName === "MARK") {
+      if (mutation.target.nodeName === "MARK" || mutation.target.nodeName === "SPAN") {
         return
       }
       if (mutation.type === "childList") {
@@ -191,10 +199,10 @@ export function getMutationObserver(mutate, activeId) {
         // update mutation
         let existingNode = mutate.get(activeId.current);
         if (existingNode !== undefined) {
-          // existingNode.text = document.getElementById(activeId.current).outerText;
+          existingNode.text = document.getElementById(activeId.current).innerText;
           mutate.set(activeId.current, existingNode);
         } else {
-          // mutate.set(activeId.current, { action: "update", id: activeId.current, text: document.getElementById(activeId.current).outerText });
+          mutate.set(activeId.current, { action: "update", id: activeId.current, text: document.getElementById(activeId.current).innerText });
         }
 
       } else if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
@@ -231,7 +239,7 @@ const handleEnter = function (e, activeId) {
   }
   let tag = node.nodeName;
   // const cursorPoint = selection.anchorOffset;
-  const cursorPoint = getCaret(getSelectedElement())
+  const cursorPoint = getCaret(getSelectedElement()[0])
   let textContent = "\u200D";
   if (cursorPoint < node.textContent.length) {
     // cursorPoint === node.textContent.length && node.textContent.length !== 0
@@ -267,47 +275,6 @@ function createNewElement(e, range, tag, textContent, node, activeId) {
   el.focus();
 }
 
-// function removeContent(e, activeId, mutationObserver, editor) {
-//   e.preventDefault();
-//   let element = document.getElementById(activeId.current);
-//   pauseMutationObserver(mutationObserver);
-//   if (element.nodeName === "H1") {
-//     element.textContent = "\u200D";
-//     startMutationObserver(mutationObserver, editor);
-//   } else {
-//     element.previousElementSibling.remove();
-//     let content = element.innerText.substring(1);
-//     let prev = element.previousElementSibling;
-//     clear(activeId)
-//     updateContent(prev, activeId);
-//     startMutationObserver(mutationObserver, editor);
-//     const pos = prev.textContent.length;
-
-//     prev.textContent = document.getElementById(activeId.current).textContent + content;
-//     setCursor(prev, pos);
-//     element.remove();
-//   }
-// }
-//
-// const handleBackspace = function (e, activeId, mutationObserver, editor) {
-//   const selection = window.getSelection();
-//   const node = getSelectedElement();
-//   let cursorPoint = getCaret(node);
-//   let selectedText = selection.toString();
-//   // console.log(cursorPoint, node.textContent.length, node.textContent.charCodeAt(1))
-//   // default behavior deletes last char and p tag entirely 
-//   if ((node.textContent.length !== 1 && node.textContent.length === selectedText.length)
-//     || (cursorPoint === 1 && node.textContent.charCodeAt(0) !== 8205)
-//     || (cursorPoint === 2 && node.textContent.charCodeAt(1) === 8205)) {
-//     e.preventDefault();
-//     node.textContent = "\u200D";
-//   } else if (cursorPoint === 0 || cursorPoint === 1 || (cursorPoint === 2 && node.textContent.charCodeAt(0) !== 8205)) {
-//     removeContent(e, activeId, mutationObserver, editor, node);
-//   } else {
-//     findNonUniChar(cursorPoint, node);
-//   }
-// }
-
 function setCaretAtIndex(element, index) {
   const range = document.createRange();
   const selection = window.getSelection();
@@ -328,49 +295,85 @@ function setCaretAtIndex(element, index) {
         searchNode(child);
       }
     }
+
   }
-
   searchNode(element);
-
   selection.removeAllRanges();
   selection.addRange(range);
   element.focus();
 }
+
 const handleBackspace = function (e, activeId, mutationObserver, editor) {
-  // setTimeout(() => {
-  pauseMutationObserver(mutationObserver);
   const selection = window.getSelection();
-  const range = selection.getRangeAt(0);
-  const currentNode = range.startContainer;
-
-  if (currentNode.parentNode.nodeName === 'SPAN') {
-    let p = currentNode.parentNode.parentNode.parentNode;
-    const pos = getCaret(p);
-    // console.log(p.textContent.charAt(pos) - 1)
-
-    let prev = currentNode.parentNode.parentNode.previousSibling;
-    let prevLength = prev.textContent.length;
-    if (prev) {
-      prev.textContent = prev.textContent + currentNode.parentNode.parentNode.textContent;
-    } else {
-
-    }
-    p.removeChild(currentNode.parentNode.parentNode);
-    setCaretAtIndex(p, pos);
-
-  } else {
-    let p = currentNode.parentNode;
-    const pos = getCaret(p);
-    // console.log(p.textContent.charAt(pos) - 1)
+  const res = getSelectedElement();
+  const node = res[0];
+  let pos = getCaret(node);
+  if (res[1]) {
+    reCheckBold(getCaret, setCaretAtIndex);
+    reCheckDate(getCaret, setCaretAtIndex);
   }
-  startMutationObserver(mutationObserver, editor);
-  // }, 0)
 
+  let selectedText = selection.toString();
+  if (selectedText.length !== 0) {
+    if (selectedText.length === node.textContent.length) {
+      e.preventDefault();
+      node.textContent = "\u200D";
+      setCaretAtIndex(node, 0);
+    }
+  } 
+  
+  else {
+    let element = document.getElementById(activeId.current);
+    // while (node.textContent.length > 0 && node.textContent.charCodeAt(pos) === 8205 || node.textContent.charCodeAt(pos) === 8203) {
+    //   node.textContent = node.textContent.slice(0, -1);
+    //   pos -= 1;
+    // }
+
+    // if (node.textContent.length === 2 && (node.textContent.charCodeAt(0) === 8205 || node.textContent.charCodeAt(0) === 8203)) {
+    //   node.textContent = node.textContent.slice(1);
+    //   pos -= 1;
+    // }
+
+
+    if (pos === 1) {
+      e.preventDefault();
+      node.textContent = "\u200D";
+      setCaretAtIndex(node, 0);
+    } else if (pos === 0 && document.getElementById(activeId.current).nodeName !== "H1") {
+      e.preventDefault();
+      pauseMutationObserver(mutationObserver);
+      element.previousElementSibling.remove();
+      let content = element.innerText.substring(1);
+      let prev = element.previousElementSibling;
+      clear(activeId)
+      updateContent(prev, activeId);
+      startMutationObserver(mutationObserver, editor);
+      if (content.length !== 0) {
+        prev.textContent = document.getElementById(activeId.current).textContent + content;
+      }
+      element.remove();
+      setCaretAtIndex(prev, prev.textContent.length);
+    }
+    else {
+      // e.preventDefault();
+      // setTimeout(() => {
+      //   const selection = window.getSelection();
+      //   const range = selection.getRangeAt(0);
+      //   const startContainer = range.startContainer;
+      //   if (range.startOffset > 1) {
+      //     startContainer.textContent = startContainer.textContent.slice(0, range.startOffset - 1) + startContainer.textContent.slice(range.startOffset);
+      //   } else {
+      //     startContainer.textContent = startContainer.textContent.slice(0, range.startOffset - 1) + startContainer.textContent.slice(range.startOffset);
+      //   }
+      //   pos -= 1;
+      //   setCaretAtIndex(node, pos);
+      // });
+    }
+  }
 }
 
 const handleTab = function (e, activeId) {
   e.preventDefault();
-
   const selection = window.getSelection();
   let node = selection.anchorNode.parentNode;
   if (selection.anchorNode.parentNode.nodeName === "MARK") {
@@ -389,7 +392,8 @@ const handleTab = function (e, activeId) {
   }
 }
 
-function handleTyping(e) {
+function handleTyping(e, mutationObserver, editor) {
+  pauseMutationObserver(mutationObserver);
   if (!e.shiftKey && !e.ctrlKey && !e.altKey) {
     const selection = window.getSelection();
     const range = selection.getRangeAt(0);
@@ -398,77 +402,14 @@ function handleTyping(e) {
       const paragraph = startContainer.parentNode;
       let pos = getCaret(paragraph);
       const text = startContainer.textContent;
-      const boldRegex = /\*\*(.+?)\*\*/g;
-      const boldRegexWithUnicCode = /\u200D\*\*(.+?)\*\*\u200D/g;
-      let match;
-      if (match = boldRegex.exec(text)) {
-        var start = match.index;
-        var end = boldRegex.lastIndex;
-        e.preventDefault();
-        e.stopPropagation();
-        console.log(startContainer.textContent.substring(end, startContainer.textContent.length).charCodeAt(0))
-        let text = startContainer.textContent.slice(start, end);
-        let b = document.createElement('span');
-        b.className = "bold-wrapper";
-        b.innerHTML = `<span class="asterisk">${text.slice(0, 2)}</span><strong>${match[0].slice(2, -2)}</strong><span class="asterisk">${text.slice(-2)}</span>`
-        let last = paragraph.insertBefore(document.createTextNode('\u200B' + startContainer.textContent.substring(end, startContainer.textContent.length)), startContainer);
-        paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start) + '\u200B'), last);
-        paragraph.insertBefore(b, last);
-        paragraph.removeChild(startContainer);
-        setCaretAtIndex(paragraph, pos + 2);
 
-      } else if (match = boldRegexWithUnicCode.exec(text)) {
-        console.log("YYY")
-        var start = match.index;
-        var end = boldRegex.lastIndex;
-        e.preventDefault();
-        e.stopPropagation();
-        console.log(startContainer.textContent.substring(end, startContainer.textContent.length).charCodeAt(0))
-        let text = startContainer.textContent.slice(start, end);
-        let b = document.createElement('span');
-        b.className = "bold-wrapper";
-        b.innerHTML = `<span class="asterisk">${text.slice(0, 2)}</span><strong>${match[0].slice(2, -2)}</strong><span class="asterisk">${text.slice(-2)}</span>`
-        let last = paragraph.insertBefore(document.createTextNode('\u200B' + startContainer.textContent.substring(end, startContainer.textContent.length)), startContainer);
-        paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start) + '\u200B'), last);
-        paragraph.insertBefore(b, last);
-        paragraph.removeChild(startContainer);
-        setCaretAtIndex(paragraph, pos + 2);
-      }
+      bold(e, text, startContainer, paragraph, setCaretAtIndex, pos);
+      date(e, text, startContainer, paragraph, setCaretAtIndex, pos);
+
     } else {
-      const paragraph = startContainer.parentNode.parentNode;
-      const text = paragraph.textContent;
-      const boldRegex = /\*\*(.+?)\*\*/g;
-      let match;
-      if (match = boldRegex.exec(text) && paragraph.nodeName !== 'SPAN') {
-        var start = match.index;
-        var end = boldRegex.lastIndex;
-        let text = paragraph.textContent.slice(start, end);
-        let b = document.createElement('span');
-        b.className = "bold-wrapper";
-        b.innerHTML = `<span class="asterisk">${text.slice(0, 2)}</span><strong>${match[0].slice(2, -2)}</strong><span class="asterisk">${text.slice(-2)}</span>`
-        let last = paragraph.insertBefore(document.createTextNode('\u200B' + paragraph.textContent.substring(end, paragraph.textContent.length)), startContainer.parentNode);
-        paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start) + '\u200B'), last);
-        paragraph.insertBefore(b, last);
-        paragraph.removeChild(startContainer.parentNode);
-        if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
-          range.selectNodeContents(paragraph);
-          range.collapse(false);
-          var sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
-        } else if (typeof document.body.createTextRange != "undefined") {
-          var textRange = document.body.createTextRange();
-          textRange.moveToElementText(paragraph);
-          textRange.collapse(false);
-          textRange.select();
-        }
-      } else if (paragraph.nodeName === 'SPAN') {
-        let outerP = paragraph.parentNode;
-        const pos = getCaret(outerP);
-        outerP.insertBefore(document.createTextNode(paragraph.textContent), paragraph);
-        outerP.removeChild(paragraph)
-        setCaretAtIndex(outerP, pos);
-      }
+      reCheckBold(getCaret, setCaretAtIndex);
+      reCheckDate(getCaret, setCaretAtIndex);
     }
   }
+  startMutationObserver(mutationObserver, editor);
 }
