@@ -44,12 +44,10 @@ function getSelectedElement() {
     let node = range.commonAncestorContainer;
     const type = node.nodeName;
     while (node) {
-      if (node.nodeType === Node.TEXT_NODE || node.nodeName !== "P" || node.nodeName !== "H1") {
-        node = node.parentNode;
-      }
       if (node.nodeName === "P" || node.nodeName === "H1") {
         break;
       }
+      node = node.parentNode;
     }
     return [node, type === "SPAN"];
   }
@@ -127,6 +125,12 @@ export function handleClickAndKeyUp(e, mutationObserver, activeId, editor) {
   startMutationObserver(mutationObserver, editor);
 }
 
+export function handleKeyUPDOWN(e, mutationObserver, activeId, editor) {
+  const res = getSelectedElement();
+  const node = res[0];
+  toggleUntoggleDateContent(activeId, node);
+}
+
 export const navigate = (e, mutationObserver, activeId, editor) => {
   e.stopPropagation();
   switch (e.type) {
@@ -135,8 +139,10 @@ export const navigate = (e, mutationObserver, activeId, editor) => {
       break;
 
     case "keyup":
-      if (!e.shiftKey && !e.ctrlKey && e.keyCode > 36 && e.keyCode < 41)
+      if (!e.shiftKey && !e.ctrlKey && (e.keyCode === 37 || e.keyCode === 39))
         handleClickAndKeyUp(e, mutationObserver, activeId, editor);
+      if (!e.shiftKey && !e.ctrlKey && (e.keyCode === 38 || e.keyCode === 40))
+        handleKeyUPDOWN(e, mutationObserver, activeId, editor);
       break;
 
     case "keydown":
@@ -222,7 +228,7 @@ export function getMutationObserver(mutate, activeId) {
         }
       }
     })
-    // console.log(mutate);
+    console.log(mutate);
   });
 }
 
@@ -320,8 +326,8 @@ const handleBackspace = function (e, activeId, mutationObserver, editor) {
       node.textContent = "\u200D";
       setCaretAtIndex(node, 0);
     }
-  } 
-  
+  }
+
   else {
     let element = document.getElementById(activeId.current);
     // while (node.textContent.length > 0 && node.textContent.charCodeAt(pos) === 8205 || node.textContent.charCodeAt(pos) === 8203) {
