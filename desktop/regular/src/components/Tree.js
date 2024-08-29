@@ -1,11 +1,12 @@
 import { useEffect, useRef } from "react";
 
 export default function Tree({ data }) {
+
   const ref = useRef(null);
 
   useEffect(() => {
     if (data._md_text) {
-      ref.current.innerHTML = data._md_text;
+      ref.current.innerHTML = '\u00a0'.repeat(data._indent * 4) + data._md_text;
     }
   }, [data._id]);
 
@@ -19,7 +20,7 @@ export default function Tree({ data }) {
               key={data._id}
               ref={ref}
               style={{
-                marginLeft: data._indent + "em",
+                // marginLeft: data._indent + "em",
               }}>
             </p>
             <data._type />
@@ -31,10 +32,10 @@ export default function Tree({ data }) {
               key={data._id}
               ref={ref}
               style={{
-                marginLeft: data._indent + "em",
+                // marginLeft: data._indent + "em",
               }}
             >
-              {data._text}
+              {'\u00a0'.repeat(data._indent * 4)}{data._text}
             </data._type>
             <br />
           </>

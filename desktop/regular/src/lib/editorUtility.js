@@ -131,7 +131,7 @@ export function handleKeyUPDOWN(e, mutationObserver, activeId, editor) {
   toggleUntoggleDateContent(activeId, node);
 }
 
-export const navigate = (e, mutationObserver, activeId, editor) => {
+export const navigate = (e, mutationObserver, activeId, editor, markdown) => {
   e.stopPropagation();
   switch (e.type) {
     case "click":
@@ -148,7 +148,7 @@ export const navigate = (e, mutationObserver, activeId, editor) => {
     case "keydown":
       switch (e.keyCode) {
         case 13:
-          handleEnter(e, activeId);
+          handleEnter(e, activeId, markdown);
           break;
         case 8:
           handleBackspace(e, activeId, mutationObserver, editor);
@@ -164,7 +164,7 @@ export const navigate = (e, mutationObserver, activeId, editor) => {
   }
 }
 
-export function getMutationObserver(mutate, activeId) {
+export function getMutationObserver(mutate, activeId, resetInactivityTimer) {
   return new MutationObserver(async (mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.target.nodeName === "MARK" || mutation.target.nodeName === "SPAN") {
@@ -228,11 +228,11 @@ export function getMutationObserver(mutate, activeId) {
         }
       }
     })
-    console.log(mutate);
+    resetInactivityTimer();
   });
 }
 
-const handleEnter = function (e, activeId) {
+const handleEnter = function (e, activeId, markdown) {
   e.preventDefault();
   const selection = window.getSelection();
   let range = selection.getRangeAt(0);
@@ -261,16 +261,18 @@ const handleEnter = function (e, activeId) {
   range.setEndAfter(el);
   selection.removeAllRanges();
   selection.addRange(range);
-  createNewElement(e, range, tag, textContent, node, activeId);
+  createNewElement(e, range, tag, textContent, node, activeId, markdown);
 }
 
-function createNewElement(e, range, tag, textContent, node, activeId) {
+function createNewElement(e, range, tag, textContent, node, activeId, markdown) {
   if (tag === "H1") {
     tag = "P"
   }
   const el = document.createElement(tag);
   el.innerText = textContent;
-  el.id = uuid();
+  console.log(markdown._uid)
+  markdown._uid += 1
+  el.id = markdown._uid;
   activeId.current = el.id;
   el.style.marginLeft = node.style.marginLeft;
   range.deleteContents();
@@ -340,7 +342,6 @@ const handleBackspace = function (e, activeId, mutationObserver, editor) {
     //   pos -= 1;
     // }
 
-
     if (pos === 1) {
       e.preventDefault();
       node.textContent = "\u200D";
@@ -349,16 +350,19 @@ const handleBackspace = function (e, activeId, mutationObserver, editor) {
       e.preventDefault();
       pauseMutationObserver(mutationObserver);
       element.previousElementSibling.remove();
-      let content = element.innerText.substring(1);
+      let content = element.innerText;
+
       let prev = element.previousElementSibling;
       clear(activeId)
       updateContent(prev, activeId);
       startMutationObserver(mutationObserver, editor);
+      const pos = prev.textContent.length;
       if (content.length !== 0) {
         prev.textContent = document.getElementById(activeId.current).textContent + content;
       }
+      setCaretAtIndex(prev, pos);
+
       element.remove();
-      setCaretAtIndex(prev, prev.textContent.length);
     }
     else {
       // e.preventDefault();
@@ -380,20 +384,18 @@ const handleBackspace = function (e, activeId, mutationObserver, editor) {
 
 const handleTab = function (e, activeId) {
   e.preventDefault();
-  const selection = window.getSelection();
-  let node = selection.anchorNode.parentNode;
-  if (selection.anchorNode.parentNode.nodeName === "MARK") {
-    node = selection.focusNode.parentNode.parentNode;
-  }
   let p = document.getElementById(activeId.current);
   const prev = p?.previousElementSibling?.previousElementSibling;
   if (e.shiftKey) {
-    if (prev && prev.nodeName !== "H1" && p.style.marginLeft !== "0em") {
-      p.style.marginLeft = parseFloat(p.style.marginLeft) - 1.8 + "em";
+    if (prev && prev.nodeName !== "H1" && p.childNodes[0].textContent.trim().length === 0) {
+      p.childNodes[0].textContent = p.childNodes[0].textContent.substring(8)
+      // p.style.marginLeft = parseFloat(p.style.marginLeft) - 1.8 + "em";
     }
   } else {
-    if (prev && prev.nodeName !== "H1" && prev.style.marginLeft >= p.style.marginLeft && p.nodeName === 'P') {
-      p.style.marginLeft = parseFloat(p.style.marginLeft) + 1.8 + "em";
+    if (prev && prev.nodeName !== "H1" && p.nodeName === 'P' && p.childNodes[0].textContent.trim().length === 0) {
+      console.log("s")
+      p.childNodes[0].textContent = p.childNodes[0].textContent + '\u00a0'.repeat(8);
+      // p.style.marginLeft = parseFloat(p.style.marginLeft) + 1.8 + "em";
     }
   }
 }

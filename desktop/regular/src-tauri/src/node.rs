@@ -38,4 +38,29 @@ impl Node {
             self._next_sibling.clone().unwrap().list();
         }
     }
+
+    pub fn find_node_by_id(&mut self, target_id: u128, text: String, level: f32) -> bool {
+        if self._id == target_id {
+            self._text = text;
+            self._level = level; 
+            println!("{:?}", self._text);
+            return true; 
+        }
+
+        if self._first_child.is_some() && self._first_child.as_mut().unwrap().find_node_by_id(target_id, text.clone(), level) {
+            return true;
+        }
+
+        if self._next_sibling.is_some() {
+            let mut current_sibling = self._next_sibling.as_mut().unwrap();
+            loop {
+                if current_sibling.find_node_by_id(target_id, text.clone(), level) {
+                    return true;
+                }
+                current_sibling = current_sibling._next_sibling.as_mut().unwrap();
+            }
+        } else {
+            return false;
+        }
+    }
 }

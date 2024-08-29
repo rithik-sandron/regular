@@ -1,7 +1,7 @@
 export function getTime() {
     let date = new Date();
-    let months = ["Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"];
-    return `${months[date.getMonth()]} ${date.getHours()}:${date.getMinutes()}`;
+    let days = ["Mon", "Tues", "Wed", "Thur", "Fri", "Sat", "Sun"];
+    return `${days[date.getDay()]} ${date.getHours()}:${date.getMinutes()}`;
 }
 
 export function convertDate(d) {

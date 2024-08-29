@@ -12,8 +12,8 @@ const MONTH: [&str; 12] = [
     "Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec",
 ];
 
-const MARK_START: &str = "\u{200D}<mark className='due-date' contentEditable data-text='";
-const MARK_END: &str = "</mark>\u{200D}";
+const MARK_START: &str = "\u{200D}<span class='x-wrapper'><span class='date-prefix'>!(</span><mark data-text='";
+const MARK_END: &str = "</mark><span class='date-prefix'>)</span></span>\u{200D}";
 
 const CHARS: usize = 10_000;
 const NEW_LINE: u8 = b'\n';
@@ -26,7 +26,7 @@ const EMPTY_TYPE: &str = "br";
 pub fn get_dir() -> String {
     // let base_path = Path::new("/Users/azula/code/rithik/regular/desktop/regular/src-tauri/test/");
     // let base_path = Path::new("/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/test");
-    return "/Users/azula/code/rithik/regular/desktop/regular/src-tauri/test/".to_string();
+    return "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/test/".to_string();
 }
 
 pub fn get_dir_save() -> String {
@@ -96,6 +96,7 @@ pub fn parse() -> std::io::Result<(String, String, Root)> {
     let mut md: String;
     let mut d_pos_start: usize = 0;
     let mut d_pos_end: usize = 0;
+    
     loop {
         let buffer = reader.fill_buf()?;
         let buffer_length = buffer.len();
@@ -140,6 +141,7 @@ pub fn parse() -> std::io::Result<(String, String, Root)> {
             }
 
             if &NEW_LINE == c {
+
                 // let (md_text, skimmed_text, date1, date2, pad, color, min, max) =
                 //     render(&s, min_date, max_date);
 
@@ -154,6 +156,7 @@ pub fn parse() -> std::io::Result<(String, String, Root)> {
                 let date2_md;
                 (date1, date1_md, date2, date2_md, pad, min_date, max_date) =
                     parse_date(&date, min_date, max_date);
+
                 let mut _odr = 0;
                 let mut _type: String;
 
@@ -226,6 +229,7 @@ pub fn parse() -> std::io::Result<(String, String, Root)> {
 
                 if is_first_itr {
                     raw_name = String::from(&s);
+                    println!("{:?}", raw_name);
                     prev._text = String::from(&s);
                     prev._md_text = String::from(&md);
                     prev._skimmed_text = String::from(&skimmed);
@@ -347,7 +351,6 @@ pub fn parse() -> std::io::Result<(String, String, Root)> {
     root._min_date = min_date;
     root._max_date = max_date;
     root._has_dates = _has_dates;
-    println!("done");
     // root.list();
     Ok((raw_name, raw_string, root))
 }

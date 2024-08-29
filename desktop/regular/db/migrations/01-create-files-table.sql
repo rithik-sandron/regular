@@ -17,3 +17,4 @@ DELETE FROM file WHERE id = 2;
 
 sqlite3 
 .open /Users/azula/code/rithik/regular/desktop/regular/db/data.db
+.open /Users/ryuu/code/repo/regular/desktop/regular/db/data.db

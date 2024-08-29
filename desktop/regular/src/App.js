@@ -3,17 +3,17 @@ import "./css/app.css";
 import "./css/timeline.css";
 import AppLayout from "./components/AppLayout";
 import FileExplorer from "./components/FileExplorer";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { invoke } from "@tauri-apps/api";
 
 function App() {
   const [component, setComponent] = useState(true);
   const [markdown, setMarkdown] = useState("");
-  const [fileId, setFileId] = useState(8);
+  const [fileId, setFileId] = useState(43);
 
   useEffect(() => {
     invoke("get_file", { id: fileId }).then(data => {
-      setMarkdown(JSON.parse(data.markdown));
+      setMarkdown(data.markdown !== "" ? JSON.parse(data.markdown) : data.markdown);
     });
   }, [fileId]);
 
@@ -37,7 +37,6 @@ function App() {
 
     function resize(e) {
       if (!isResizing) return;
-
       const width = startWidth + (e.clientX - startX);
       fileExplorer.style.width = `${width}px`;
     }
@@ -54,9 +53,13 @@ function App() {
         component={component}
         setComponent={setComponent}
         fileId={fileId}
-        setFileId={setFileId} />
+        setFileId={setFileId}
+      />
       <div className="resizer" />
-      <View component={component} markdown={markdown} />
+      <View component={component}
+        markdown={markdown}
+        setMarkdown={setMarkdown}
+        fileId={fileId} />
     </AppLayout>
   );
 }

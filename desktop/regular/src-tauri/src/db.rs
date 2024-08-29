@@ -43,14 +43,13 @@ pub fn init() -> Result<()> {
             [],
         )?;
     }
-    // let _ = create_file("hello", "hello", "hello");
-    // let _ = get_file(unsafe { CONN.as_ref().unwrap().last_insert_rowid().to_string() });
-    // parse();
+  
+    create_doc();
     println!("{}", "Migration done");
     Ok(())
 }
 
-pub fn create_file(name: &str, raw: &str, markdown: &str) -> Result<(), String> {
+fn create_file(name: &str, raw: &str, markdown: &str) -> Result<(), String> {
     let mut stmt = unsafe {
         CONN.as_ref()
             .unwrap()
@@ -60,6 +59,7 @@ pub fn create_file(name: &str, raw: &str, markdown: &str) -> Result<(), String> 
 
     stmt.execute([name, raw, markdown, &Local::now().naive_local().to_string()])
         .map_err(|e| e.to_string())?;
+
     Ok(())
 }
 
@@ -107,8 +107,22 @@ pub fn get_file(id: u64) -> Result<File> {
     }
 }
 
-fn parse() {
+pub fn create_doc() {
     let (raw_name, raw_string, tree) = parser::parse().expect("paring error");
     let json = serde_json::to_string(&tree).expect("conversion error");
     let _ = create_file(&raw_name, &raw_string, &json);
+}
+
+pub fn update_file(id: &str, name: &str, raw: &str, markdown: &str) -> Result<(), String> {
+    let mut stmt = unsafe {
+        CONN.as_ref()
+            .unwrap()
+            .prepare("UPDATE file SET name = ?1, raw = ?2, markdown = ?3, modified_date = ?4 WHERE id = ?5")
+            .map_err(|e| e.to_string())
+    }?;
+
+    stmt.execute([name, raw, markdown, &Local::now().naive_local().to_string(), id])
+        .map_err(|e| e.to_string())?;
+
+    Ok(())
 }

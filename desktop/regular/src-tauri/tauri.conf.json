@@ -56,7 +56,7 @@
       {
         "minWidth": 600,
         "minHeight": 400,
-        "fullscreen": false,
+        "fullscreen": true,
         "height": 800,
         "resizable": true,
         "title": "Regular",

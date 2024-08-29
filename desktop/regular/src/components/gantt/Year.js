@@ -128,7 +128,7 @@ export default forwardRef(function Year(props, ref) {
         <>
           <div
             style={{
-              position: "absolute",
+              position: "relative",
               left: `${(y * 8) - 8}px`,
             }}
           >
@@ -142,7 +142,8 @@ export default forwardRef(function Year(props, ref) {
               ref={
                 currentMonth === x.month && currentYear === x.year ? ref : null
               }
-              id="date-current">{y}</span>
+              id="date-current">{y}
+            </span>
             <DateTime />
           </div>
         </>

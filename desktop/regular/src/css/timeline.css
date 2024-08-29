@@ -10,7 +10,7 @@
 #time-current {
   position: absolute;
   width: 80px;
-  margin-left: 5mm;
+  margin-left: 7mm;
   top: -8mm;
   background-color: var(--current-text);
   color: #fff;

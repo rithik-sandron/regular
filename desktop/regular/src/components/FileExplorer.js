@@ -11,6 +11,14 @@ const FileExplorer = ({ component, setComponent, setFileId, fileId }) => {
         })
     }, []);
 
+    function handleCreate() {
+        invoke("create_doc").then(() => {
+            invoke("get_files").then(data => {
+                setFiles(data);
+            })
+        })
+    }
+
     function handlleFileClick(e, id) {
         e.stopPropagation();
         e.preventDefault();
@@ -23,7 +31,9 @@ const FileExplorer = ({ component, setComponent, setFileId, fileId }) => {
         <div className="file-explorer">
             <span className="view-changer">
                 <h3>Files</h3>
+                <span className="file-add" onClick={handleCreate}>+</span>
                 <TopComponent setComponent={setComponent} component={component} />
+
             </span>
             {files.map(file => {
                 return (

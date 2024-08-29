@@ -1,32 +1,74 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Year from "./gantt/Year";
 import GanttEvent from "./gantt/GanttEvent";
 import Tree from "./Tree";
 import Handlers from "./gantt/Handlers";
 import Timeline from "./timeline/Timeline";
 import Tyear from "./timeline/TYear";
-import { startMutationObserver, navigate, getMutationObserver } from '../lib/editorUtility'
+import { invoke } from "@tauri-apps/api";
 
-export default function View({ component, markdown }) {
-  const mutationObserver = useRef(null);
+import { startMutationObserver, navigate, getMutationObserver, pauseMutationObserver } from '../lib/editorUtility'
+
+export default function View({ component, markdown, setMarkdown, fileId }) {
+  const INACTIVITY_TIMEOUT = 2000; // 2 seconds of inactivity before saving
   const activeId = useRef('');
   const editor = useRef(null);
   const [view, setView] = useState("Year");
   const ref = useRef(null);
+
   const mutate = useRef(new Map());
+  const mutationObserver = useRef(null);
+
+  const inactivityTimerRef = useRef(null);
+
+  const saveContent = useCallback(() => {
+    if (mutate.current.size !== 0) {
+      const index = editor.current.innerText.indexOf('\n')
+      invoke("save", { mutate: mutate.current, name: editor.current.innerText.slice(0, index), raw: editor.current.innerText, markdown: JSON.stringify(markdown) }).then(data => {
+        console.log(data)
+      });
+      mutate.current.clear();
+    }
+  }, [mutate, markdown]);
+
+  const resetInactivityTimer = () => {
+    if (inactivityTimerRef.current) {
+      clearTimeout(inactivityTimerRef.current);
+    }
+    inactivityTimerRef.current = setTimeout(() => {
+      saveContent();
+    }, INACTIVITY_TIMEOUT);
+  };
+
+  useEffect(() => {
+    resetInactivityTimer();
+    return () => {
+      if (inactivityTimerRef.current) {
+        clearTimeout(inactivityTimerRef.current);
+      }
+    };
+  }, [saveContent]);
+
+
+
+
 
   useEffect(() => {
     // Changes observer
-    mutationObserver.current = getMutationObserver(mutate.current, activeId);
-    startMutationObserver(mutationObserver, editor);
+    mutationObserver.current = getMutationObserver(mutate.current, activeId, resetInactivityTimer);
+    // startMutationObserver(mutationObserver, editor);
     ref.current?.scrollIntoView({
       inline: "center",
       block: "nearest"
     });
     return () => {
+      pauseMutationObserver(mutationObserver);
+      mutate.current = new Map();
       mutationObserver.current.disconnect();
+      mutationObserver.current = null;
     };
-  }, [markdown]);
+  }, [markdown, fileId]);
+
 
   function handleClick(e) {
     e.preventDefault();
@@ -59,7 +101,7 @@ export default function View({ component, markdown }) {
             suppressContentEditableWarning="true"
             onClick={(e) => navigate(e, mutationObserver, activeId, editor)}
             onInput={(e) => navigate(e, mutationObserver, activeId, editor)}
-            onKeyDown={(e) => navigate(e, mutationObserver, activeId, editor)}
+            onKeyDown={(e) => navigate(e, mutationObserver, activeId, editor, markdown)}
             onKeyUp={(e) => navigate(e, mutationObserver, activeId, editor)}
           >
             <Tree data={markdown._first_child} />
@@ -68,8 +110,6 @@ export default function View({ component, markdown }) {
         </section>
         {component && (
           <section className="timeline-container">
-
-
             {markdown._min_date !== 0 &&
               markdown._max_date !== 0 ? markdown._min_date !== 0 &&
               markdown._max_date !== 0 && (

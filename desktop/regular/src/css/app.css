@@ -107,6 +107,7 @@ body {
   outline: none;
   text-rendering: optimizeLegibility;
   position: relative;
+  white-space: pre-wrap;
 }
 
 .blocks p {
@@ -202,7 +203,7 @@ body {
 }
 
 .blocks .date-prefix {
-  color: #dedede;
+  color: var(--shadow1);
   font-weight: normal;
 }
 
@@ -217,4 +218,8 @@ body {
   border-radius: 1mm;
   cursor: pointer;
   text-align: center;
+}
+
+.file-add {
+  cursor: pointer;
 }
