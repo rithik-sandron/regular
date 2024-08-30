@@ -44,7 +44,7 @@ pub fn init() -> Result<()> {
         )?;
     }
   
-    create_doc();
+    // create_doc();
     println!("{}", "Migration done");
     Ok(())
 }

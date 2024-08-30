@@ -12,7 +12,7 @@ const MONTH: [&str; 12] = [
     "Jan", "Feb", "Mar", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec",
 ];
 
-const MARK_START: &str = "\u{200D}<span class='x-wrapper'><span class='date-prefix'>!(</span><mark data-text='";
+const MARK_START: &str = "\u{200D}<span class='x-wrapper'><span class='date-prefix'>!(</span><mark>";
 const MARK_END: &str = "</mark><span class='date-prefix'>)</span></span>\u{200D}";
 
 const CHARS: usize = 10_000;
@@ -171,48 +171,30 @@ pub fn parse() -> std::io::Result<(String, String, Root)> {
                     if d_pos_end == s.len() - 1 {
                         md = (&s[0..d_pos_start]).to_string()
                             + MARK_START
-                            + &date
-                            + "'"
-                            + " id='due-date-"
-                            + &root._uid.to_string()
-                            + "' data-md='"
-                            + &md
-                            + "'>"
-                            + &md
+                            + &s[d_pos_start+2..d_pos_end]
                             + MARK_END
                             + &s[d_pos_end..s.len() - 1];
+                 
                     } else if d_pos_start == 0 {
                         skimmed = s[d_pos_end + 1..s.len()].to_string();
                         md = MARK_START.to_string()
-                            + &date
-                            + "'"
-                            + " id='due-date-"
-                            + &root._uid.to_string()
-                            + "' data-md='"
-                            + &md
-                            + "'>"
-                            + &md
+                            + &s[d_pos_start+2..d_pos_end]
                             + MARK_END
                             + &s[d_pos_end + 1..s.len()];
+                   
                     } else {
                         skimmed = (&s[0..d_pos_start - 1]).to_string() + &s[d_pos_end + 1..s.len()];
                         md = (&s[0..d_pos_start]).to_string()
                             + MARK_START
-                            + &date
-                            + "'"
-                            + " id='due-date-"
-                            + &root._uid.to_string()
-                            + "' data-md='"
-                            + &md
-                            + "'>"
-                            + &md
+                            + &s[d_pos_start+2..d_pos_end]
                             + MARK_END
                             + &s[d_pos_end + 1..s.len()];
                     }
-                    skimmed = skimmed.trim().to_owned();
+                    
+                    skimmed = skimmed.to_owned();
                 }
 
-                if s.trim().is_empty() {
+                if s.is_empty() {
                     _type = EMPTY_TYPE.to_string();
                 } else {
                     _type = TYPE.to_string();
@@ -229,7 +211,6 @@ pub fn parse() -> std::io::Result<(String, String, Root)> {
 
                 if is_first_itr {
                     raw_name = String::from(&s);
-                    println!("{:?}", raw_name);
                     prev._text = String::from(&s);
                     prev._md_text = String::from(&md);
                     prev._skimmed_text = String::from(&skimmed);
@@ -331,14 +312,13 @@ pub fn parse() -> std::io::Result<(String, String, Root)> {
                 is_date = false;
                 is_prev_char = false;
             } else {
+                s.push(*c as char);
                 if !is_indended {
                     if &TAB == c {
                         level = level + 1.0;
                     } else if &SPACE == c {
                         level = level + 0.25;
                     }
-                } else {
-                    s.push(*c as char);
                 }
             }
         }
@@ -354,6 +334,89 @@ pub fn parse() -> std::io::Result<(String, String, Root)> {
     // root.list();
     Ok((raw_name, raw_string, root))
 }
+
+
+pub fn parse_content(s: &str) -> (String, String, String, String, i64) {
+    let mut date = String::new();
+    let mut str = String::new();
+    let mut is_date: bool = false;
+    let mut is_prev_char: bool = false;
+    let mut _has_dates = false;
+    let mut md: String = String::new();
+    let mut skimmed: String = String::new();
+    let mut d_pos_start: usize = 0;
+    let mut d_pos_end: usize = 0;
+
+    for (i, c) in s.char_indices() {
+        let re = b'!';
+        let re2 = b'(';
+        let re3 = b')';
+
+        if !is_date && c as u8 == re {
+            str.push(c);
+            is_prev_char = true;
+        }
+
+        if is_prev_char && !is_date {
+            if c as u8 == re2 {
+                is_date = true;
+                d_pos_start = i-1;
+            }
+        }
+
+        if is_date && re3 != c as u8 {
+            str.push(c);
+        }
+
+        if is_date && re3 == c as u8 {
+            str.push(c);
+            date = str.clone();
+            str.clear();
+            is_date = false;
+            d_pos_end = i;
+        }
+    }
+
+    let pad;
+    let date1;
+    let date2;
+    let mut min_date = 0;
+    let mut max_date = 0;
+    (date1, _, date2, _, pad, _, _) = parse_date(&date, min_date, max_date);
+
+    if date != "" {
+        skimmed = (&s[0..d_pos_start]).to_string() + &s[d_pos_end+1..s.len()];
+        if d_pos_end == s.len() - 1 {
+            md = (&s[0..d_pos_start]).to_string()
+                + MARK_START
+                + &s[d_pos_start..d_pos_end]
+                + MARK_END
+                + &s[d_pos_end..s.len() - 1];
+
+        } else if d_pos_start == 0 {
+            md = MARK_START.to_string()
+                + &s[d_pos_start..d_pos_end]
+                + MARK_END
+                + &s[d_pos_end + 1..s.len()];
+
+        } else {
+            md = (&s[0..d_pos_start]).to_string()
+                + MARK_START
+                + &s[d_pos_start+2..d_pos_end]
+                + MARK_END
+                + &s[d_pos_end + 1..s.len()];
+        }
+    }
+
+    if date != "" {
+        if !_has_dates {
+            _has_dates = true;
+        }
+    }
+    (md.to_string(), skimmed, date1, date2, pad)
+    
+}
+
 
 fn parse_date(
     _date: &str,

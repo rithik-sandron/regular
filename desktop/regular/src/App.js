@@ -3,13 +3,13 @@ import "./css/app.css";
 import "./css/timeline.css";
 import AppLayout from "./components/AppLayout";
 import FileExplorer from "./components/FileExplorer";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api";
 
 function App() {
   const [component, setComponent] = useState(true);
   const [markdown, setMarkdown] = useState("");
-  const [fileId, setFileId] = useState(43);
+  const [fileId, setFileId] = useState(68);
 
   useEffect(() => {
     invoke("get_file", { id: fileId }).then(data => {
@@ -59,7 +59,8 @@ function App() {
       <View component={component}
         markdown={markdown}
         setMarkdown={setMarkdown}
-        fileId={fileId} />
+        fileId={fileId}
+         />
     </AppLayout>
   );
 }

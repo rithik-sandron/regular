@@ -24,8 +24,14 @@ export default function View({ component, markdown, setMarkdown, fileId }) {
   const saveContent = useCallback(() => {
     if (mutate.current.size !== 0) {
       const index = editor.current.innerText.indexOf('\n')
-      invoke("save", { mutate: mutate.current, name: editor.current.innerText.slice(0, index), raw: editor.current.innerText, markdown: JSON.stringify(markdown) }).then(data => {
-        console.log(data)
+      invoke("save", {
+        mutate: mutate.current,
+        id: fileId.toString(),
+        name: editor.current.innerText.slice(0, index),
+        raw: editor.current.innerText,
+        markdown: JSON.stringify(markdown)
+      }).then(data => {
+        setMarkdown(data !== "" ? JSON.parse(data) : data);
       });
       mutate.current.clear();
     }
@@ -48,8 +54,6 @@ export default function View({ component, markdown, setMarkdown, fileId }) {
       }
     };
   }, [saveContent]);
-
-
 
 
 

@@ -24,7 +24,6 @@ pub struct Root {
 
 impl Root {
     pub fn list(&self) {
-        println!("{:?}", self);
         if self._first_child.is_some() {
             self._first_child.clone().unwrap().list();
         }

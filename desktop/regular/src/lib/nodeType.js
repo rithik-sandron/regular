@@ -79,7 +79,7 @@ export function reCheckBold(getCaret, setCaretAtIndex) {
   const selection = window.getSelection();
   const range = selection.getRangeAt(0);
   const startContainer = range.startContainer;
-  const paragraph = startContainer.parentNode.parentNode;
+  const paragraph = startContainer.parentNode;
   const text = paragraph.textContent;
   let match = boldRegex.exec(text);
   if (match && paragraph.nodeName !== 'SPAN') {
@@ -118,8 +118,9 @@ export function reCheckDate(getCaret, setCaretAtIndex) {
   const selection = window.getSelection();
   const range = selection.getRangeAt(0);
   const startContainer = range.startContainer;
-  const paragraph = startContainer.parentNode.parentNode;
+  const paragraph = startContainer.parentNode;
   const text = paragraph.textContent;
+  console.log(startContainer.parentNode)
   let match = dateRegex.exec(text);
   if (match && paragraph.nodeName !== 'SPAN') {
     var start = match.index;
@@ -128,6 +129,7 @@ export function reCheckDate(getCaret, setCaretAtIndex) {
     let b = document.createElement('span');
     b.className = "x-wrapper";
     b.innerHTML = `<span class="date-prefix">${text.slice(0, 2)}</span><mark>${match[0].slice(2, -1)}</mark><span class="date-prefix">${text.slice(-1)}</span>`
+    console.log("comes")
     let last = paragraph.insertBefore(document.createTextNode(unicode + paragraph.textContent.substring(end, paragraph.textContent.length)), startContainer.parentNode);
     paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start) + unicode), last);
     paragraph.insertBefore(b, last);

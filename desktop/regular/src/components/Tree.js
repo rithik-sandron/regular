@@ -3,12 +3,11 @@ import { useEffect, useRef } from "react";
 export default function Tree({ data }) {
 
   const ref = useRef(null);
-
   useEffect(() => {
     if (data._md_text) {
-      ref.current.innerHTML = '\u00a0'.repeat(data._indent * 4) + data._md_text;
+      ref.current.innerHTML = data._md_text;
     }
-  }, [data._id]);
+  }, [data._md_text]);
 
   return (
     data._type && (
@@ -35,7 +34,7 @@ export default function Tree({ data }) {
                 // marginLeft: data._indent + "em",
               }}
             >
-              {'\u00a0'.repeat(data._indent * 4)}{data._text}
+              {data._text}
             </data._type>
             <br />
           </>

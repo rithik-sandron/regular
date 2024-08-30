@@ -3,6 +3,7 @@
 #![recursion_limit = "256"]
 use std::{collections::HashMap, env};
 use db::update_file;
+use parser::parse_content;
 use root::Root;
 use tauri::Manager;
 
@@ -53,16 +54,15 @@ fn create_doc() {
 }
 
 #[tauri::command]
-fn save(mutate: HashMap<String, mutation::Mutation>, name: String, raw: String, markdown: String) -> String {
+fn save(mutate: HashMap<String, mutation::Mutation>, id: &str, name: &str, raw: String, markdown: String) -> String {
     let mut root: Root = serde_json::from_str(&markdown).expect("parsing error");
     for (key, value) in mutate.iter() {
         if value.action == "update" {
-            let id: u128 = key.parse().unwrap();
-            println!("Key: {}, Value: {:?}", id, value);
-            root._first_child.as_mut().unwrap().find_node_by_id(id, value.text.clone(), value.level);
+            let key_id: u128 = key.parse().unwrap();
+            root._first_child.as_mut().unwrap().find_node_by_id(key_id, &value.text, value.level);
             let mark = serde_json::to_string(&root).expect("conversion error");
-            let _ = update_file(&43.to_string(), &name, &raw, &mark);
+            let _ = update_file(id, name, &raw, &mark);
     }
 }
-    raw
+    serde_json::to_string(&root).expect("parsing error")
 }

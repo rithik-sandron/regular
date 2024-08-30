@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::parser::parse_content;
+
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct Node {
     // data
@@ -30,7 +32,6 @@ pub struct Node {
 
 impl Node {
     pub fn list(&self) {
-        println!("{:?}", self);
         if self._first_child.is_some() {
             self._first_child.clone().unwrap().list();
         }
@@ -39,28 +40,33 @@ impl Node {
         }
     }
 
-    pub fn find_node_by_id(&mut self, target_id: u128, text: String, level: f32) -> bool {
+    pub fn find_node_by_id(&mut self, target_id: u128, text: &str, level: f32) -> bool {
+        // println!("targetId: {}, self Id: {}", target_id, self._id);
+
         if self._id == target_id {
-            self._text = text;
+            self._text = text.to_string();
             self._level = level; 
-            println!("{:?}", self._text);
+            (self._md_text, self._skimmed_text, self._date1, self._date2, self._pad) = parse_content(&self._text);
             return true; 
         }
 
-        if self._first_child.is_some() && self._first_child.as_mut().unwrap().find_node_by_id(target_id, text.clone(), level) {
+        if self._first_child.is_some() && self._first_child.as_mut().unwrap().find_node_by_id(target_id, &text, level) {
+            // println!("child: {}", self._first_child.as_ref().unwrap()._text);
             return true;
         }
 
         if self._next_sibling.is_some() {
             let mut current_sibling = self._next_sibling.as_mut().unwrap();
+            // println!("sibling: {}", current_sibling._text);
+
             loop {
-                if current_sibling.find_node_by_id(target_id, text.clone(), level) {
+                if current_sibling.find_node_by_id(target_id, &text, level) {
                     return true;
                 }
                 current_sibling = current_sibling._next_sibling.as_mut().unwrap();
             }
-        } else {
-            return false;
         }
+
+        return false;
     }
 }

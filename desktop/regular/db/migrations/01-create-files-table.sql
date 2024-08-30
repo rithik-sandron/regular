@@ -15,6 +15,6 @@ UPDATE file SET modified_date = DATE('now') where id = 5;
 
 DELETE FROM file WHERE id = 2;
 
-sqlite3 
+sqlite3
 .open /Users/azula/code/rithik/regular/desktop/regular/db/data.db
 .open /Users/ryuu/code/repo/regular/desktop/regular/db/data.db
