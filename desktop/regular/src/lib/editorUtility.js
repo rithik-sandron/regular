@@ -53,12 +53,6 @@ function getSelectedElement() {
   }
 }
 
-const uuid = () => {
-  const dateString = Date.now().toString(36);
-  const randomness = Math.random().toString(36).substring(2);
-  return dateString + randomness;
-};
-
 export function clear(activeId) {
   let p = document.getElementById(activeId.current);
   activeId.current = "";
@@ -196,7 +190,9 @@ export function getMutationObserver(mutate, activeId, resetInactivityTimer) {
                 mutate.set(mutation.target.id, { action: "update", parentId: mutation.target.id, text: node.textContent });
               }
             } else if (node.nodeName !== "BR") {
-              mutate.set(node.id, { action: "add", parentId: mutation.previousSibling.previousSibling.id, text: node.textContent, level: document.getElementById(activeId.current) ? parseFloat(document.getElementById(activeId.current).style.marginLeft) / 1.8 : 0 });
+              mutate.set(node.id, { action: "add", parentId: mutation.previousSibling.previousSibling.id, 
+                text: node.textContent, level: document.getElementById(activeId.current) ? 
+                  parseFloat(document.getElementById(activeId.current).style.marginLeft) / 1.8 : 0 });
             }
           })
         }
@@ -332,16 +328,6 @@ const handleBackspace = function (e, activeId, mutationObserver, editor) {
 
   else {
     let element = document.getElementById(activeId.current);
-    // while (node.textContent.length > 0 && node.textContent.charCodeAt(pos) === 8205 || node.textContent.charCodeAt(pos) === 8203) {
-    //   node.textContent = node.textContent.slice(0, -1);
-    //   pos -= 1;
-    // }
-
-    // if (node.textContent.length === 2 && (node.textContent.charCodeAt(0) === 8205 || node.textContent.charCodeAt(0) === 8203)) {
-    //   node.textContent = node.textContent.slice(1);
-    //   pos -= 1;
-    // }
-
     if (pos === 1) {
       e.preventDefault();
       node.textContent = "\u200D";

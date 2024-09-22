@@ -475,7 +475,7 @@ fn timeline(
             y1.to_owned(),
             y2.to_owned(),
             y2.to_owned(),
-            (y2.parse::<i64>().unwrap() - y1.parse::<i64>().unwrap()) * 3 + 1,
+            (y2.parse::<i64>().unwrap() - y1.parse::<i64>().unwrap()) * 2 + 1,
             min_date,
             max_date,
         );

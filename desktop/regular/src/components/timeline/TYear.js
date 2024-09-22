@@ -22,7 +22,7 @@ const Tyear = ({ min, max }) => {
           <div
             key={x}
             style={{
-              height: 10 * 3 + "px",
+              height: 10 * 2 + "px",
             }}
           >
             {x}

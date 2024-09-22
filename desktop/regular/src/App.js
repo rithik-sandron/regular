@@ -7,9 +7,9 @@ import { useState, useEffect } from "react";
 import { invoke } from "@tauri-apps/api";
 
 function App() {
-  const [component, setComponent] = useState(true);
+  const [component, setComponent] = useState(false);
   const [markdown, setMarkdown] = useState("");
-  const [fileId, setFileId] = useState(68);
+  const [fileId, setFileId] = useState(77);
 
   useEffect(() => {
     invoke("get_file", { id: fileId }).then(data => {
@@ -56,11 +56,14 @@ function App() {
         setFileId={setFileId}
       />
       <div className="resizer" />
-      <View component={component}
+      <View
+        component={component}
+        setComponent={setComponent}
         markdown={markdown}
         setMarkdown={setMarkdown}
         fileId={fileId}
-         />
+
+      />
     </AppLayout>
   );
 }

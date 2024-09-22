@@ -8,8 +8,9 @@ import Tyear from "./timeline/TYear";
 import { invoke } from "@tauri-apps/api";
 
 import { startMutationObserver, navigate, getMutationObserver, pauseMutationObserver } from '../lib/editorUtility'
+import TopComponent from "./TopComponent";
 
-export default function View({ component, markdown, setMarkdown, fileId }) {
+export default function View({ component, setComponent, markdown, setMarkdown, fileId }) {
   const INACTIVITY_TIMEOUT = 2000; // 2 seconds of inactivity before saving
   const activeId = useRef('');
   const editor = useRef(null);
@@ -23,7 +24,9 @@ export default function View({ component, markdown, setMarkdown, fileId }) {
 
   const saveContent = useCallback(() => {
     if (mutate.current.size !== 0) {
+      console.log(mutate)
       const index = editor.current.innerText.indexOf('\n')
+      return
       invoke("save", {
         mutate: mutate.current,
         id: fileId.toString(),
@@ -95,6 +98,7 @@ export default function View({ component, markdown, setMarkdown, fileId }) {
   return (
     markdown && (
       <>
+        <TopComponent component={component} setComponent={setComponent} />
         <section className="list-container">
           <div
             id="editor"

@@ -116,23 +116,11 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* .blocks p:before {
-  content: "";
-  width: 1.6mm;
-  height: 1.6mm;
-  border-radius: 50%;
-  background-color: #dd4c4f;
-  display: inline-block;
-  margin-right: 3mm;
-  vertical-align: middle;
-} */
-
 .blocks h1,
 .blocks h2,
 .blocks h3,
 .blocks p {
   display: inline;
-  /* background-color: #dedede; */
 }
 
 .blocks h1,
@@ -222,4 +210,51 @@ body {
 
 .file-add {
   cursor: pointer;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 36px;
+  height: 22px;
+  margin: 6mm 6mm 0 0;
+  position: absolute;
+  right: 0;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--line);
+  transition: .4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked+.slider {
+  background-color: var(--accent);
+}
+
+input:checked+.slider:before {
+  transform: translateX(14px);
 }

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api";
-import TopComponent from "./TopComponent";
 import { convertDate } from "../lib/generalUtility";
 
 const FileExplorer = ({ component, setComponent, setFileId, fileId }) => {
@@ -31,9 +30,10 @@ const FileExplorer = ({ component, setComponent, setFileId, fileId }) => {
         <div className="file-explorer">
             <span className="view-changer">
                 <h3>Files</h3>
-                <span className="file-add" onClick={handleCreate}>+</span>
-                <TopComponent setComponent={setComponent} component={component} />
-
+                <div className="view-changer">
+                    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+                    <span className="file-add material-symbols-outlined" onClick={handleCreate}>edit_note</span>
+                </div>
             </span>
             {files.map(file => {
                 return (
