@@ -5,7 +5,7 @@ const Timeline = ({ data, min, max }) => {
 
   const getColor = () => {
     const h = Math.floor(Math.random() * 300);
-    return `hsl(${h}deg, 43%, 70%)`;
+    return `hsl(${h}deg, 53%, 70%, 1.0)`;
   };
 
   const color = getColor();

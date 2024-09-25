@@ -1,10 +1,10 @@
 const AppLayout = ({ header, children }) => {
   return (
     <main>
-      <div className="app-container">
-        <header>{header}</header>
-        {children}
-      </div>
+
+      <header>{header}</header>
+      {children}
+
     </main>
   );
 };

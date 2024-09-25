@@ -31,9 +31,10 @@ const FileExplorer = ({ component, setComponent, setFileId, fileId }) => {
             <span className="view-changer">
                 <h3>Files</h3>
                 <div className="view-changer">
-                    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-                    <span className="file-add material-symbols-outlined" onClick={handleCreate}>edit_note</span>
+                <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0" /><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+                    <span className="file-add material-symbols-outlined" onClick={handleCreate}>add_circle</span>
                 </div>
+
             </span>
             {files.map(file => {
                 return (

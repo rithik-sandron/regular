@@ -4,31 +4,30 @@
   width: 2px;
   left: 2.5px;
   top: -2.9mm;
-  background-color: var(--current-text);
+  background-color: var(--accent);
+}
+
+#time-current,
+#date-current {
+  font-size: 9.6pt;
+  text-align: center;
+  color: #fff;
+  background-color: var(--accent);
+  border-radius: 1mm;
+  top: -8mm;
+  font-weight: 500;
 }
 
 #time-current {
   position: absolute;
   width: 80px;
   margin-left: 7mm;
-  top: -8mm;
-  background-color: var(--current-text);
-  color: #fff;
-  border-radius: 1mm;
-  font-size: 9pt;
-  text-align: center;
   padding: 0.8mm 1mm 0.6mm 1mm;
 }
 
 #date-current {
   position: absolute;
-  margin-left: -7px;
-  top: -8mm;
-  background-color: var(--current-text);
-  color: #fff;
-  border-radius: 1mm;
-  font-size: 9pt;
-  text-align: center;
+  margin-left: -10px;
   padding: 0.8mm 2mm 0.6mm 2mm;
 }
 
@@ -67,14 +66,15 @@ a {
   flex: 1 1 auto;
   max-width: 197mm;
   width: 40%;
-  padding: 12mm 6mm 8mm 6mm;
+  padding: 4mm 6mm 8mm 6mm;
 }
 
 .timeline-container {
-  border-left: 2px solid var(--line);
+  border-left: 1px solid var(--line);
   font-size: 10pt;
+  flex: 1 1 auto;
   width: 46%;
-  padding-top: 4.8mm;
+  padding-top: 2.8mm;
 }
 
 .line-container {
@@ -83,7 +83,8 @@ a {
   overflow-x: hidden;
   font-size: 7pt;
   margin-left: 8mm;
-  margin-top: 8mm;
+  margin-top: 4mm;
+  flex: 1 1 auto;
 }
 
 .line-event {
@@ -107,7 +108,7 @@ a {
 
 .view-changer {
   display: flex;
-  margin: 1mm 0 1mm 1mm;
+  margin: 0.5mm 0 1mm 1mm;
   justify-content: space-between;
 }
 
@@ -118,15 +119,15 @@ a {
 }
 
 .resizer {
-  width: 2px;
+  width: 1px;
   background-color: var(--line);
   cursor: col-resize;
 }
 
 .file-explorer {
-  /* border-right: 1px solid var(--line); */
-  width: 14%;
-  padding: 3mm 3mm 0 3mm;
+  width: 18%;
+  padding: 2mm 3mm 0 3mm;
+  border-right: 1px solid var(--line);
 }
 
 .file-explorer>div {
@@ -198,22 +199,21 @@ a {
 }
 
 .handlers {
+  position: absolute;
   display: flex;
   gap: 4mm;
   width: fit-content;
   cursor: pointer;
   width: 100%;
   justify-content: flex-end;
-  padding-right: 20mm;
-  margin-bottom: 2mm;
+  top: 1mm;
+  right: 24mm;
 }
 
 .handlers>div {
   display: block;
-  border: 1px solid var(--line);
   padding: 1mm 2mm;
   border-radius: 0.24em;
-  font-size: 11pt;
   font-weight: 500;
 }
 

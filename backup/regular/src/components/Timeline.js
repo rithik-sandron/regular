@@ -12,25 +12,6 @@ import {
 } from "@/lib/userHandles";
 
 export default function Timeline({ data }) {
-  const [view, setView] = useState("Year");
-  const ref = useRef(null);
-
-  function handleClick(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    ref.current?.scrollIntoView({
-      behavior: "smooth",
-      inline: "start",
-    });
-  }
-
-  function handleClickView(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.target.localName === "p") {
-      setView(e.target.innerText);
-    }
-  }
 
   return (
     <>
@@ -47,17 +28,6 @@ export default function Timeline({ data }) {
       </section>
       <section className="timeline-container">
         <div className="timeline-container-view">
-          <div className="handlers">
-            <div onClick={handleClick}>Today</div>
-            <div className="dropdown" onClick={handleClickView}>
-              <span>{view}</span>
-              <div className="dropdown-content">
-                <p>Year</p>
-                <p>Month</p>
-                <p>Day</p>
-              </div>
-            </div>
-          </div>
           <div
             className="grid-container"
             style={{

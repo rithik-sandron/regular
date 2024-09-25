@@ -2,6 +2,7 @@ import { forwardRef, useState } from "react";
 import DateTime from "../DateTime";
 
 export default forwardRef(function Year(props, ref) {
+  console.log(ref)
 
   const [scrollYearLeft, setScrollYearLeft] = useState(new Date().getFullYear());
   const [scrollYearRight, setScrollYearRight] = useState(new Date().getFullYear());

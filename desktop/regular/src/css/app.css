@@ -9,10 +9,7 @@
   --accent: #dd4c4f;
   --file-date: rgb(172, 173, 173, 0.9);
   --selection: rgba(5, 143, 255, 0.1);
-
   --date-bg: rgb(220, 254, 174, 0.8);
-  --current-line: #f00f0f91;
-  --current-text: rgba(246, 89, 89, 0.851);
   --button: #fff;
 
   --font-primary: Avenir Next;
@@ -43,10 +40,7 @@
     --accent: rgba(22, 101, 160, 0.684);
     --file-date: rgb(107, 108, 109, 80);
     --selection: rgba(144, 169, 213, 0.1);
-
     --date-bg: rgba(22, 101, 160, 0.684);
-    --current-line: #ec202075;
-    --current-text: rgba(237, 63, 54, 0.714);
     --button: rgb(43, 43, 43);
   }
 }
@@ -212,49 +206,31 @@ body {
   cursor: pointer;
 }
 
-.toggle-switch {
-  position: relative;
+.top-bar {
+  display: block;
+  width: 100%;
+  height: 40px;
+  border-bottom: 1px solid var(--line);
+}
+
+.toggle-switch-right,
+.toggle-switch-left,
+.toggle-switch-present {
   width: 36px;
   height: 22px;
-  margin: 6.4mm 6.4mm 0 0;
-  position: absolute;
-  right: 0;
-}
-
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
+  margin: 2mm 2mm 0 0;
   position: absolute;
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--line);
-  transition: .4s;
-  border-radius: 34px;
 }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 14px;
-  width: 14px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: .4s;
-  border-radius: 50%;
+.toggle-switch-present {
+  right: -1.4mm;
 }
 
-input:checked+.slider {
-  background-color: var(--accent);
+.toggle-switch-left {
+  right: 7mm;
 }
 
-input:checked+.slider:before {
-  transform: translateX(14px);
+.toggle-switch-right {
+  left: 4mm;
 }

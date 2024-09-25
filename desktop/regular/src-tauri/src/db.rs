@@ -8,7 +8,7 @@ use rusqlite::{Connection, Result};
 static mut CONN: Option<Connection> = None;
 
 fn get_db() -> String {
-    "/Users/ryuu/code/repo/regular/desktop/regular/db/data.db".to_string()
+    "/Users/azula/code/rithik/regular/desktop/regular/db/data.db".to_string()
 }
 
 fn open() -> Result<()> {
@@ -44,7 +44,7 @@ pub fn init() -> Result<()> {
         )?;
     }
   
-    // create_doc();
+    // demo();
     println!("{}", "Migration done");
     Ok(())
 }
@@ -121,7 +121,8 @@ fn delete_files() -> Result<(), String> {
     Ok(())
 }
 
-pub fn create_doc() {
+
+pub fn demo() {
     let _ = delete_files();
     let (raw_name, raw_string, tree) = parser::parse("project.md").expect("paring error");
     let json = serde_json::to_string(&tree).expect("conversion error");
@@ -136,6 +137,12 @@ pub fn create_doc() {
     let _ = create_file(&raw_name, &raw_string, &json);
 
     let (raw_name, raw_string, tree) = parser::parse("note.md").expect("paring error");
+    let json = serde_json::to_string(&tree).expect("conversion error");
+    let _ = create_file(&raw_name, &raw_string, &json);
+}
+
+pub fn create_doc() {
+    let (raw_name, raw_string, tree) = parser::parse("new.md").expect("paring error");
     let json = serde_json::to_string(&tree).expect("conversion error");
     let _ = create_file(&raw_name, &raw_string, &json);
 }

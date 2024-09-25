@@ -26,7 +26,7 @@ const EMPTY_TYPE: &str = "br";
 pub fn get_dir() -> String {
     // let base_path = Path::new("/Users/azula/code/rithik/regular/desktop/regular/src-tauri/test/");
     // let base_path = Path::new("/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/test");
-    return "/Users/ryuu/code/repo/regular/desktop/regular/src-tauri/test/".to_string();
+    return "/Users/azula/code/rithik/regular/desktop/regular/src-tauri/test/".to_string();
 }
 
 pub fn get_dir_save() -> String {
