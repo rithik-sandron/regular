@@ -119,6 +119,7 @@ export default forwardRef(function Year(props, ref) {
   }
 
   function current_date_view(x, y) {
+
     if (
       currentMonth === x.month &&
       currentYear === x.year &&
@@ -128,7 +129,7 @@ export default forwardRef(function Year(props, ref) {
         <>
           <div
             style={{
-              position: "relative",
+              position: "absolute",
               left: `${(y * 8) - 8}px`,
             }}
           >

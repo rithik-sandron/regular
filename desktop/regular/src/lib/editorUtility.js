@@ -109,19 +109,22 @@ export function toggleUntoggleDateContent(activeId, node) {
 }
 
 export function handleClickAndKeyUp(e, mutationObserver, activeId, editor) {
-  pauseMutationObserver(mutationObserver);
   const res = getSelectedElement();
   const node = res[0];
-  toggleUntoggleDateContent(activeId, node);
-  let pos = getCaret(node);
-  while (node.textContent.charCodeAt(pos) === 8205 || node.textContent.charCodeAt(pos) === 8203) {
-    if (e.keyCode === 37)
-      pos -= 1;
-    else if (e.keyCode === 39)
-      pos += 1;
+
+  if (node) {
+    pauseMutationObserver(mutationObserver);
+    toggleUntoggleDateContent(activeId, node);
+    let pos = getCaret(node);
+    while (node.textContent.charCodeAt(pos) === 8205 || node.textContent.charCodeAt(pos) === 8203) {
+      if (e.keyCode === 37)
+        pos -= 1;
+      else if (e.keyCode === 39)
+        pos += 1;
+    }
+    setCaretAtIndex(node, pos);
+    startMutationObserver(mutationObserver, editor);
   }
-  setCaretAtIndex(node, pos);
-  startMutationObserver(mutationObserver, editor);
 }
 
 export function handleKeyUPDOWN(e, mutationObserver, activeId, editor) {
