@@ -1,16 +1,15 @@
-const boldRegex = /\*\*(.+?)\*\*/g;
-const boldRegexWithUnicCode = /\u200D\*\*(.+?)\*\*\u200D/g;
-
-const dateRegex = /\!\((.+?)\)/g;
-const dateRegexWithUnicCode = /\u200D\!\((.+?)\)\u200D/g;
-
-const unicode = '\u200D';
+import {
+  unicode, boldRegex,
+  boldRegexWithUniCode,
+  dateRegex,
+  dateRegexWithUnicCode
+} from "./generalUtility";
 
 export function bold(e, text, startContainer, paragraph, setCaretAtIndex, pos) {
   let match;
-  if (match = boldRegex.exec(text)) {
+  if (match = boldRegexWithUniCode.exec(text)) {
     var start = match.index;
-    var end = boldRegex.lastIndex;
+    var end = boldRegexWithUniCode.lastIndex;
     e.preventDefault();
     e.stopPropagation();
     let text = startContainer.textContent.slice(start, end);
@@ -23,7 +22,7 @@ export function bold(e, text, startContainer, paragraph, setCaretAtIndex, pos) {
     paragraph.removeChild(startContainer);
     setCaretAtIndex(paragraph, pos + 2);
 
-  } else if (match = boldRegexWithUnicCode.exec(text)) {
+  } else if (match = boldRegex.exec(text)) {
     var start = match.index;
     var end = boldRegex.lastIndex;
     e.preventDefault();
@@ -32,17 +31,32 @@ export function bold(e, text, startContainer, paragraph, setCaretAtIndex, pos) {
     let b = document.createElement('span');
     b.className = "x-wrapper";
     b.innerHTML = `<span class="asterisk">${text.slice(0, 2)}</span><strong>${match[0].slice(2, -2)}</strong><span class="asterisk">${text.slice(-2)}</span>`
+    let last = paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(end, startContainer.textContent.length)), startContainer);
+    paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start)), last);
+    paragraph.insertBefore(b, last);
+    paragraph.removeChild(startContainer);
+    setCaretAtIndex(paragraph, pos);
+  }
+}
+
+export function date(e, text, startContainer, paragraph, setCaretAtIndex, pos) {
+  let match;
+  if (match = dateRegexWithUnicCode.exec(text)) {
+    var start = match.index;
+    var end = dateRegexWithUnicCode.lastIndex;
+    e.preventDefault();
+    e.stopPropagation();
+    let text = startContainer.textContent.slice(start, end);
+    let b = document.createElement('span');
+    b.className = "x-wrapper";
+    b.innerHTML = `<span class="date-prefix">${text.slice(0, 2)}</span><mark>${match[0].slice(2, -1)}</mark><span class="date-prefix">${text.slice(-1)}</span>`
     let last = paragraph.insertBefore(document.createTextNode(unicode + startContainer.textContent.substring(end, startContainer.textContent.length)), startContainer);
     paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start) + unicode), last);
     paragraph.insertBefore(b, last);
     paragraph.removeChild(startContainer);
     setCaretAtIndex(paragraph, pos + 2);
   }
-}
-
-export function date(e, text, startContainer, paragraph, setCaretAtIndex, pos) {
-  let match;
-  if (match = dateRegex.exec(text)) {
+  else if (match = dateRegex.exec(text)) {
     var start = match.index;
     var end = dateRegex.lastIndex;
     e.preventDefault();
@@ -51,27 +65,11 @@ export function date(e, text, startContainer, paragraph, setCaretAtIndex, pos) {
     let b = document.createElement('span');
     b.className = "x-wrapper";
     b.innerHTML = `<span class="date-prefix">${text.slice(0, 2)}</span><mark>${match[0].slice(2, -1)}</mark><span class="date-prefix">${text.slice(-1)}</span>`
-    let last = paragraph.insertBefore(document.createTextNode(unicode + startContainer.textContent.substring(end, startContainer.textContent.length)), startContainer);
-    paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start) + unicode), last);
+    let last = paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(end, startContainer.textContent.length)), startContainer);
+    paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start)), last);
     paragraph.insertBefore(b, last);
     paragraph.removeChild(startContainer);
-    setCaretAtIndex(paragraph, pos + 2);
-
-  } else if (match = dateRegexWithUnicCode.exec(text)) {
-    var start = match.index;
-    var end = dateRegex.lastIndex;
-    e.preventDefault();
-    e.stopPropagation();
-    console.log(startContainer.textContent.substring(end, startContainer.textContent.length).charCodeAt(0))
-    let text = startContainer.textContent.slice(start, end);
-    let b = document.createElement('span');
-    b.className = "x-wrapper";
-    b.innerHTML = `<span class="date-prefix">${text.slice(0, 2)}</span><mark>${match[0].slice(2, -1)}</mark><span class="date-prefix">${text.slice(-1)}</span>`
-    let last = paragraph.insertBefore(document.createTextNode(unicode + startContainer.textContent.substring(end, startContainer.textContent.length)), startContainer);
-    paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start) + unicode), last);
-    paragraph.insertBefore(b, last);
-    paragraph.removeChild(startContainer);
-    setCaretAtIndex(paragraph, pos + 2);
+    setCaretAtIndex(paragraph, pos);
   }
 }
 
@@ -89,11 +87,12 @@ export function reCheckBold(getCaret, setCaretAtIndex) {
     let b = document.createElement('span');
     b.className = "x-wrapper";
     b.innerHTML = `<span class="asterisk">${text.slice(0, 2)}</span><strong>${match[0].slice(2, -2)}</strong><span class="asterisk">${text.slice(-2)}</span>`
-    let last = paragraph.insertBefore(document.createTextNode(unicode + paragraph.textContent.substring(end, paragraph.textContent.length)), startContainer.parentNode);
-    paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start) + unicode), last);
+    let last = paragraph.insertBefore(document.createTextNode(paragraph.textContent.substring(end, paragraph.textContent.length)), startContainer.parentNode);
+    paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start)), last);
     paragraph.insertBefore(b, last);
     paragraph.removeChild(startContainer.parentNode);
     if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
+
       range.selectNodeContents(paragraph);
       range.collapse(false);
       var sel = window.getSelection();
@@ -120,7 +119,6 @@ export function reCheckDate(getCaret, setCaretAtIndex) {
   const startContainer = range.startContainer;
   const paragraph = startContainer.parentNode;
   const text = paragraph.textContent;
-  console.log(startContainer.parentNode)
   let match = dateRegex.exec(text);
   if (match && paragraph.nodeName !== 'SPAN') {
     var start = match.index;
@@ -129,9 +127,8 @@ export function reCheckDate(getCaret, setCaretAtIndex) {
     let b = document.createElement('span');
     b.className = "x-wrapper";
     b.innerHTML = `<span class="date-prefix">${text.slice(0, 2)}</span><mark>${match[0].slice(2, -1)}</mark><span class="date-prefix">${text.slice(-1)}</span>`
-    console.log("comes")
-    let last = paragraph.insertBefore(document.createTextNode(unicode + paragraph.textContent.substring(end, paragraph.textContent.length)), startContainer.parentNode);
-    paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start) + unicode), last);
+    let last = paragraph.insertBefore(document.createTextNode(paragraph.textContent.substring(end, paragraph.textContent.length)), startContainer.parentNode);
+    paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start)), last);
     paragraph.insertBefore(b, last);
     paragraph.removeChild(startContainer.parentNode);
     if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {

@@ -2,9 +2,7 @@ const TopComponent = ({ setComponent, component }) => {
 
   function handleClick(e) {
     e.stopPropagation();
-    // e.preventDefault();
     e.target.removeAttribute('checked');
-    console.log(e.targer)
     setComponent(() => !component);
   }
 

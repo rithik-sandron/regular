@@ -1,4 +1,5 @@
 import { bold, date, reCheckBold, reCheckDate } from "./nodeType"
+import { unicode } from "./generalUtility";
 
 export function setCursor(e, index) {
   let range = document.createRange();
@@ -66,12 +67,16 @@ export function clear(activeId) {
 }
 
 export function updateContent(node, activeId) {
-  activeId.current = node.id;
-  node.childNodes.forEach(x => {
-    if (x.nodeName === "MARK") {
-      x.innerText = x.getAttribute("data-text");
+  if (node) {
+    activeId.current = node.id;
+    if (node.childNodes.length > 0) {
+      node.childNodes.forEach(x => {
+        if (x.nodeName === "MARK") {
+          x.innerText = x.getAttribute("data-text");
+        }
+      })
     }
-  })
+  }
 }
 
 export function startMutationObserver(mutationObserver, editor) {
@@ -190,9 +195,11 @@ export function getMutationObserver(mutate, activeId, resetInactivityTimer) {
                 mutate.set(mutation.target.id, { action: "update", parentId: mutation.target.id, text: node.textContent });
               }
             } else if (node.nodeName !== "BR") {
-              mutate.set(node.id, { action: "add", parentId: mutation.previousSibling.previousSibling.id, 
-                text: node.textContent, level: document.getElementById(activeId.current) ? 
-                  parseFloat(document.getElementById(activeId.current).style.marginLeft) / 1.8 : 0 });
+              mutate.set(node.id, {
+                action: "add", parentId: mutation.previousSibling.previousSibling.id,
+                text: node.textContent, level: document.getElementById(activeId.current) ?
+                  parseFloat(document.getElementById(activeId.current).style.marginLeft) / 1.8 : 0
+              });
             }
           })
         }
@@ -242,11 +249,11 @@ const handleEnter = function (e, activeId, markdown) {
   let tag = node.nodeName;
   // const cursorPoint = selection.anchorOffset;
   const cursorPoint = getCaret(getSelectedElement()[0])
-  let textContent = "\u200D";
+  let textContent = unicode;
   if (cursorPoint < node.textContent.length) {
     // cursorPoint === node.textContent.length && node.textContent.length !== 0
     textContent = node.textContent.substring(cursorPoint, node.textContent.length);
-    node.innerText = node.textContent.substring(0, cursorPoint).length > 0 ? node.textContent.substring(0, cursorPoint) : "\u200D";
+    node.innerText = node.textContent.substring(0, cursorPoint).length > 0 ? node.textContent.substring(0, cursorPoint) : unicode;
   }
 
   // add br tag when enter is pressed
@@ -266,7 +273,6 @@ function createNewElement(e, range, tag, textContent, node, activeId, markdown) 
   }
   const el = document.createElement(tag);
   el.innerText = textContent;
-  console.log(markdown._uid)
   markdown._uid += 1
   el.id = markdown._uid;
   activeId.current = el.id;
@@ -321,49 +327,31 @@ const handleBackspace = function (e, activeId, mutationObserver, editor) {
   if (selectedText.length !== 0) {
     if (selectedText.length === node.textContent.length) {
       e.preventDefault();
-      node.textContent = "\u200D";
+      node.textContent = unicode;
       setCaretAtIndex(node, 0);
     }
   }
-
   else {
     let element = document.getElementById(activeId.current);
-    if (pos === 1) {
+    if ((pos === 1 && !element.textContent.match(unicode)) || (pos === 2 && element.textContent.match(unicode))) {
       e.preventDefault();
-      node.textContent = "\u200D";
+      node.textContent = unicode;
       setCaretAtIndex(node, 0);
-    } else if (pos === 0 && document.getElementById(activeId.current).nodeName !== "H1") {
+    } else if (pos < 2 && document.getElementById(activeId.current).nodeName !== "H1") {
       e.preventDefault();
       pauseMutationObserver(mutationObserver);
       element.previousElementSibling.remove();
       let content = element.innerText;
-
       let prev = element.previousElementSibling;
       clear(activeId)
       updateContent(prev, activeId);
       startMutationObserver(mutationObserver, editor);
       const pos = prev.textContent.length;
-      if (content.length !== 0) {
+      if (content.length > 0 && content.charCodeAt(0) !== 8205) {
         prev.textContent = document.getElementById(activeId.current).textContent + content;
       }
       setCaretAtIndex(prev, pos);
-
       element.remove();
-    }
-    else {
-      // e.preventDefault();
-      // setTimeout(() => {
-      //   const selection = window.getSelection();
-      //   const range = selection.getRangeAt(0);
-      //   const startContainer = range.startContainer;
-      //   if (range.startOffset > 1) {
-      //     startContainer.textContent = startContainer.textContent.slice(0, range.startOffset - 1) + startContainer.textContent.slice(range.startOffset);
-      //   } else {
-      //     startContainer.textContent = startContainer.textContent.slice(0, range.startOffset - 1) + startContainer.textContent.slice(range.startOffset);
-      //   }
-      //   pos -= 1;
-      //   setCaretAtIndex(node, pos);
-      // });
     }
   }
 }
@@ -373,15 +361,12 @@ const handleTab = function (e, activeId) {
   let p = document.getElementById(activeId.current);
   const prev = p?.previousElementSibling?.previousElementSibling;
   if (e.shiftKey) {
-    if (prev && prev.nodeName !== "H1" && p.childNodes[0].textContent.trim().length === 0) {
-      p.childNodes[0].textContent = p.childNodes[0].textContent.substring(8)
-      // p.style.marginLeft = parseFloat(p.style.marginLeft) - 1.8 + "em";
+    if (prev && prev.nodeName !== "H1" && p.style.marginLeft !== "0em") {
+      p.style.marginLeft = parseFloat(p.style.marginLeft) - 1.8 + "em";
     }
   } else {
-    if (prev && prev.nodeName !== "H1" && p.nodeName === 'P' && p.childNodes[0].textContent.trim().length === 0) {
-      console.log("s")
-      p.childNodes[0].textContent = p.childNodes[0].textContent + '\u00a0'.repeat(8);
-      // p.style.marginLeft = parseFloat(p.style.marginLeft) + 1.8 + "em";
+    if (prev && prev.nodeName !== "H1" && prev.style.marginLeft >= p.style.marginLeft && p.nodeName === 'P') {
+      p.style.marginLeft = parseFloat(p.style.marginLeft) + 1.8 + "em";
     }
   }
 }

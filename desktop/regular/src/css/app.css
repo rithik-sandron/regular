@@ -90,7 +90,7 @@ body {
   font-family: var(--font-primary);
   background-color: var(--background);
   color: var(--foreground);
-  caret-color: #dd4c4f;
+  caret-color: var(--accent);
   box-sizing: border-box;
   font-size: var(--font-size);
   overflow: hidden;
@@ -132,19 +132,19 @@ body {
 .blocks h1 {
   line-height: var(--line-height-h1);
   padding: var(--padding-h1) 0;
-  font-size: 21pt;
+  font-size: 24pt;
 }
 
 .blocks h2 {
   line-height: var(--line-height-h2);
   padding: var(--padding-h2) 0;
-  font-size: 17pt;
+  font-size: 20pt;
 }
 
 .blocks h3 {
   line-height: var(--line-height-h3);
   padding: var(--padding-h3) 0;
-  font-size: 14pt;
+  font-size: 16pt;
 }
 
 .blocks p {
@@ -162,19 +162,19 @@ body {
 }
 
 .blocks h1>span>mark {
-  padding: var(--padding-h1) 2mm;
+  padding: var(--padding-h1) 1mm;
 }
 
 .blocks h2>span>mark {
-  padding: var(--padding-h2) 2mm;
+  padding: var(--padding-h2) 1mm;
 }
 
 .blocks h3>span>mark {
-  padding: var(--padding-h3) 2mm;
+  padding: var(--padding-h3) 1mm;
 }
 
 .blocks p>span>mark {
-  padding: var(--padding-p) 2mm;
+  padding: var(--padding-p) 1mm;
 }
 
 .blocks strong {
@@ -216,7 +216,7 @@ body {
   position: relative;
   width: 36px;
   height: 22px;
-  margin: 6mm 6mm 0 0;
+  margin: 6.4mm 6.4mm 0 0;
   position: absolute;
   right: 0;
 }

@@ -19,7 +19,7 @@ export default function Tree({ data }) {
               key={data._id}
               ref={ref}
               style={{
-                // marginLeft: data._indent + "em",
+                marginLeft: data._indent + "em",
               }}>
             </p>
             <data._type />
@@ -31,7 +31,7 @@ export default function Tree({ data }) {
               key={data._id}
               ref={ref}
               style={{
-                // marginLeft: data._indent + "em",
+                marginLeft: data._indent + "em",
               }}
             >
               {data._text}

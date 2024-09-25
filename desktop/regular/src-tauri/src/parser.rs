@@ -35,8 +35,8 @@ pub fn get_dir_save() -> String {
     return "/Users/azula/code/rithik/regular/desktop/regular/json/".to_string();
 }
 
-pub fn parse() -> std::io::Result<(String, String, Root)> {
-    let path = Path::new(&get_dir()).join("project.md");
+pub fn parse(fileqq: &str) -> std::io::Result<(String, String, Root)> {
+    let path = Path::new(&get_dir()).join(fileqq);
     let file = File::open(path)?;
     let mut order = 1;
     let mut level = 0.0;
@@ -194,7 +194,7 @@ pub fn parse() -> std::io::Result<(String, String, Root)> {
                     skimmed = skimmed.to_owned();
                 }
 
-                if s.is_empty() {
+                if s.trim().is_empty() {
                     _type = EMPTY_TYPE.to_string();
                 } else {
                     _type = TYPE.to_string();
@@ -312,13 +312,14 @@ pub fn parse() -> std::io::Result<(String, String, Root)> {
                 is_date = false;
                 is_prev_char = false;
             } else {
-                s.push(*c as char);
                 if !is_indended {
                     if &TAB == c {
                         level = level + 1.0;
                     } else if &SPACE == c {
                         level = level + 0.25;
                     }
+                } else {
+                    s.push(*c as char);
                 }
             }
         }

@@ -107,8 +107,35 @@ pub fn get_file(id: u64) -> Result<File> {
     }
 }
 
+fn delete_files() -> Result<(), String> {
+    let mut stmt = unsafe {
+        CONN.as_ref()
+            .unwrap()
+            .prepare("DELETE FROM file WHERE id > 0")
+            .map_err(|e| e.to_string())
+    }?;
+
+    stmt.execute([])
+        .map_err(|e| e.to_string())?;
+
+    Ok(())
+}
+
 pub fn create_doc() {
-    let (raw_name, raw_string, tree) = parser::parse().expect("paring error");
+    let _ = delete_files();
+    let (raw_name, raw_string, tree) = parser::parse("project.md").expect("paring error");
+    let json = serde_json::to_string(&tree).expect("conversion error");
+    let _ = create_file(&raw_name, &raw_string, &json);
+
+    let (raw_name, raw_string, tree) = parser::parse("plan.md").expect("paring error");
+    let json = serde_json::to_string(&tree).expect("conversion error");
+    let _ = create_file(&raw_name, &raw_string, &json);
+
+    let (raw_name, raw_string, tree) = parser::parse("student.md").expect("paring error");
+    let json = serde_json::to_string(&tree).expect("conversion error");
+    let _ = create_file(&raw_name, &raw_string, &json);
+
+    let (raw_name, raw_string, tree) = parser::parse("note.md").expect("paring error");
     let json = serde_json::to_string(&tree).expect("conversion error");
     let _ = create_file(&raw_name, &raw_string, &json);
 }

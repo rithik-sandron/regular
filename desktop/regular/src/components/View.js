@@ -19,12 +19,11 @@ export default function View({ component, setComponent, markdown, setMarkdown, f
 
   const mutate = useRef(new Map());
   const mutationObserver = useRef(null);
-
   const inactivityTimerRef = useRef(null);
 
   const saveContent = useCallback(() => {
     if (mutate.current.size !== 0) {
-      console.log(mutate)
+      console.log(mutate.current)
       const index = editor.current.innerText.indexOf('\n')
       return
       invoke("save", {
@@ -130,7 +129,7 @@ export default function View({ component, setComponent, markdown, setMarkdown, f
                 />
               </div>
             )
-              :
+              : markdown._has_dates &&
               (
                 <>
                   <Handlers

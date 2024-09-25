@@ -1,1 +1,1 @@
-new document
+New Document
