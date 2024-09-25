@@ -17,7 +17,7 @@ export default forwardRef(function View(props, ref) {
       isVerticalTimeline }
       = props;
 
-  const INACTIVITY_TIMEOUT = 2000; // 2 seconds of inactivity before saving
+  const INACTIVITY_TIMEOUT = 3000; // 2 seconds of inactivity before saving
   const activeId = useRef('');
   const editor = useRef(null);
 
@@ -29,7 +29,7 @@ export default forwardRef(function View(props, ref) {
     if (mutate.current.size !== 0) {
       console.log(mutate.current)
       const index = editor.current.innerText.indexOf('\n')
-      return
+      // return
       invoke("save", {
         mutate: mutate.current,
         id: fileId.toString(),

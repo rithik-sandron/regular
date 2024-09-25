@@ -16,7 +16,7 @@ export default function GanttEvent({ data }) {
             style={{
               width: `${data._pad}px`,
               left: pad,
-              top: `${data._order + 1}em`,
+              top: `${data._order + 7}em`,
             }}
           >
             <p

@@ -62,7 +62,7 @@ export default forwardRef(function Year(props, ref) {
   return (
     <div
       className="timeline-grid-year"
-      style={{ height: `${props.height * 3.12}em` }}>
+      style={{ height: `${props.height * 4}em` }}>
       <span className="sticky">{currentYear}</span>
       {grid().map((x) => {
         return (
@@ -137,7 +137,7 @@ export default forwardRef(function Year(props, ref) {
             <span
               className="current"
               style={{
-                height: `calc(${props.height * 3.12}em - 38.5px)`,
+                height: `${props.height * 3.5}em`,
               }}
             />
             <span

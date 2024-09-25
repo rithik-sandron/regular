@@ -156,19 +156,19 @@ body {
 }
 
 .blocks h1>span>mark {
-  padding: var(--padding-h1) 1mm;
+  padding: var(--padding-h1) 0;
 }
 
 .blocks h2>span>mark {
-  padding: var(--padding-h2) 1mm;
+  padding: var(--padding-h2) 0;
 }
 
 .blocks h3>span>mark {
-  padding: var(--padding-h3) 1mm;
+  padding: var(--padding-h3) 0;
 }
 
 .blocks p>span>mark {
-  padding: var(--padding-p) 1mm;
+  padding: var(--padding-p) 0;
 }
 
 .blocks strong {

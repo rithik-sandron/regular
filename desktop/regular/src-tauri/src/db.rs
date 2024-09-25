@@ -67,7 +67,7 @@ pub fn get_files() -> Result<Vec<FileMeta>, String> {
     let mut stmt = unsafe {
         CONN.as_ref()
             .unwrap()
-            .prepare("SELECT id, name, modified_date FROM file")
+            .prepare("SELECT id, name, modified_date FROM file order by modified_date DESC")
             .map_err(|e| e.to_string())
     }?;
 
