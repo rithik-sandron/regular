@@ -1,0 +1,352 @@
+.current {
+  display: block;
+  position: absolute;
+  width: 2px;
+  left: 2.5px;
+  top: -2.9mm;
+  background-color: var(--accent);
+}
+
+#time-current,
+#date-current {
+  font-size: 8.6pt;
+  text-align: center;
+  color: #fff;
+  background-color: var(--accent);
+  border-radius: 1mm;
+  top: -8mm;
+  font-weight: 500;
+}
+
+#time-current {
+  position: absolute;
+  width: 74px;
+  margin-left: 7mm;
+  padding: 0.8mm 1mm 0.4mm 1mm;
+}
+
+#date-current {
+  position: absolute;
+  margin-left: -7px;
+  padding: 0.8mm 1mm 0.6mm 1mm;
+}
+
+.grid-container {
+  display: block;
+  position: relative;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  height: 100%;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.app-container {
+  position: relative;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  flex-grow: 1;
+  overflow: auto;
+}
+
+.app-container-wrap {
+  position: relative;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  flex-grow: 1;
+  overflow: auto;
+  background: var(--svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.list-container,
+.file-explorer,
+.timeline-container {
+  display: block;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.list-container {
+  margin: 0 auto;
+  flex: 1 1 auto;
+  max-width: 197mm;
+  width: 40%;
+  padding: 4mm 6mm 8mm 6mm;
+}
+
+.timeline-container {
+  border-left: 1px solid var(--line);
+  font-size: 10pt;
+  flex: 1 1 auto;
+  width: 46%;
+  padding-top: 2.8mm;
+}
+
+.line-container {
+  position: relative;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  font-size: 7pt;
+  margin-left: 8mm;
+  margin-top: 4mm;
+  flex: 1 1 auto;
+}
+
+.line-event {
+  position: absolute;
+  border-bottom: none;
+  background-color: var(--line-bg);
+  padding: 0 4mm;
+  width: 220px;
+  left: 8mm;
+}
+
+.line-event-text {
+  position: absolute;
+  left: 260px;
+  font-size: 10pt;
+  color: #333;
+  font-weight: 600;
+  padding: 0 2mm;
+  border-radius: 0.6mm;
+}
+
+.view-changer {
+  display: flex;
+  margin: 0.5mm 0 1mm 1mm;
+  justify-content: space-between;
+}
+
+.view-changer>h3 {
+  font-weight: 500;
+  margin: auto 0;
+  font-size: 12pt;
+}
+
+.resizer {
+  width: 1px;
+  background-color: var(--line);
+  cursor: col-resize;
+}
+
+.file-explorer {
+  width: 18%;
+  padding: 2mm 3mm 0 3mm;
+  border-right: 1px solid var(--line);
+}
+
+.file-explorer>div {
+  margin: auto;
+  padding: 3mm 0 3mm 8px;
+  border-bottom: 1px solid var(--line);
+  cursor: default;
+  border-left: 5px solid transparent;
+}
+
+.file-explorer>div>h3 {
+  font-size: 10.5pt;
+  font-weight: 500;
+}
+
+.file-explorer>div>time {
+  font-size: 9pt;
+  color: var(--file-date);
+}
+
+.file-explorer>div:first-child {
+  border: none;
+}
+
+.file-active {
+  border-left: 5px solid var(--accent) !important;
+  background-color: var(--line-bg);
+  border-radius: 1.4mm;
+}
+
+@media (max-width: 899px) {
+  .app-container {
+    gap: 5%;
+  }
+
+  .list-container {
+    width: 100%;
+  }
+
+  .timeline-container {
+    width: 100%;
+  }
+}
+
+.grid-tasks-container {
+  position: absolute;
+  top: 2em;
+}
+
+.seperator {
+  position: absolute;
+  display: block;
+  width: 100%;
+  height: 1px;
+  background: var(--line);
+}
+
+.next-sibling {
+  display: block;
+  position: absolute;
+}
+
+.grid-tasks>div {
+  border-radius: 0.2em;
+  box-shadow: var(--shadow1) 0px 0px 0px 0.7px inset, var(--shadow2) 0px 1px 1px;
+  position: absolute;
+  background-color: var(--button);
+  padding: 1.6mm 0;
+  cursor: move;
+}
+
+.grid-tasks-text {
+  display: block;
+  width: fit-content;
+  font-weight: 600;
+  font-size: 13.5px;
+  padding-left: 1.6mm;
+}
+
+.handlers {
+  position: absolute;
+  display: flex;
+  gap: 4mm;
+  width: fit-content;
+  cursor: pointer;
+  width: 100%;
+  justify-content: flex-end;
+  top: 1mm;
+  right: 24mm;
+}
+
+.handlers>div {
+  display: block;
+  padding: 1mm 2mm;
+  border-radius: 0.24em;
+  font-weight: 500;
+}
+
+.interact-button {
+  display: flex;
+  justify-content: space-between;
+}
+
+.interact-button>* {
+  vertical-align: middle;
+}
+
+.interact-button>h3 {
+  display: inline;
+  padding-left: 1mm;
+  font-weight: 500;
+  margin: auto 0;
+  font-size: 11pt;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  min-width: 100px;
+  font-size: 14px;
+  background-color: var(--date-bg);
+  padding: 2mm 0;
+  border-radius: 0.24em;
+  z-index: 1;
+  top: 28px;
+  left: 0;
+  box-shadow: rgba(15, 15, 15, 0.05) 0px 0px 0px 1px,
+    rgba(15, 15, 15, 0.1) 0px 3px 6px, rgba(15, 15, 15, 0.2) 0px 9px 24px;
+}
+
+.dropdown-content>p {
+  padding: 1mm 4mm;
+}
+
+.dropdown-content>p:hover {
+  background-color: var(--line-bg);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.sticky {
+  padding: 3mm 0 0 0;
+  background-color: var(--timeline);
+  font-weight: 600;
+  font-size: 11pt;
+  height: fit-content;
+  position: absolute;
+}
+
+.timeline-grid-year {
+  display: flex;
+  position: absolute;
+}
+
+.month {
+  display: block;
+  margin-bottom: 7mm;
+  font-size: 12pt;
+}
+
+.timeline-grid-year>div {
+  background-color: var(--timeline);
+  border-right: 1px solid var(--line);
+  text-align: center;
+  padding-top: 2.6mm;
+}
+
+.timeline-grid-year>div span {
+  font-weight: 600;
+}
+
+.timeline-grid-year>div:last-child {
+  border-right: none;
+}
+
+.timeline-grid-year-dates {
+  display: flex;
+  position: relative;
+  text-align: left;
+}
+
+.timeline-grid-year-date {
+  display: block;
+  font-size: 8pt;
+  opacity: 0.7;
+}
+
+.timeline-grid-day {
+  display: grid;
+  position: absolute;
+  grid-template-columns: repeat(24, 1fr);
+}
+
+.timeline-grid-day>div {
+  background-color: var(--line-bg);
+  border-right: 1px solid var(--line);
+  text-align: center;
+  min-width: 59px;
+  padding-top: 16px;
+}
