@@ -12,9 +12,10 @@ function App() {
   const [explorer, setExplorer] = useState(true);
   const [present, setPresent] = useState(false);
   const [markdown, setMarkdown] = useState("");
+
   const [fileId, setFileId] = useState(null);
 
-  const ref = useRef(null);
+  const year = useRef(null);
 
   useEffect(() => {
     if (fileId) {
@@ -23,7 +24,7 @@ function App() {
         // console.log(data.markdown)
         setMarkdown(data.markdown !== "" ? JSON.parse(data.markdown) : data.markdown);
       });
-      ref.current?.scrollIntoView({
+      year.current?.scrollIntoView({
         inline: "center",
         block: "nearest"
       });
@@ -44,7 +45,7 @@ function App() {
         setExplorer={setExplorer}
         present={present}
         setPresent={setPresent}
-        ref={ref}
+        ref={year}
         isVerticalTimeline={isVerticalTimeline}
       />
 
@@ -69,7 +70,8 @@ function App() {
               markdown={markdown}
               setMarkdown={setMarkdown}
               fileId={fileId}
-              ref={ref}
+              setFileId={setFileId}
+              ref={year}
               isVerticalTimeline={isVerticalTimeline}
             />
           }

@@ -44,33 +44,38 @@ export default forwardRef(function TopComponent(props, ref) {
   }
 
   return (
-    fileId && (
-      <div className="top-bar">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-        <span className="material-symbols-outlined toggle-switch-present" onClick={(e) => togglePresentation(e)}>
-          preview
-        </span>
+    <div className="top-bar">
+      {!present && (
+        <>
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+          <span className="material-symbols-outlined toggle-switch-right" onClick={(e) => toggleExplorer(e)}>
+            notes
+          </span>
+        </>
+      )}
 
-        {(present || component) && !isVerticalTimeline &&
-          <Handlers
-            handleClick={handleClick}
-          />
-        }
+      {fileId && (
+        <>
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+          <span className="material-symbols-outlined toggle-switch-present" onClick={(e) => togglePresentation(e)}>
+            preview
+          </span>
 
-        {!present && (
-          <>
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-            <span className="material-symbols-outlined toggle-switch-left" onClick={(e) => toggleComponent(e)}>
-              dock_to_left
-            </span>
+          {(present || component) && !isVerticalTimeline &&
+            <Handlers handleClick={handleClick} />
+          }
 
-            <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-            <span className="material-symbols-outlined toggle-switch-right" onClick={(e) => toggleExplorer(e)}>
-              notes
-            </span>
-          </>
-        )}
-      </div>
-    )
+          {!present && (
+            <>
+              <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+              <span className="material-symbols-outlined toggle-switch-left" onClick={(e) => toggleComponent(e)}>
+                dock_to_left
+              </span>
+            </>
+          )}
+
+        </>
+      )};
+    </div>
   );
 });

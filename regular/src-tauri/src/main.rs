@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 #![recursion_limit = "256"]
-use std::{collections::HashMap, env};
+use std::{collections::{BTreeMap, HashMap}, env};
 use db::update_file;
 use root::Root;
 use tauri::Manager;
@@ -53,24 +53,32 @@ fn create_doc() {
 }
 
 #[tauri::command]
-fn save(mutate: HashMap<String, mutation::Mutation>, id: &str, name: &str, raw: String, markdown: String) -> String {
+fn save(mutate: BTreeMap<String, mutation::Mutation>, id: &str, name: &str, raw: String, markdown: String) -> String {
     let mut root: Root = serde_json::from_str(&markdown).expect("parsing error");
     for (key, value) in mutate.iter() {
+        let key_id: u128 = key.parse().unwrap();
+        // println!("{}={}={}={}", key_id, value.parentId, &value.text, value.level);
         if value.action == "update" {
-            let key_id: u128 = key.parse().unwrap();
-            root._first_child.as_mut().unwrap().find_node_by_id_and_update(key_id, &value.text, value.level);
-            let json = serde_json::to_string(&root).expect("conversion error");
-            let _ = update_file(id, name, &raw, &json);
+            let res = root._first_child.as_mut().unwrap().find_node_by_id_and_update(key_id, &value.text, value.level, root._min_date, root._max_date);
+            if res.0 {
+                root._min_date = res.1;
+                root._max_date = res.2;
+            }
         }
 
         if value.action == "add" {
-            let key_id: u128 = key.parse().unwrap();
-            println!("{}={}={}={}", key_id, value.parentId, &value.text, value.level);
+            let res = root._first_child.as_mut().unwrap().find_node_by_id_and_create(key_id, value.parentId.parse().unwrap(), &value.text, value.level, root._min_date, root._max_date);
+            if res.0 {
+                root._min_date = res.1;
+                root._max_date = res.2;
+            }
+        }
 
-            root._first_child.as_mut().unwrap().find_node_by_id_and_create(key_id, value.parentId.parse().unwrap(), &value.text, value.level);
-            let json = serde_json::to_string(&root).expect("conversion error");
-            let _ = update_file(id, name, &raw, &json);
+        if value.action == "delete" {
+            root._first_child.as_mut().unwrap().find_node_by_id_and_delete(key_id);
         }
     }
-    serde_json::to_string(&root).expect("parsing error")
+    let json = serde_json::to_string(&root).expect("conversion error");
+    let _ = update_file(id, name, &raw, &json);
+    json
 }

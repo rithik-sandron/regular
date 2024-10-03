@@ -21,7 +21,6 @@ const FileExplorer = ({ setFileId, fileId }) => {
     function handleFileClick(e, id) {
         e.stopPropagation();
         e.preventDefault();
-        console.log(id)
         if (fileId)
             document.getElementById(`file-exp-list-${fileId}`).classList.remove('file-active');
         setFileId(id);

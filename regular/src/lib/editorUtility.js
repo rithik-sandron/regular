@@ -234,6 +234,7 @@ export function getMutationObserver(mutate, activeId, resetInactivityTimer) {
         }
       }
     })
+    // console.log(mutate)
     resetInactivityTimer();
   });
 }

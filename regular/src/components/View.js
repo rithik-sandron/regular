@@ -1,4 +1,4 @@
-import { useRef, useEffect, useCallback, forwardRef } from "react";
+import { useRef, useEffect, useCallback, forwardRef, memo } from "react";
 import Year from "./gantt/Year";
 import GanttEvent from "./gantt/GanttEvent";
 import Tree from "./Tree";
@@ -7,13 +7,14 @@ import Tyear from "./timeline/TYear";
 import { invoke } from "@tauri-apps/api";
 import { startMutationObserver, navigate, getMutationObserver, pauseMutationObserver } from '../lib/editorUtility'
 
-export default forwardRef(function View(props, ref) {
+export default forwardRef(function View(props, year) {
   const
     { component,
       present,
       markdown,
       setMarkdown,
       fileId,
+      setFileId,
       isVerticalTimeline }
       = props;
 
@@ -76,53 +77,51 @@ export default forwardRef(function View(props, ref) {
   }, [markdown, fileId]);
 
   return (
-    markdown && (
-      <>
-        {!present &&
-          <section className="list-container">
-            <div
-              id="editor"
-              ref={editor}
-              className="blocks"
-              contentEditable
-              spellCheck="true"
-              suppressContentEditableWarning="true"
-              onClick={(e) => navigate(e, mutationObserver, activeId, editor)}
-              onInput={(e) => navigate(e, mutationObserver, activeId, editor)}
-              onKeyDown={(e) => navigate(e, mutationObserver, activeId, editor, markdown)}
-              onKeyUp={(e) => navigate(e, mutationObserver, activeId, editor)}
-            >
-              <Tree data={markdown._first_child} />
+    <>
+      {(!present && markdown) && (
+        <section className="list-container">
+          <div
+            id="editor"
+            ref={editor}
+            className="blocks"
+            contentEditable
+            spellCheck="true"
+            suppressContentEditableWarning="true"
+            onClick={(e) => navigate(e, mutationObserver, activeId, editor)}
+            onInput={(e) => navigate(e, mutationObserver, activeId, editor)}
+            onKeyDown={(e) => navigate(e, mutationObserver, activeId, editor, markdown)}
+            onKeyUp={(e) => navigate(e, mutationObserver, activeId, editor)}
+          >
+            <Tree data={markdown._first_child} />
+          </div>
+
+        </section>
+      )
+      }
+
+      {(component && markdown) && (
+        <section className="timeline-container">
+          {isVerticalTimeline ? (
+            <div className="line-container">
+              <Tyear min={markdown._min_date} max={markdown._max_date} />
+              <Timeline
+                data={markdown}
+                min={markdown._min_date}
+                max={markdown._max_date}
+              />
             </div>
-
-          </section>
-        }
-
-        {component && (
-          <section className="timeline-container">
-            {isVerticalTimeline ? (
-              <div className="line-container">
-                <Tyear min={markdown._min_date} max={markdown._max_date} />
-                <Timeline
-                  data={markdown}
-                  min={markdown._min_date}
-                  max={markdown._max_date}
-                />
-              </div>
-            )
-              : markdown._has_dates &&
-              (
-                <div className="grid-container">
-                  <Year ref={ref} />
-                  <div style={{ position: "absolute", marginTop: "3em" }}>
-                    <GanttEvent data={markdown} />
-                  </div>
+          )
+            : markdown._has_dates &&
+            (
+              <div className="grid-container">
+                <Year ref={year} />
+                <div style={{ position: "absolute", marginTop: "3em" }}>
+                  <GanttEvent data={markdown} />
                 </div>
-              )}
-          </section>
-        )}
-      </>
-    )
+              </div>
+            )}
+        </section>
+      )}
+    </>
   );
-
 });

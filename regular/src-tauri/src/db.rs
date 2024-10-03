@@ -124,7 +124,12 @@ fn delete_files() -> Result<(), String> {
 
 pub fn demo() {
     let _ = delete_files();
+
     let (raw_name, raw_string, tree) = parser::parse("note.md").expect("paring error");
+    let json = serde_json::to_string(&tree).expect("conversion error");
+    let _ = create_file(&raw_name, &raw_string, &json);
+
+    let (raw_name, raw_string, tree) = parser::parse("project.md").expect("paring error");
     let json = serde_json::to_string(&tree).expect("conversion error");
     let _ = create_file(&raw_name, &raw_string, &json);
 
@@ -136,9 +141,7 @@ pub fn demo() {
     let json = serde_json::to_string(&tree).expect("conversion error");
     let _ = create_file(&raw_name, &raw_string, &json);
 
-    let (raw_name, raw_string, tree) = parser::parse("project.md").expect("paring error");
-    let json = serde_json::to_string(&tree).expect("conversion error");
-    let _ = create_file(&raw_name, &raw_string, &json);
+    
 }
 
 pub fn create_doc() {

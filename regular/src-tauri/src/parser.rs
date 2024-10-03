@@ -104,8 +104,11 @@ pub fn parse(fileqq: &str) -> std::io::Result<(String, String, Root)> {
             let re2 = b'(';
             let re3 = b')';
 
-            if !is_date && c == &re {
+            if is_date && re3 != *c {
                 str.push(*c as char);
+            }
+
+            if !is_date && c == &re {
                 is_prev_char = true;
             }
 
@@ -116,12 +119,7 @@ pub fn parse(fileqq: &str) -> std::io::Result<(String, String, Root)> {
                 }
             }
 
-            if is_date && re3 != *c {
-                str.push(*c as char);
-            }
-
             if is_date && re3 == *c {
-                str.push(*c as char);
                 date = str.clone();
                 str.clear();
                 is_date = false;
@@ -159,31 +157,12 @@ pub fn parse(fileqq: &str) -> std::io::Result<(String, String, Root)> {
                 }
 
                 if date != "" {
-                    skimmed = (&s[0..d_pos_start]).to_string() + &s[d_pos_end..s.len() - 1];
-                    if d_pos_end == s.len() - 1 {
-                        md = (&s[0..d_pos_start]).to_string()
-                            + MARK_START
-                            + &s[d_pos_start+2..d_pos_end]
-                            + MARK_END
-                            + &s[d_pos_end..s.len() - 1];
-                 
-                    } else if d_pos_start == 0 {
-                        skimmed = s[d_pos_end + 1..s.len()].to_string();
-                        md = MARK_START.to_string()
-                            + &s[d_pos_start+2..d_pos_end]
-                            + MARK_END
-                            + &s[d_pos_end + 1..s.len()];
-                   
-                    } else {
-                        skimmed = (&s[0..d_pos_start - 1]).to_string() + &s[d_pos_end + 1..s.len()];
-                        md = (&s[0..d_pos_start]).to_string()
-                            + MARK_START
-                            + &s[d_pos_start+2..d_pos_end]
-                            + MARK_END
-                            + &s[d_pos_end + 1..s.len()];
-                    }
-                    
-                    skimmed = skimmed.to_owned();
+                    skimmed = (&s[0..d_pos_start]).to_string() + &s[d_pos_end+1..s.len()];
+                    md = (&s[0..d_pos_start]).to_string()
+                        + MARK_START
+                        + &s[d_pos_start+2..d_pos_end]
+                        + MARK_END
+                        + &s[d_pos_end+1..s.len()];
                 }
 
                 if s.trim().is_empty() {
@@ -329,7 +308,7 @@ pub fn parse(fileqq: &str) -> std::io::Result<(String, String, Root)> {
 }
 
 
-pub fn parse_content(s: &str) -> (String, String, String, String, i64) {
+pub fn parse_content(s: &str, mut min_date: u32, mut max_date: u32) -> (String, String, String, String, i64, u32, u32) {
     let mut is_date: bool = false;
     let mut is_prev_char: bool = false;
     let mut is_prev_second_char: bool = false;
@@ -364,9 +343,7 @@ pub fn parse_content(s: &str) -> (String, String, String, String, i64) {
     let pad;
     let date1;
     let date2;
-    let min_date = 0;
-    let max_date = 0;
-    (date1, _, date2, _, pad, _, _) = parse_date(&s[d_pos_start..d_pos_end], min_date, max_date);
+    (date1, _, date2, _, pad, min_date, max_date) = parse_date(&s[d_pos_start..d_pos_end], min_date, max_date);
 
     if is_date {
         skimmed = (&s[0..d_pos_start-2]).to_string() + &s[d_pos_end+1..s.len()];
@@ -376,7 +353,7 @@ pub fn parse_content(s: &str) -> (String, String, String, String, i64) {
             + MARK_END
             + &s[d_pos_end+1..s.len()];
     }
-    (md.to_string(), skimmed, date1, date2, pad)
+    (md.to_string(), skimmed, date1, date2, pad, min_date, max_date)
     
 }
 
