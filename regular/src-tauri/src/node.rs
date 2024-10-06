@@ -1,5 +1,3 @@
-use std::mem;
-
 use serde::{Deserialize, Serialize};
 
 use crate::parser::parse_content;
@@ -77,13 +75,19 @@ impl Node {
         return false;
     }
 
-    pub fn find_node_by_id_and_update(&mut self, target_id: u128, text: &str, level: f32, mut min_date: u32, mut max_date: u32, mut has_dates: bool) 
+    pub fn find_node_by_id_and_update(&mut self, target_id: u128, text: &str, level: f32, mut min_date: u32, mut max_date: u32, has_dates: bool) 
     -> (bool, u32, u32, bool) {
         if self._id == target_id {
             self._text = text.to_string();
             self._level = level; 
-            (self._md_text, self._skimmed_text, self._date1, self._date2, self._pad, min_date, max_date, has_dates) = parse_content(&self._text, min_date, max_date);
-            return (true, min_date, max_date, has_dates); 
+            let mut is_date: bool;
+            (self._md_text, self._skimmed_text, self._date1, self._date2, self._pad, min_date, max_date, is_date) = parse_content(&self._text, min_date, max_date);
+
+            if has_dates {
+                is_date = has_dates;
+            } 
+
+            return (true, min_date, max_date, is_date); 
         }
 
         if self._first_child.is_some() {
@@ -113,9 +117,11 @@ impl Node {
         return (false, min_date, max_date, has_dates);
     }
 
-    pub fn find_node_by_id_and_create(&mut self, key_id: u128, target_id: u128, text: &str, level: f32, mut min_date: u32, mut max_date: u32, mut has_dates: bool) 
+    pub fn find_node_by_id_and_create(&mut self, key_id: u128, target_id: u128, text: &str, level: f32, mut min_date: u32, mut max_date: u32, has_dates: bool) 
     -> (bool, u32, u32, bool) {
         if self._id == target_id {
+            let mut is_date: bool;
+
             let mut current = Node {
                 _text: String::from(text.to_string()),
                 _md_text: String::new(),
@@ -135,13 +141,17 @@ impl Node {
                 _color: String::new(),
                 _has_dates: false,
             };
-            (current._md_text, current._skimmed_text, current._date1, current._date2, current._pad, min_date, max_date, has_dates) = parse_content(text, min_date, max_date);
+            (current._md_text, current._skimmed_text, current._date1, current._date2, current._pad, min_date, max_date, is_date) = parse_content(text, min_date, max_date);
+
+            if has_dates {
+                is_date = has_dates;
+            } 
             current._has_dates = !current._date1.is_empty();
             current._next_sibling = self._next_sibling.clone();
             current._first_child = self._first_child.clone();
             self._next_sibling = Some(Box::new(current));
             self._first_child = None;
-            return (true, min_date, max_date, has_dates); 
+            return (true, min_date, max_date, is_date); 
         }
 
         if self._first_child.is_some() {

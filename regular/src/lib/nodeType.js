@@ -127,8 +127,8 @@ export function reCheckDate(getCaret, setCaretAtIndex) {
     let b = document.createElement('span');
     b.className = "x-wrapper";
     b.innerHTML = `<span class="date-prefix">${text.slice(0, 2)}</span><mark>${match[0].slice(2, -1)}</mark><span class="date-prefix">${text.slice(-1)}</span>`
-    let last = paragraph.insertBefore(document.createTextNode(paragraph.textContent.substring(end, paragraph.textContent.length)), startContainer.parentNode);
-    paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start)), last);
+    let last = paragraph.insertBefore(unicode + document.createTextNode(paragraph.textContent.substring(end, paragraph.textContent.length)), startContainer.parentNode);
+    paragraph.insertBefore(document.createTextNode(startContainer.textContent.substring(0, start) + unicode), last);
     paragraph.insertBefore(b, last);
     paragraph.removeChild(startContainer.parentNode);
     if (typeof window.getSelection != "undefined" && typeof document.createRange != "undefined") {
