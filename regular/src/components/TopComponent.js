@@ -11,7 +11,8 @@ export default forwardRef(function TopComponent(props, ref) {
       present,
       fileId,
       setPresent,
-      isVerticalTimeline
+      isVerticalTimeline,
+      hasDates
     } = props;
 
   function toggleComponent(e) {
@@ -45,23 +46,29 @@ export default forwardRef(function TopComponent(props, ref) {
 
   return (
     <div className="top-bar">
-      {!present && (
+      {
+        !present &&
         <>
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
           <span className="material-symbols-outlined toggle-switch-right" onClick={(e) => toggleExplorer(e)}>
             notes
           </span>
         </>
-      )}
+      }
 
-      {fileId && (
+      {fileId &&
         <>
-          <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-          <span className="material-symbols-outlined toggle-switch-present" onClick={(e) => togglePresentation(e)}>
-            preview
-          </span>
 
-          {(present || component) && !isVerticalTimeline &&
+          {hasDates &&
+            <>
+              <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+              <span className="material-symbols-outlined toggle-switch-present" onClick={(e) => togglePresentation(e)}>
+                preview
+              </span>
+            </>
+          }
+
+          {(present || component) && hasDates && !isVerticalTimeline &&
             <Handlers handleClick={handleClick} />
           }
 
@@ -73,9 +80,9 @@ export default forwardRef(function TopComponent(props, ref) {
               </span>
             </>
           )}
-
         </>
-      )};
+      }
+
     </div>
   );
 });

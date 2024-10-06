@@ -308,7 +308,7 @@ pub fn parse(fileqq: &str) -> std::io::Result<(String, String, Root)> {
 }
 
 
-pub fn parse_content(s: &str, mut min_date: u32, mut max_date: u32) -> (String, String, String, String, i64, u32, u32) {
+pub fn parse_content(s: &str, mut min_date: u32, mut max_date: u32) -> (String, String, String, String, i64, u32, u32, bool) {
     let mut is_date: bool = false;
     let mut is_prev_char: bool = false;
     let mut is_prev_second_char: bool = false;
@@ -353,7 +353,7 @@ pub fn parse_content(s: &str, mut min_date: u32, mut max_date: u32) -> (String, 
             + MARK_END
             + &s[d_pos_end+1..s.len()];
     }
-    (md.to_string(), skimmed, date1, date2, pad, min_date, max_date)
+    (md.to_string(), skimmed, date1, date2, pad, min_date, max_date, is_date)
     
 }
 

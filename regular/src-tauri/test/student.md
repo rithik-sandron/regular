@@ -1,5 +1,5 @@
 History of Japan
-!(710 - 794) Nara period.
-    !(715 - 724) Reign of Empress Gensho in Japan.
-    !(735 - 737) A devastating smallpox epidemic.
-!(794 - 1185) Heian period.
+Nara period !(710 - 794)
+Heian period !(794 - 1185)
+Kamakura period !(1185 - 1333)
+Muromachi period !(1333 - 1568)

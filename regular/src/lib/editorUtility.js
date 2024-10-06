@@ -109,12 +109,14 @@ export function toggleUntoggleDateContent(activeId, node) {
 }
 
 export function handleClickAndKeyUp(e, mutationObserver, activeId, editor) {
+  
   const res = getSelectedElement();
   const node = res[0];
 
   if (node) {
     pauseMutationObserver(mutationObserver);
     toggleUntoggleDateContent(activeId, node);
+
     let pos = getCaret(node);
     while (node.textContent.charCodeAt(pos) === 8205 || node.textContent.charCodeAt(pos) === 8203) {
       if (e.keyCode === 37)
@@ -210,6 +212,7 @@ export function getMutationObserver(mutate, activeId, resetInactivityTimer) {
       } else if (mutation.type === "characterData") {
         // update mutation
         let existingNode = mutate.get(activeId.current);
+        console.log(existingNode)
         if (existingNode !== undefined) {
           existingNode.text = document.getElementById(activeId.current).innerText;
           mutate.set(activeId.current, existingNode);
@@ -234,7 +237,7 @@ export function getMutationObserver(mutate, activeId, resetInactivityTimer) {
         }
       }
     })
-    // console.log(mutate)
+    console.log(mutate)
     resetInactivityTimer();
   });
 }

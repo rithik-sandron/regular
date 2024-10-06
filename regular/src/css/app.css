@@ -11,8 +11,6 @@
   --selection: rgba(5, 143, 255, 0.1);
   --date-bg: rgb(220, 254, 174, 0.8);
   --button: #fff;
-  --svg: url("../css/light.svg");
-
 
   --font-primary: Avenir Next;
   --font-size: 11pt;
@@ -30,7 +28,7 @@
   --line-height-h3: 1.51;
 }
 
-body > iframe {
+body>iframe {
   display: none;
 }
 
@@ -48,7 +46,6 @@ body > iframe {
     --selection: rgba(144, 169, 213, 0.1);
     --date-bg: rgba(22, 101, 160, 0.684);
     --button: rgb(43, 43, 43);
-    --svg: url("../css/dark.svg");
   }
 }
 
@@ -108,6 +105,9 @@ body {
   outline: none;
   text-rendering: optimizeLegibility;
   position: relative;
+  max-width: 197mm;
+  min-width: 30vw;
+  height: 90vh;
   white-space: pre-wrap;
 }
 
@@ -232,11 +232,11 @@ body {
 }
 
 .toggle-switch-present {
-  right: -2mm;
+  right: 10mm;
 }
 
 .toggle-switch-left {
-  right: 10mm;
+  right: -2mm;
 }
 
 .toggle-switch-right {

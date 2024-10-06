@@ -12,8 +12,10 @@ function App() {
   const [explorer, setExplorer] = useState(true);
   const [present, setPresent] = useState(false);
   const [markdown, setMarkdown] = useState("");
+  const [editorContent, setEditorContent] = useState("");
 
   const [fileId, setFileId] = useState(null);
+  const [filesCount, setFilesCount] = useState(0);
 
   const year = useRef(null);
 
@@ -22,7 +24,9 @@ function App() {
       invoke("get_file", { id: fileId }).then(data => {
         // console.log(data.id)
         // console.log(data.markdown)
-        setMarkdown(data.markdown !== "" ? JSON.parse(data.markdown) : data.markdown);
+        const json = JSON.parse(data.markdown)
+        setMarkdown(data.markdown !== "" ? json : data.markdown);
+        setEditorContent(data.markdown !== "" ? json : data.markdown);
       });
       year.current?.scrollIntoView({
         inline: "center",
@@ -47,6 +51,7 @@ function App() {
         setPresent={setPresent}
         ref={year}
         isVerticalTimeline={isVerticalTimeline}
+        hasDates={markdown._has_dates}
       />
 
       <div className="app-container">
@@ -55,11 +60,14 @@ function App() {
             setComponent={setComponent}
             fileId={fileId}
             setFileId={setFileId}
+            setFilesCount={setFilesCount}
+            markdown={markdown}
+            setEditorContent={setEditorContent}
           />
         }
 
-        <div className={fileId ? "app-container" : "app-container-wrap"}>
-          {fileId &&
+        {fileId ?
+          <div className="app-container">
             <View
               component={component}
               setComponent={setComponent}
@@ -68,16 +76,19 @@ function App() {
               present={present}
               setPresent={setPresent}
               markdown={markdown}
+              editorContent={editorContent}
               setMarkdown={setMarkdown}
               fileId={fileId}
               setFileId={setFileId}
               ref={year}
               isVerticalTimeline={isVerticalTimeline}
             />
-          }
-        </div>
+          </div>
+          :
+          <div className="app-container-wrap">{filesCount} Files</div>
+        }
       </div>
-    </AppLayout>
+    </AppLayout >
   );
 }
 

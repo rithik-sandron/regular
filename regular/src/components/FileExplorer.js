@@ -2,19 +2,26 @@ import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api";
 import { convertDate } from "../lib/generalUtility";
 
-const FileExplorer = ({ setFileId, fileId }) => {
+const FileExplorer = ({ setFileId, fileId, setFilesCount, markdown, setEditorContent }) => {
     const [files, setFiles] = useState([]);
     useEffect(() => {
         invoke("get_files").then(data => {
             setFiles(data);
+            setFilesCount(data.length);
         })
-    }, []);
+    }, [markdown]);
 
     function handleCreate() {
         invoke("create_doc").then(() => {
             invoke("get_files").then(data => {
                 setFiles(data);
+                setFilesCount(data.length);
             })
+
+            invoke("get_latest_file").then(data => {
+                setFileId(data.id);
+            })
+            
         })
     }
 
@@ -24,6 +31,7 @@ const FileExplorer = ({ setFileId, fileId }) => {
         if (fileId)
             document.getElementById(`file-exp-list-${fileId}`).classList.remove('file-active');
         setFileId(id);
+        setEditorContent("");
         document.getElementById(`file-exp-list-${id}`).classList.add('file-active');
     }
 

@@ -12,11 +12,7 @@ const Tyear = ({ min, max }) => {
   }
 
   return (
-    <div
-      style={{
-        width: "fit-content",
-      }}
-    >
+    <div>
       {grid().map((x) => {
         return (
           <div

@@ -63,6 +63,26 @@ fn create_file(name: &str, raw: &str, markdown: &str) -> Result<(), String> {
     Ok(())
 }
 
+pub fn get_latest_file() -> Result<FileMeta> {
+    unsafe {
+        let file: FileMeta = CONN.as_ref().unwrap().query_row(
+            "SELECT id, name, modified_date FROM file ORDER BY id DESC LIMIT 1",
+            [],
+            |row| {
+                let id: u64 = row.get(0)?;
+                let name: String = row.get(1)?;
+                let modified_date: String = row.get(2)?;
+                Ok(FileMeta {
+                    id,
+                    name,
+                    modified_date,
+                })
+            },
+        )?;
+        Ok(file)
+    }
+}
+
 pub fn get_files() -> Result<Vec<FileMeta>, String> {
     let mut stmt = unsafe {
         CONN.as_ref()
@@ -129,10 +149,6 @@ pub fn demo() {
     let json = serde_json::to_string(&tree).expect("conversion error");
     let _ = create_file(&raw_name, &raw_string, &json);
 
-    let (raw_name, raw_string, tree) = parser::parse("project.md").expect("paring error");
-    let json = serde_json::to_string(&tree).expect("conversion error");
-    let _ = create_file(&raw_name, &raw_string, &json);
-
     let (raw_name, raw_string, tree) = parser::parse("plan.md").expect("paring error");
     let json = serde_json::to_string(&tree).expect("conversion error");
     let _ = create_file(&raw_name, &raw_string, &json);
@@ -141,7 +157,9 @@ pub fn demo() {
     let json = serde_json::to_string(&tree).expect("conversion error");
     let _ = create_file(&raw_name, &raw_string, &json);
 
-    
+    let (raw_name, raw_string, tree) = parser::parse("project.md").expect("paring error");
+    let json = serde_json::to_string(&tree).expect("conversion error");
+    let _ = create_file(&raw_name, &raw_string, &json);
 }
 
 pub fn create_doc() {

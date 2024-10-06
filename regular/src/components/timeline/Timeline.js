@@ -9,23 +9,20 @@ const Timeline = ({ data, min, max }) => {
   // };
 
   function getColor(str = "") {
-    // First, hash the string
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       hash = str.charCodeAt(i) + ((hash << 5) - hash);
     }
-    
-    // Then, convert the hash to a 6-digit hex color
+
     let color = '#';
     for (let i = 0; i < 3; i++) {
       const value = (hash >> (i * 8)) & 255;
-      color += ('00' + value.toString(16)).slice(-2);
+      color += ('255' + value.toString(16)).slice(-2);
     }
-    console.log(color)
-    return color+"90";
+    return color + "95";
   }
 
-  const color = getColor(data._skimmed_text);
+  const color = getColor(data._skimmed_text + data._id);
 
   return (
     <>

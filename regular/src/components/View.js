@@ -5,7 +5,7 @@ import Tree from "./Tree";
 import Timeline from "./timeline/Timeline";
 import Tyear from "./timeline/TYear";
 import { invoke } from "@tauri-apps/api";
-import { startMutationObserver, navigate, getMutationObserver, pauseMutationObserver } from '../lib/editorUtility'
+import { navigate, getMutationObserver, pauseMutationObserver } from '../lib/editorUtility'
 
 export default forwardRef(function View(props, year) {
   const
@@ -14,7 +14,7 @@ export default forwardRef(function View(props, year) {
       markdown,
       setMarkdown,
       fileId,
-      setFileId,
+      editorContent,
       isVerticalTimeline }
       = props;
 
@@ -69,7 +69,6 @@ export default forwardRef(function View(props, year) {
     mutationObserver.current = getMutationObserver(mutate.current, activeId, resetInactivityTimer);
     // startMutationObserver(mutationObserver, editor);
     return () => {
-      pauseMutationObserver(mutationObserver);
       mutate.current = new Map();
       mutationObserver.current.disconnect();
       mutationObserver.current = null;
@@ -78,7 +77,7 @@ export default forwardRef(function View(props, year) {
 
   return (
     <>
-      {(!present && markdown) && (
+      {(!present && editorContent) && (
         <section className="list-container">
           <div
             id="editor"
@@ -89,10 +88,10 @@ export default forwardRef(function View(props, year) {
             suppressContentEditableWarning="true"
             onClick={(e) => navigate(e, mutationObserver, activeId, editor)}
             onInput={(e) => navigate(e, mutationObserver, activeId, editor)}
-            onKeyDown={(e) => navigate(e, mutationObserver, activeId, editor, markdown)}
+            onKeyDown={(e) => navigate(e, mutationObserver, activeId, editor, editorContent)}
             onKeyUp={(e) => navigate(e, mutationObserver, activeId, editor)}
           >
-            <Tree data={markdown._first_child} />
+            <Tree data={editorContent._first_child} />
           </div>
 
         </section>
@@ -111,15 +110,17 @@ export default forwardRef(function View(props, year) {
               />
             </div>
           )
-            : markdown._has_dates &&
-            (
-              <div className="grid-container">
-                <Year ref={year} />
-                <div style={{ position: "absolute", marginTop: "3em" }}>
-                  <GanttEvent data={markdown} />
+            : markdown._has_dates ?
+              (
+                <div className="grid-container">
+                  <Year ref={year} />
+                  <div style={{ position: "absolute", marginTop: "3em" }}>
+                    <GanttEvent data={markdown} />
+                  </div>
                 </div>
-              </div>
-            )}
+              ) :
+
+              (<div className="app-container-wrap">No events to display</div>)}
         </section>
       )}
     </>
