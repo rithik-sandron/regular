@@ -109,7 +109,7 @@ export function toggleUntoggleDateContent(activeId, node) {
 }
 
 export function handleClickAndKeyUp(e, mutationObserver, activeId, editor) {
-  
+
   const res = getSelectedElement();
   const node = res[0];
 
@@ -182,8 +182,6 @@ export function getMutationObserver(mutate, activeId, resetInactivityTimer) {
             if (existingNode !== undefined) {
               existingNode.action = "delete";
               mutate.set(node.id, existingNode);
-            } else {
-              mutate.set(node.id, { action: "delete" });
             }
           })
         }
@@ -212,7 +210,6 @@ export function getMutationObserver(mutate, activeId, resetInactivityTimer) {
       } else if (mutation.type === "characterData") {
         // update mutation
         let existingNode = mutate.get(activeId.current);
-        console.log(existingNode)
         if (existingNode !== undefined) {
           existingNode.text = document.getElementById(activeId.current).innerText;
           mutate.set(activeId.current, existingNode);
@@ -237,7 +234,7 @@ export function getMutationObserver(mutate, activeId, resetInactivityTimer) {
         }
       }
     })
-    console.log(mutate)
+    // console.log(mutate)
     resetInactivityTimer();
   });
 }

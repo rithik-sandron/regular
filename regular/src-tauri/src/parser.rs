@@ -24,7 +24,7 @@ const TYPE: &str = "p";
 const EMPTY_TYPE: &str = "br";
 
 pub fn get_dir() -> String {
-    return "/Users/azula/code/repo/regular/regular/src-tauri/test/".to_string();
+    return "/Users/ryuu/code/repo/regular/regular/src-tauri/test/".to_string();
 }
 
 pub fn parse(fileqq: &str) -> std::io::Result<(String, String, Root)> {
@@ -129,6 +129,7 @@ pub fn parse(fileqq: &str) -> std::io::Result<(String, String, Root)> {
             if !is_indended && (c != &SPACE && c != &TAB) {
                 is_indended = true;
             }
+
 
             if &NEW_LINE == c {
 

@@ -179,6 +179,10 @@ body {
   padding: var(--padding-p) 0;
 }
 
+.blocks span>mark {
+  padding: var(--padding-p) 0;
+}
+
 .blocks strong {
   padding: var(--padding-p) 0;
 }

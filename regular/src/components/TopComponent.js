@@ -24,6 +24,7 @@ export default forwardRef(function TopComponent(props, ref) {
   function toggleExplorer(e) {
     e.stopPropagation();
     e.preventDefault();
+    console.log("h")
     setExplorer(() => !explorer);
   }
 
@@ -46,8 +47,7 @@ export default forwardRef(function TopComponent(props, ref) {
 
   return (
     <div className="top-bar">
-      {
-        !present &&
+      {!present &&
         <>
           <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
           <span className="material-symbols-outlined toggle-switch-right" onClick={(e) => toggleExplorer(e)}>

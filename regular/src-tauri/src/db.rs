@@ -8,7 +8,7 @@ use rusqlite::{Connection, Result};
 static mut CONN: Option<Connection> = None;
 
 fn get_db() -> String {
-    "/Users/azula/code/repo/regular/regular/db/data.db".to_string()
+    "/Users/ryuu/code/repo/regular/regular/db/data.db".to_string()
 }
 
 fn open() -> Result<()> {
@@ -44,7 +44,7 @@ pub fn init() -> Result<()> {
         )?;
     }
   
-    // demo();
+    demo();
     println!("{}", "Migration done");
     Ok(())
 }
@@ -146,10 +146,6 @@ pub fn demo() {
     let _ = delete_files();
 
     let (raw_name, raw_string, tree) = parser::parse("note.md").expect("paring error");
-    let json = serde_json::to_string(&tree).expect("conversion error");
-    let _ = create_file(&raw_name, &raw_string, &json);
-
-    let (raw_name, raw_string, tree) = parser::parse("plan.md").expect("paring error");
     let json = serde_json::to_string(&tree).expect("conversion error");
     let _ = create_file(&raw_name, &raw_string, &json);
 

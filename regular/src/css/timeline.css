@@ -78,6 +78,7 @@ a {
   width: 100%;
   flex: 1 1 auto;
   width: 40%;
+  height: calc(100% - 4vh);
 }
 
 .timeline-container {
@@ -96,7 +97,6 @@ a {
   height: calc(100% - 12vh);
   width: 800px;
   margin: 8mm auto;
-  margin-left: 6mm;
 }
 
 .line-event {
@@ -227,7 +227,6 @@ a {
   gap: 4mm;
   width: fit-content;
   cursor: pointer;
-  width: 100%;
   justify-content: flex-end;
   top: 1mm;
   right: 24mm;
