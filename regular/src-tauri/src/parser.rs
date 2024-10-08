@@ -24,7 +24,7 @@ const TYPE: &str = "p";
 const EMPTY_TYPE: &str = "br";
 
 pub fn get_dir() -> String {
-    return "/Users/ryuu/code/repo/regular/regular/src-tauri/test/".to_string();
+    return "/Users/azula/code/repo/regular/regular/src-tauri/test/".to_string();
 }
 
 pub fn parse(fileqq: &str) -> std::io::Result<(String, String, Root)> {

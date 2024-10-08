@@ -101,14 +101,15 @@ body {
 }
 
 .blocks {
-  display: inline-block;
   outline: none;
   text-rendering: optimizeLegibility;
   position: relative;
+  width: 100%;
   max-width: 197mm;
-  min-width: 30vw;
+  margin: 0 auto;
   height: 90vh;
   white-space: pre-wrap;
+  padding: 4mm 6mm 8mm 6mm;
 }
 
 .blocks p {

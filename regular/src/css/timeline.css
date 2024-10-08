@@ -75,11 +75,9 @@ a {
 }
 
 .list-container {
-  margin: 0 auto;
+  width: 100%;
   flex: 1 1 auto;
-  max-width: 197mm;
   width: 40%;
-  padding: 4mm 6mm 8mm 6mm;
 }
 
 .timeline-container {
@@ -90,14 +88,15 @@ a {
 }
 
 .line-container {
+  display: block;
   position: relative;
   overflow-y: scroll;
   overflow-x: hidden;
   font-size: 7pt;
-  margin-left: 8mm;
-  height: 90vh;
+  height: calc(100% - 12vh);
   width: 800px;
   margin: 8mm auto;
+  margin-left: 6mm;
 }
 
 .line-event {
@@ -105,13 +104,13 @@ a {
   border-bottom: none;
   background-color: var(--line-bg);
   padding: 0 4mm;
-  width: 45%;
+  width: 35%;
   left: 8mm;
 }
 
 .line-event-text {
   position: absolute;
-  left: 50%;
+  left: 40%;
   font-size: 10pt;
   font-weight: 600;
   padding: 0 2mm;
@@ -137,7 +136,7 @@ a {
 }
 
 .file-explorer {
-  width: 18%;
+  width: 22%;
   padding: 2mm 3mm 0 3mm;
   border-right: 1px solid var(--line);
 }
